@@ -1,0 +1,14 @@
+{
+
+	"version":"1.0.4",
+	"title":"Programming Guide",
+	"copyright":"ZERYNTH Team",
+	"files":[
+		["Python Basics","quickpython.rst"],
+        ["Sequences and Maps","seq_map.rst"],
+		["Pin Mapping","pin_mapping.rst"],
+		["Standard Library","stdlib.json"],
+		["C Language Interface","clang.rst"],
+		["Virtual Machine","vms.json"]
+	]
+}

@@ -1,0 +1,137 @@
+
+#define SYM(x) (void*)(x)
+#define VAR(x) (void*)&(x)
+
+const void *const _vsymbase[] STORED = {
+    SYM(memcpy),
+    SYM(memset),
+    SYM(memmove),
+    SYM(memcmp),
+    SYM(memchr),  
+    SYM(gc_malloc),
+    SYM(gc_free),
+    SYM(gc_info),
+    SYM(gc_pause),
+    SYM(gc_resume),
+    SYM(strlen),
+    VAR(_systime_millis),
+    VAR(_systime_seconds),
+    VAR(_system_frequency),
+    VAR(_gillock),
+    VAR(_memlock),
+
+    /* Threads */
+    SYM(vosSysLock),
+    SYM(vosSysUnlock),
+    SYM(vosSysLockIsr),
+    SYM(vosSysUnlockIsr),
+    SYM(vosThCreate),
+    SYM(vosThDestroy),
+    SYM(vosThGetId),
+    SYM(vosThGetStatus),
+    SYM(vosThSetPriority),
+    SYM(vosThGetPriority),
+    SYM(vosThCurrent),
+    SYM(vosThSleep),
+    SYM(vosThYield),
+    SYM(vosThResume),
+    SYM(vosThResumeIsr),
+    SYM(vosThSuspend),
+    SYM(vosThGetData),
+    SYM(vosInstallHandler),
+    SYM(_port_irq_epilogue),
+    
+    /*Semaphores*/
+    SYM(vosSemCreate),
+    SYM(vosSemReset),
+    SYM(vosSemGetValue),
+    SYM(vosSemSignal),
+    SYM(vosSemSignalCap),
+    SYM(vosSemSignalIsr),
+    SYM(vosSemWaitTimeout),
+    SYM(vosSemSignalWait),
+    SYM(vosSemDestroy),
+
+    /* Timers */
+    SYM(vosTimerCreate),
+    SYM(vosTimerReadMillis),
+    SYM(vosTimerReadMicros),
+    SYM(vosTimerOneShot),
+    SYM(vosTimerRecurrent),
+    SYM(vosTimerReset),
+    SYM(vosTimerDestroy),
+    SYM(vosTicks),
+
+    /* Mailboxes */
+    SYM(vosMBoxCreate),
+    SYM(vosMBoxDestroy),
+    SYM(vosMBoxPostTimeout),
+    SYM(vosMBoxFetchTimeout),
+    SYM(vosMBoxPostIsr),
+    SYM(vosMBoxFetchIsr),
+    SYM(vosMBoxUsedSlots),
+    SYM(vosMBoxFreeSlots),
+    
+    
+    /*VHAL*/
+    SYM(vhalGetPeripheralForPin),
+    SYM(vhalPinSetToPeripheral),
+    SYM(vhalPinSetMode),
+    SYM(vhalPinRead),
+    SYM(vhalPinWrite),
+    SYM(vhalPinToggle),
+    SYM(vhalPinAttachInterrupt),
+    SYM(vhalPinFastSet),
+    SYM(vhalPinFastClear),
+    SYM(vhalPinFastRead),
+    SYM(vhalPinGetPort),
+    SYM(vhalPinGetPad),
+    VAR(_vhalpinclass),
+    VAR(_vhalpinclass),
+    VAR(_vhalpinclassnum),
+    VAR(_vhalpinstatus),
+    VAR(_vhalpinmap),
+    VAR(_vhalpinports),
+    VAR(vhalIrqEnablePrio),
+    VAR(vhalIrqDisable),
+    VAR(_vhal_adc_map),
+    VAR(_vhal_adc_num),
+    VAR(_vhal_spi_map),
+    VAR(_vhal_spi_num),
+    VAR(_vhal_htm_map),
+    VAR(_vhal_htm_num),
+    VAR(_vhal_i2c_map),
+    VAR(_vhal_i2c_num),
+    
+    /*VBL*/
+    SYM(vbl_install_driver),
+    SYM(vbl_printf_stdout),
+
+    /*VM*/
+    SYM(vm_add_irq),
+
+    /*PORT*/
+    SYM(_vm_spi_pins),
+    SYM(_vm_sdio_pins),
+    SYM(_vm_i2c_pins),
+
+    /*PY*/
+    SYM(psequence_new),
+    SYM(pstring_new),
+    SYM(pbytes_new),
+    SYM(ptuple_new),
+    SYM(plist_new),
+    SYM(pshorts_new),
+    SYM(netaddress_to_object),
+    SYM(parse_py_args),
+    SYM(_typetags),
+    SYM(psysobj_new),
+    SYM(pdict_new),
+    SYM(pset_new),
+    SYM(phash_put),
+    SYM(phash_get),
+    SYM(phash_getentry),
+    SYM(phash_del),
+    SYM(phash_clone),
+    SYM(NULL),//debug
+};

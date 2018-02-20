@@ -1,0 +1,13 @@
+{
+    "dependencies": {
+        "core.zerynth.toolchain": "r2.0.11"
+    },
+    "description": "",
+    "fullname": "core.zerynth.stdlib",
+    "git_pointer": "zerynth://zerynth-core/zerynth-stdlib",
+    "keywords": [],
+    "repo": "official",
+    "title": "Zerynth Standard Library",
+    "version": "r2.0.11",
+    "whatsnew": ""
+}
