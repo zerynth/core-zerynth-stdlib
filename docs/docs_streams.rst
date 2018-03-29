@@ -96,6 +96,11 @@ The serial class
         Returns the number of characters that can be read without blocking.
                 
         
+.. method:: close()        
+
+        Close the stream linked to the underlying serial port.
+        
+        
 ======================
 The SocketStream class
 ======================

@@ -78,6 +78,9 @@
 	##Security
 		Secure_HTTP
 
+	##RTC
+		RTC_Keep_Time
+
 	##Resources
 		Resources
     

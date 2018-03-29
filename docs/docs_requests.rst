@@ -8,7 +8,7 @@ This module implements functions to easily handle the intricacies of the HTTP pr
 To use *requests* a net driver must have been properly configured and started.
 
     
-.. function:: get(url,params=None,headers=None,connection=None)    
+.. function:: get(url,params=None,headers=None,connection=None,stream_callback=None,stream_chunk=512)    
 
     Implements the GET method of the HTTP protocol. A tcp connection is made to the host:port given in the url using the default net driver.
     
@@ -24,6 +24,8 @@ To use *requests* a net driver must have been properly configured and started.
     *get* returns a :class:`Response` instance.
 
     Exceptions can be raised: :exc:`HTTPConnectionError` when the HTTP server can't be contacted; :exc:`IOError` when the source of error lies at the socket level (i.e. closed sockets, invalid sockets, etc..)
+
+    If the parameter *stream_callback* is given, the HTTP body data will be retrieved in chunk s of *stream_chunk* size and passed as arguments to *stream_callback* one by one. If *stream_callback* is used, the content of :class:`Response` instance is the last chunk.
 
 
     

@@ -1320,7 +1320,7 @@ Microcontrollers usually have a non volatile storage memory  (flash memory) to h
 
   Write *data* starting at *addr* for *len* bytes. In many architectures, for vhalFlashWrite to work, the sectors must be erased first.
 
-  Return 0 on success.
+  Return written bytes number.
 
 .. function:: void *vhalFlashAlignToSector(void *addr)
 
@@ -1362,6 +1362,72 @@ Random Number Generators are often implemented in hardware. When such MCU featur
 uint32_t vhalRngGenerate(void);
 int vhalRngSeed(uint32_t seed);
 
+
+/* ========================================================================
+    RTC
+   ======================================================================== */
+
+/**
+
+===
+RTC
+===
+
+A Real-Time Clock (RTC) might be available on-board to keep passing time with great accuracy.
+
+.. function:: int vhalRTCInit(int rtc)
+
+  Initialize the RTC identified by the peripheral index *rtc*.
+  Return 0 on success.
+
+.. function:: int vhalRTCGetUTC(int rtc, vhalRTCTimeInfo* vhal_time_info)
+
+  Fill *vhal_time_info* structure with time information retrieved from the RTC. ::
+
+    typedef struct _timeinfo {
+        uint32_t tv_seconds;
+        uint32_t tv_microseconds;
+
+        uint32_t tm_sec;
+        uint32_t tm_min;
+        uint32_t tm_hour;
+        uint32_t tm_mday;
+        uint32_t tm_mon;
+        uint32_t tm_year;
+        uint32_t tm_wday;
+        uint32_t tm_yday;
+        uint32_t tm_isdst;
+    } vhalRTCTimeInfo;
+
+  Return 0 on success.
+
+.. function:: int vhalRTCSetUTC(int rtc, uint32_t sec, uint32_t usec)
+
+  Set an UTC reference for RTC identified by the peripheral index *rtc* passing reference Unix timestamp seconds and microseconds to obtain sub-second precision.
+  Return 0 on success.
+
+*/
+
+typedef struct _timeinfo {
+    uint32_t tv_seconds; // to uint64_t before 2038...
+    uint32_t tv_microseconds;
+
+    uint32_t tm_sec;
+    uint32_t tm_min;
+    uint32_t tm_hour;
+    uint32_t tm_mday;
+    uint32_t tm_mon;
+    uint32_t tm_year;
+    uint32_t tm_wday;
+    uint32_t tm_yday;
+    uint32_t tm_isdst;
+} vhalRTCTimeInfo;
+
+DECLARE_PERIPHERAL_MAP(rtc);
+
+int vhalRTCInit(int rtc);
+int vhalRTCGetUTC(int rtc, vhalRTCTimeInfo* vhal_time_info);
+int vhalRTCSetUTC(int rtc, uint32_t sec, uint32_t usec);
 
 
 /* ========================================================================

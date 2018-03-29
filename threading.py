@@ -28,6 +28,12 @@ __define(RTOS__SEM_SIGNAL_WAIT,5)
 __define(RTOS__SEM_SIGNAL_IF_WAITING,6)
 __define(RTOS__SEM_SIGNAL_ALL,7)
 __define(RTOS__THD_CURRENT,8)
+__define(RTOS__EVT_CREATE,9)
+__define(RTOS__EVT_SET,10)
+__define(RTOS__EVT_CLEAR,11)
+__define(RTOS__EVT_WAIT,12)
+__define(RTOS__EVT_GETFLAG,13)
+__define(RTOS__SEM_SIGNALCAP,14)
 
 @native_c("__rtos_do",["csrc/threading/*"])
 def __rtos_do(code,*args):
@@ -293,7 +299,7 @@ Lock class
       are blocked waiting for the lock to become unlocked, allow exactly one of them
       to proceed.
         """
-        __rtos_do(RTOS__SEM_SIGNAL,self.lck)
+        __rtos_do(RTOS__SEM_SIGNALCAP,self.lck)
 
 
 class Semaphore():
@@ -369,9 +375,7 @@ Event class
    The flag is initially false.
    """   
     def __init__(self):
-        self.flag = False
-        self.evt = __rtos_do(RTOS__SEM_CREATE,0)
-        self.lock = __rtos_do(RTOS__SEM_CREATE,1)
+        self.evt = __rtos_do(RTOS__EVT_CREATE)
     def set(self):
         """
 .. method:: set()
@@ -380,17 +384,15 @@ Event class
       are awakened. Threads that call :meth:`wait` once the flag is true will
       not block at all.
         """
-        __rtos_do(RTOS__SEM_WAIT,self.lock)
-        self.flag = True
-        __rtos_do(RTOS__SEM_RESET,self.evt)
-        __rtos_do(RTOS__SEM_SIGNAL,self.lock)
+        __rtos_do(RTOS__EVT_SET,self.evt)
     def is_set(self):
         """
 .. method:: is_set()
 
       Return true if and only if the internal flag is true.
         """        
-        return self.flag
+        # return self.flag
+        return __rtos_do(RTOS__EVT_GETFLAG,self.evt)
     def clear(self):
         """
 .. method:: clear()
@@ -399,9 +401,7 @@ Event class
       :meth:`wait` will block until :meth:`.set` is called to set the internal
       flag to true again.
         """
-        __rtos_do(RTOS__SEM_WAIT,self.lock)
-        self.flag = False
-        __rtos_do(RTOS__SEM_SIGNAL,self.lock)
+        __rtos_do(RTOS__EVT_CLEAR,self.evt)
     def wait(self,timeout=-1):
         """
 .. method:: wait(timeout=-1)
@@ -418,14 +418,8 @@ Event class
       always return ``True`` except if a timeout is given and the operation
       times out.
         """
-        __rtos_do(RTOS__SEM_WAIT,self.lock)
-        if self.flag:
-            __rtos_do(RTOS__SEM_SIGNAL,self.lock)
-            return True
-        ret = __rtos_do(RTOS__SEM_SIGNAL_WAIT,self.lock,self.evt,timeout)!=-1
+        ret = __rtos_do(RTOS__EVT_WAIT,self.evt,timeout)
         return ret
-
-        
 
         
 

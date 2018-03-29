@@ -41,6 +41,7 @@
      ["Big Numbers","bignum/bignum.py"],
 	 ["Base64","base64.py"],
 	 ["JSON Web Tokens","jwt.py"],
-     ["Struct","struct.py"]
+     ["Struct","struct.py"],
+     ["RTC","rtc.py"]
 	]
 }

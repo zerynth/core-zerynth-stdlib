@@ -79,13 +79,13 @@ FOTA functions
     Return the FOTA record (fota) as a tuple of integers following this scheme:
 
         * fota[0] is 0 if the FOTA record is not valid
-        * fota[1] is the slot of the current VM (as an index starting from 0)
-        * fota[2] is the slot of the last working VM (as an index starting from 0)
-        * fota[3] is the slot of the current bytecode (as an index starting from 0)
-        * fota[4] is the slot of the last working bytecode (as an index starting from 0)
-        * fota[5] is the flash address of the current bytecode
-        * fota[6] is the flash address of the current VM
-        * fota[7] is the OTA chunk
+        * fota[2] is the slot of the current VM (as an index starting from 0)
+        * fota[3] is the slot of the last working VM (as an index starting from 0)
+        * fota[4] is the slot of the current bytecode (as an index starting from 0)
+        * fota[5] is the slot of the last working bytecode (as an index starting from 0)
+        * fota[6] is the flash address of the current bytecode
+        * fota[7] is the flash address of the current VM
+        * fota[8] is the OTA chunk
 
 .. function:: set_record(newfota)
     

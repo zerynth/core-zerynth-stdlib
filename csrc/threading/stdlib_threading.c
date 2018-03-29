@@ -9,6 +9,12 @@
 #define RTOS__SEM_SIGNAL_IF_WAITING 6
 #define RTOS__SEM_SIGNAL_ALL 7
 #define RTOS__THD_CURRENT   8
+#define RTOS__EVT_CREATE  9
+#define RTOS__EVT_SET     10
+#define RTOS__EVT_CLEAR   11
+#define RTOS__EVT_WAIT    12
+#define RTOS__EVT_GETFLAG 13
+#define RTOS__SEM_SIGNALCAP 14
 
 
 C_NATIVE(__rtos_do) {
@@ -156,6 +162,69 @@ C_NATIVE(__rtos_do) {
         break;
         case RTOS__THD_CURRENT: {
             *res = PSMALLINT_NEW(vosThGetId(vosThCurrent()));
+        }
+        break;
+        case RTOS__EVT_CREATE: {
+            oo = psysobj_new(PSYS_EVENT);
+            oo->sys.evt = vosEventCreate();
+            printf("+evt_create %x\r\n", oo);
+            *res = (PObject *)oo;
+        }
+        break;
+        case RTOS__EVT_SET: {
+            if (nargv != 1)
+                return ERR_TYPE_EXC;
+            CHECK_ARG(argv[0], PSYSOBJ);
+            oo  = (PSysObject *)argv[0];
+            printf("+evt_set %x\r\n", oo);
+            vosEventSet(oo->sys.evt);
+            printf("-evt_set %x\r\n", oo);
+        }
+        break;
+        case RTOS__EVT_CLEAR: {
+            if (nargv != 1)
+                return ERR_TYPE_EXC;
+            CHECK_ARG(argv[0], PSYSOBJ);
+            oo  = (PSysObject *)argv[0];
+            printf("+evt_clear %x\r\n", oo);
+            vosEventClear(oo->sys.evt);
+            printf("-evt_clear %x\r\n", oo);
+        }
+        break;
+        case RTOS__EVT_WAIT: {
+            CHECK_ARG(argv[0], PSYSOBJ);
+            int32_t timeout = -1;
+            if (nargv > 1) {
+                CHECK_ARG(argv[1], PSMALLINT);
+                timeout = PSMALLINT_VALUE(argv[1]);
+            }
+            oo  = (PSysObject *)argv[0];
+            RELEASE_GIL();
+            timeout = vosEventWait(oo->sys.evt, timeout <= 0 ? VTIME_INFINITE : (uint32_t)TIME_U(timeout, MILLIS));
+            ACQUIRE_GIL();
+            *res = (PObject *)PSMALLINT_NEW(timeout);
+        }
+        break;
+        case RTOS__EVT_GETFLAG: {
+            CHECK_ARG(argv[0], PSYSOBJ);
+            oo  = (PSysObject *)argv[0];
+             int32_t flag = vosEventGetFlag(oo->sys.evt);
+            *res = ((flag == 1) ? PBOOL_TRUE(): PBOOL_FALSE());
+        }
+        break;
+        case RTOS__SEM_SIGNALCAP: {
+            if (nargv < 1 || nargv > 2)
+                return ERR_TYPE_EXC;
+            CHECK_ARG(argv[0], PSYSOBJ);
+            oo  = (PSysObject *)argv[0];
+            int32_t cap = 1;
+            if (nargv == 2) {
+                CHECK_ARG(argv[1], PSMALLINT);
+                cap = PSMALLINT_VALUE(argv[1]);
+            }
+            printf("+sem_signal %x\r\n", oo);
+            vosSemSignalCap(oo->sys.sem, cap);
+            printf("-sem_signal %x\r\n", oo);
         }
         break;
         default:

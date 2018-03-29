@@ -11,7 +11,7 @@ fatfs.mount('0:', {"drv": SPI0, "cs": D25, "clock": 1000000} )
 
 # mount my SD card as volume 0 trough SD mode
 # (be careful in choosing frequency (kHz) and bits supported by your board)
-# fatfs.mount('0:', {"drv": "SD0", "freq_khz": 20000, "bits": 1})
+# fatfs.mount('0:', {"drv": SD1, "freq_khz": 20000, "bits": 1})
 
 # create "zerynth.txt" file and open it for read/write operations
 ww = os.open('0:zerynth.txt', 'w+')

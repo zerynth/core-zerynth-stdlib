@@ -33,6 +33,7 @@ typedef struct _psysobj {
             VSysTimer vtm;
             IrqFn fn;
         } timer;
+        VEvent evt;
     } sys;
 } PSysObject;
 
@@ -40,6 +41,7 @@ typedef struct _psysobj {
 #define PSYS_SEMAPHORE   0
 #define PSYS_BSEMAPHORE  1
 #define PSYS_TIMER       2
+#define PSYS_EVENT       3
 
 PSysObject *psysobj_new(uint32_t);
 PObject *netaddress_to_object(NetAddress *addr);
@@ -106,9 +108,9 @@ typedef struct _pexception {
     uint32_t name_parent;
     uint32_t msg;
 } PException;
-#define PEXCEPTION_PARENT(e) __access_word(e,2)
-#define PEXCEPTION_NAME(e) __access_word(e,0)
-#define PEXCEPTION_MSG(e) __access_dword(e,4)
+#define PEXCEPTION_PARENT(e) __access_word((uint32_t*)(e),2)
+#define PEXCEPTION_NAME(e) __access_word((uint32_t*)(e),0)
+#define PEXCEPTION_MSG(e) __access_dword((uint32_t*)(e),4)
 
 #endif
 

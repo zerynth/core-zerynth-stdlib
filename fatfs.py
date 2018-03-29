@@ -51,7 +51,7 @@ def mount(path, args):
 
             # correct format for SD Card read through SD mode
             # (be careful in choosing frequency (kHz) and bits supported by your board)
-            args = {"drv": "SD0", "freq_khz": 20000, "bits": 1}
+            args = {"drv": SD1, "freq_khz": 20000, "bits": 1}
     """
     global disks_dict
     __builtins__.__default_fs = __module__
@@ -61,7 +61,7 @@ def mount(path, args):
         if 'cs' in args:
             disks_dict = __update_disks_dict(pdrv, [0, args["drv"], args["cs"], args["clock"]])
         else:
-            disks_dict = __update_disks_dict(pdrv, [1, int(args["drv"][-1:]), args["bits"], args["freq_khz"]])
+            disks_dict = __update_disks_dict(pdrv, [1, args["drv"], args["bits"], args["freq_khz"]])
     else:
         raise ValueError
     __f_mount(path)

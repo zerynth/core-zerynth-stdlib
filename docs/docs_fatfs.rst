@@ -29,6 +29,10 @@ Driver
 
             # correct format for SD Card read through SPI protocol
             args = {"drv": SPI0, "cs": D25, "clock": 1000000}
+
+            # correct format for SD Card read through SD mode
+            # (be careful in choosing frequency (kHz) and bits supported by your board)
+            args = {"drv": SD0, "freq_khz": 20000, "bits": 1}
     
 ================================
 File/Directory Access/Management

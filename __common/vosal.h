@@ -54,6 +54,8 @@ typedef void *VThread;
 */
 typedef void *VSemaphore;
 
+typedef void *VEvent;
+
 typedef void *VMutex;
 
 /**
@@ -354,14 +356,14 @@ void vosSysReset(void);
 //isr drama
 #if defined(RTOS_IRQ_PROLOGUE)
 
+extern void _port_irq_prologue(void);
 #if defined(MCU_CORTEX_M0)
-
+  
      #define vosEnterIsr()                                                 \
        void* _saved_lr;                                                       \
        asm volatile ("mov     %0, lr" : "=r" (_saved_lr) : : "memory")
 
 #else
-    extern void _port_irq_prologue(void);
     #define vosEnterIsr() _port_irq_prologue()
 #endif /* MCU_CORTEX_M0 */
 
@@ -816,6 +818,56 @@ typedef void *VQueue;
 VQueue vosQueueCreate(uint32_t size);
 int vosQueueRead(VQueue q, uint8_t *buf, uint32_t len);
 int vosQueueWrite(VQueue q, uint8_t *buf, uint32_t len);
+
+/**
+
+======
+Events
+======
+
+
+.. function:: VEvent vosEventCreate(void)
+
+  Creates a VEvent. A VEvent manages a flag that can be set or cleared and on whose value a thread can be blocked.
+  The flag is initially false.
+
+*/
+VEvent vosEventCreate(void);
+/**
+.. function:: void vosEventSet(VEvent event)
+
+  Set the event flag.
+
+*/
+void vosEventSet(VEvent event);
+/**
+.. function:: void vosEventClear(VEvent event)
+
+  Clear the event flag.
+
+*/
+void vosEventClear(VEvent event);
+/**
+.. function:: int32_t vosEventWait(VEvent event, uint32_t timeout)
+
+  Wait for the event flag to be set. Return :macro:`VRES_OK` if the flag has been set, :macro:`VRES_TIMEOUT` if it has not been set in given timeout time,
+
+*/
+int32_t vosEventWait(VEvent event, uint32_t timeout);
+/**
+.. function:: int32_t vosEventGetFlag(VEvent event)
+
+  Get current flag value for selected event,
+
+*/
+int32_t vosEventGetFlag(VEvent event);
+/**
+.. function:: void vosEventDestroy(VEvent event)
+
+  Destroy the event and frees its memory.
+
+*/
+void vosEventDestroy(VEvent event);
 
 
 void vosSysSetClock(uint32_t mode);

@@ -57,11 +57,11 @@ DSTATUS disk_status (
 #if defined(VHAL_CUSTOM_SDIO) && VHAL_CUSTOM_SDIO
         case SDIO:
             ;
-            uint32_t sdio_drv = PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1));
+            uint32_t sdio_drv = (PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1)) & 0xff);
             return sdio_disk_status(sdio_drv);
 #endif
     }
-	return STA_NOINIT;
+    return STA_NOINIT;
 }
 
 
@@ -71,7 +71,7 @@ DSTATUS disk_status (
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_initialize (
-	BYTE pdrv				/* Physical drive nmuber to identify the drive */
+    BYTE pdrv               /* Physical drive nmuber to identify the drive */
 )
 {
     PObject *disk_args = pdict_get(disks_dict, PSMALLINT_NEW(pdrv));
@@ -95,7 +95,7 @@ DSTATUS disk_initialize (
 #if defined(VHAL_CUSTOM_SDIO) && VHAL_CUSTOM_SDIO
         case SDIO:
             ;
-            uint32_t sdio_drv = PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1));
+            uint32_t sdio_drv = (PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1)) & 0xff);
             uint32_t sdio_bits = PSMALLINT_VALUE(PLIST_ITEM(disk_args, 2));
             uint32_t sdio_freq = PSMALLINT_VALUE(PLIST_ITEM(disk_args, 3));
             return sdio_disk_initialize(sdio_drv, sdio_bits, sdio_freq);
@@ -130,7 +130,7 @@ DRESULT disk_read (
 #if defined(VHAL_CUSTOM_SDIO) && VHAL_CUSTOM_SDIO
         case SDIO:
             ;
-            uint32_t sdio_drv = PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1));
+            uint32_t sdio_drv = (PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1)) & 0xff);
             return sdio_disk_read(sdio_drv, buff, sector, count);
 #endif
     }
@@ -163,7 +163,7 @@ DRESULT disk_write (
 #if defined(VHAL_CUSTOM_SDIO) && VHAL_CUSTOM_SDIO
         case SDIO:
             ;
-            uint32_t sdio_drv = PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1));
+            uint32_t sdio_drv = (PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1)) & 0xff);
             return sdio_disk_write(sdio_drv, buff, sector, count);
 #endif
     }
@@ -194,7 +194,7 @@ DRESULT disk_ioctl (
 #if defined(VHAL_CUSTOM_SDIO) && VHAL_CUSTOM_SDIO
         case SDIO:
             ;
-            uint32_t sdio_drv = PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1));
+            uint32_t sdio_drv = (PSMALLINT_VALUE(PLIST_ITEM(disk_args, 1)) & 0xff);
             return sdio_disk_ioctl(sdio_drv, cmd, buff);
 #endif
     }
