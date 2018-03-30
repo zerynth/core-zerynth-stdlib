@@ -51,6 +51,16 @@ uint8_t *packmods = "@=<>!";
 uint8_t packbige[] = {0,0,0,1,1};
 #endif
 
+static inline reverse_even_buf(uint8_t *buf, int size) {
+    uint8_t tmp;
+    // size can be 4 or 8
+    for (int i=0; i < size/2; i++) {
+        tmp = buf[i];
+        buf[i] = buf[size-i-1];
+        buf[size-i-1] = tmp;
+    }
+}
+
 
 /**
 * @brief saves a char into buf. Bytes are taken from tuple[idx]
@@ -139,7 +149,7 @@ int pack_get_integer(PObject *tuple, int idx, uint8_t *buf, int mode, int size){
 *
 * @return -1 on error, written size otherwise
 */
-int pack_get_float(PObject *tuple, int idx, uint8_t *buf, int size){
+int pack_get_float(PObject *tuple, int idx, uint8_t *buf, int size, int bigendian){
     PObject *item = PTUPLE_ITEM(tuple,idx);
     int tt = PTYPE(item);
     if(tt==PFLOAT){
@@ -152,6 +162,10 @@ int pack_get_float(PObject *tuple, int idx, uint8_t *buf, int size){
         } else {
             //short float not supported!
             return -1;
+        }
+        //TODO: support big endian mcu! At the moment all mcu are little endian
+        if (bigendian) {
+           reverse_even_buf(buf,size);
         }
         return size;
     }
@@ -230,8 +244,12 @@ PObject* unpack_make_integer(uint8_t *buf,int size, int is_signed, int bigendian
     }
 }
 
-PObject *unpack_make_float(uint8_t* buf,int size){
+PObject *unpack_make_float(uint8_t* buf,int size, int bigendian){
     //size 2 is not supported
+    //TODO: support big endian mcu! At the moment all mcu are little endian
+    if (bigendian) {
+        reverse_even_buf(buf,size);
+    }
     if (size==4){
         float f;
         memcpy(&f,buf,4);
@@ -489,7 +507,7 @@ C_NATIVE(__struct_pack) {
                         err=1;
                         goto clean_up;
                     }
-                    pos = pack_get_float(iitems,citem,buf,packsize[ee->type]);
+                    pos = pack_get_float(iitems,citem,buf,packsize[ee->type],packbige[mode]);
                     printf("parsed float %i %i\n",citem,pos);
                     if(pos<0){
                         //fail!
@@ -581,6 +599,8 @@ C_NATIVE(__struct_unpack) {
     int gsize;
     int entry;
     int i;
+    int err=0;
+
     PObject *tuple;
     PObject *o;
     bufsize-=offset;
@@ -589,7 +609,8 @@ C_NATIVE(__struct_unpack) {
 
     PackEntry *pes = pack_calc_size(fmt,fmtl,&mode,&items,&entries,&gsize);
     if(!pes || gsize!=bufsize){
-        return ERR_OK;
+        err=1;
+        goto clean_up;
     } 
 
     tuple = ptuple_new(items,NULL);
@@ -614,7 +635,8 @@ C_NATIVE(__struct_unpack) {
             case PACK_Q:
             case PACK_q:
                 //not supported!
-                return ERR_OK;
+                err=1;
+                goto clean_up;
             case PACK_b:
             case PACK_h:
             case PACK_i:
@@ -646,13 +668,14 @@ C_NATIVE(__struct_unpack) {
                 break;
             case PACK_e:
                 //not supported!
-                return ERR_OK;
+                err=1;
+                goto clean_up;
             case PACK_f:
             case PACK_d:
                 //unsigned
                 for(i=0;i<ee->count;i++){ 
                     buf+=ee->padding; 
-                    o = unpack_make_float(buf,packsize[ee->type]);
+                    o = unpack_make_float(buf,packsize[ee->type],packbige[mode]);
                     buf+=packsize[ee->type];
                     PTUPLE_SET_ITEM(tuple,citem,o);
                     citem++;
@@ -679,7 +702,11 @@ C_NATIVE(__struct_unpack) {
         }
     }
 
-    *res = tuple;
+clean_up:
+
+    gc_free(pes);
+    if (err) *res=MAKE_NONE();
+    else *res = tuple;
     return ERR_OK;
 }
 

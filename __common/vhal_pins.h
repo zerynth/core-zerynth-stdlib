@@ -134,6 +134,7 @@ extern const uint8_t _vhalpinlayout;
 #define PRPH_SER    0x07
 #define PRPH_DAC    0x08
 #define PRPH_MAC    0x09
+#define PRPH_SDC    0x0A
 #define PRPH_USB    0x0B
 #define PRPH_SD     0x0C
 //Peripherals that don't use GPIOs
