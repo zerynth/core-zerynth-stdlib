@@ -29,10 +29,11 @@ err_t _i2c_ctl(int nargs, PObject *self, PObject **args, PObject **res) {
         case _I2CDRIVER_START: {
             vhalI2CConf conf;
             uint32_t addr;
+            I2CPins *i2cpins = ((I2CPins*)_vm_pin_map(PRPH_I2C));
             if (parse_py_args("ii", nargs, args, &addr, &conf.clock) != 2) goto ret_err_type;
             conf.addr = (uint16_t)addr;
-            conf.sda = _vm_i2c_pins[drvid].sda;
-            conf.scl = _vm_i2c_pins[drvid].scl;
+            conf.sda = i2cpins[drvid].sda;
+            conf.scl = i2cpins[drvid].scl;
             code = vhalI2CInit(drvid, &conf);
             if (code < 0)
                 return -code;

@@ -76,6 +76,7 @@ DSTATUS disk_initialize (
 {
     PObject *disk_args = pdict_get(disks_dict, PSMALLINT_NEW(pdrv));
     uint32_t disk_type = PSMALLINT_VALUE(PLIST_ITEM(disk_args, 0));
+    SpiPins *spipins = ((SpiPins*)_vm_pin_map(PRPH_SPI));
 
     switch (disk_type) {
         case SPISD:
@@ -87,9 +88,9 @@ DSTATUS disk_initialize (
             conf.mode = 0;
             conf.bits = 0;
             conf.master = 1;
-            conf.mosi = _vm_spi_pins[spi_drv].mosi;
-            conf.miso = _vm_spi_pins[spi_drv].miso;
-            conf.sclk = _vm_spi_pins[spi_drv].sclk;
+            conf.mosi = spipins[spi_drv].mosi;
+            conf.miso = spipins[spi_drv].miso;
+            conf.sclk = spipins[spi_drv].sclk;
 
             return spi_disk_initialize(spi_drv, &conf);
 #if defined(VHAL_CUSTOM_SDIO) && VHAL_CUSTOM_SDIO

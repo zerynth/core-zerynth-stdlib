@@ -38,6 +38,7 @@ err_t _spi_ctl(int nargs, PObject *self, PObject **args, PObject **res) {
             uint32_t mode;
             uint32_t bits;
             uint32_t nss;
+            SpiPins *spipins = ((SpiPins*)_vm_pin_map(PRPH_SPI));
             //char fmt[5] = {'i','i','i','i','\0'};
             //printf("FMT %x\n",fmt);
             if (parse_py_args("iiii", nargs, args, &conf.clock, &bits, &mode, &nss) != 4) goto ret_err_type;
@@ -47,9 +48,9 @@ err_t _spi_ctl(int nargs, PObject *self, PObject **args, PObject **res) {
             conf.nss = nss;
             //printf("VBL_SPI_START asked: %i\n",drvid);
             //drvid = _vm_spi_pins[drvid].spiid; //number of vm spi driver: spi0,spi1...spiN
-            conf.mosi = _vm_spi_pins[drvid].mosi;
-            conf.miso = _vm_spi_pins[drvid].miso;
-            conf.sclk = _vm_spi_pins[drvid].sclk;
+            conf.mosi = spipins[drvid].mosi;
+            conf.miso = spipins[drvid].miso;
+            conf.sclk = spipins[drvid].sclk;
             //printf("VBL_SPI_START: #%i\n",_vm_spi_pins[drvid].spiid);
             code = vhalSpiInit(drvid, &conf);
             //printf("VBL_SPI_START: %i\n",code);

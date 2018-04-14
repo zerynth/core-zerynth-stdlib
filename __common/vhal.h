@@ -31,7 +31,11 @@ int vhalInit(void *data);
 #include "vhal_pins.h"
 
 #define PERIPHERAL_ID(n) ((uint8_t)((n)-1))
+#if defined(VM_IS_CUSTOM)
+#define GET_PERIPHERAL_ID(name,vprph) (((*((uint8_t**)_vhal_ ## name ## _map))[vprph]))
+#else
 #define GET_PERIPHERAL_ID(name,vprph) _vhal_ ## name ## _map[vprph]
+#endif
 #define PERIPHERAL_NUM(name) (_vhal_ ## name ## _num)
 #define BEGIN_PERIPHERAL_MAP(name) const uint8_t _vhal_ ## name ## _map[] STORED = {
 #define END_PERIPHERAL_MAP(name) }; \

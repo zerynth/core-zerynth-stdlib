@@ -35,11 +35,13 @@ The FlashFileStream class
 
     """
 
-    def __init__(self,start_address,size):
+    def __init__(self,start_address,size,bb=None):
         streams.FileStream.__init__(self,str(start_address))
         self.size=size
         self.addr = start_address
-        self.bb = __read_flash(self.addr,self.size)
+        if bb is None:
+            bb = bytearray(size)
+        self.bb = __read_flash(self.addr,self.size, bb)
 
     def __getitem__(self, key):
         if type(key)==PSLICE:

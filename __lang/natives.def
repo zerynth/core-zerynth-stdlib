@@ -37,7 +37,7 @@
     BUILD_NATIVE(__byte_set         , 3   , 3 , 0) ,
     BUILD_NATIVE(__elements_set     , 2   , 2 , 0) ,
     BUILD_NATIVE(__resource         , 1 , 1 , 0),
-    BUILD_NATIVE(__read_flash       , 2 , 2 , 0),
+    BUILD_NATIVE(__read_flash       , 3 , 2 , 0),
     BUILD_NATIVE(__write_flash      , 2 , 2 , 0),
     BUILD_NATIVE(__strpad           , 4 , 4 , 0),
     BUILD_NATIVE(__mcuuid           , 0 , 0 , 0),

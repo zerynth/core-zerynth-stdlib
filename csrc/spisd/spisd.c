@@ -598,15 +598,16 @@ C_NATIVE(c_spi_sd_test) {
 
     uint32_t spi = PSMALLINT_VALUE(args[0]);;
     vhalSpiConf conf;
+    SpiPins *spipins = ((SpiPins*)_vm_pin_map(PRPH_SPI));
     conf.nss = PSMALLINT_VALUE(args[1]);
     printf("conf.nss %i\n", conf.nss);
     conf.clock = PSMALLINT_VALUE(args[2]);
     conf.mode = 0;
     conf.bits = 0;
     conf.master = 1;
-    conf.mosi = _vm_spi_pins[spi&0xff].mosi;
-    conf.miso = _vm_spi_pins[spi&0xff].miso;
-    conf.sclk = _vm_spi_pins[spi&0xff].sclk;
+    conf.mosi = spipins[spi&0xff].mosi;
+    conf.miso = spipins[spi&0xff].miso;
+    conf.sclk = spipins[spi&0xff].sclk;
 
     spi_disk_initialize(spi, &conf);
 

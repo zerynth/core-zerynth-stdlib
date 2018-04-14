@@ -55,7 +55,6 @@ extern const PinClass *const _vhalpinclass[];
 extern const uint8_t _vhalpinclassnum[];
 extern const uint8_t _vhalpinlayout;
 
-
 #define PIN_CLASS(vpin) (((vpin)&0xff00)>>8)
 #define PIN_CLASS_PAD(vpin) (((vpin)&0x00ff))
 
@@ -66,15 +65,28 @@ extern const uint8_t _vhalpinlayout;
 #define PIN_CLASS_DATA1(vpin) _vhalpinclass[PIN_CLASS(vpin)][PIN_CLASS_PAD(vpin)].data1
 #define PIN_CLASS_DATA2(vpin) _vhalpinclass[PIN_CLASS(vpin)][PIN_CLASS_PAD(vpin)].data2
 
-#define PIN_PORT_NUMBER(vpin) (_vhalpinmap[PIN_CLASS_ID(vpin)].port)
-#define PIN_PORT(vpin) (_vhalpinports[_vhalpinmap[PIN_CLASS_ID(vpin)].port])
-#define PIN_PAD(vpin) _vhalpinmap[PIN_CLASS_ID(vpin)].pad
-#define PIN_PRPH(vpin)(_vhalpinmap[PIN_CLASS_ID(vpin)].prph)
+
+#if defined(VM_IS_CUSTOM)
+
+#define _get_vhalpinmap() ((PinInfo*)(*((void**)_vhalpinmap)))
+
+#else
+
+#define _get_vhalpinmap() _vhalpinmap
+
+#endif
+
+
+#define PIN_PORT_NUMBER(vpin) (_get_vhalpinmap()[PIN_CLASS_ID(vpin)].port)
+#define PIN_PORT(vpin) (_vhalpinports[_get_vhalpinmap()[PIN_CLASS_ID(vpin)].port])
+#define PIN_PAD(vpin) _get_vhalpinmap()[PIN_CLASS_ID(vpin)].pad
+#define PIN_PRPH(vpin)(_get_vhalpinmap()[PIN_CLASS_ID(vpin)].prph)
 #define PIN_HAS_PRPH(vpin,prh) (PIN_PRPH(vpin)&(1<<(prh)))
 #define PIN_CLASS_NUM(cls) _vhalpinclassnum[cls]
 #define PIN_SET_TO_PRPH(vpin,prh) _vhalpinstatus[PIN_CLASS_ID(vpin)]=prh
 #define PIN_GET_PRPH(vpin) _vhalpinstatus[PIN_CLASS_ID(vpin)]
 #define PIN_FREE_OR_ASSIGNED_TO(vpin,prph) (PIN_GET_PRPH(vpin)==0xff || PIN_GET_PRPH(vpin)==prph)
+
 
 #define VHAL_PORT_DECLARATIONS() \
   const uint8_t _vhalpinclassnum[] STORED = {\

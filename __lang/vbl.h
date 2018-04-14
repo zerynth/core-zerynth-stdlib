@@ -177,10 +177,25 @@ typedef struct _vm_sdio_pins {
     uint16_t sdio_pins[10];
 } SdioPins;
 
+#if defined(VM_IS_CUSTOM)
+extern SerialPins *_vm_serial_pins;
+extern SpiPins *_vm_spi_pins;
+extern I2CPins *_vm_i2c_pins;
+extern SdioPins *_vm_sdio_pins;
+
+#define _vm_pin_map(prph) ( ((prph)==0x02) ? (((void*)_vm_spi_pins)):( ((prph)==0x03) ? (((void*)_vm_i2c_pins)):( NULL ))  )
+
+#else
+
 extern const SerialPins const _vm_serial_pins[];
 extern const SpiPins const _vm_spi_pins[];
 extern const I2CPins const _vm_i2c_pins[];
 extern const SdioPins const _vm_sdio_pins[];
+
+#define _vm_pin_map(prph) ( ((prph)==0x02) ? ((void*)_vm_spi_pins):( ((prph)==0x03) ? ((void*)_vm_i2c_pins):( NULL ))  )
+
+#endif
+
 
 #define VM_RXPIN(ch) _vm_serial_pins[ch].rxpin
 #define VM_TXPIN(ch) _vm_serial_pins[ch].txpin
