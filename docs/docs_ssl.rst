@@ -318,13 +318,22 @@ The sslsocket class
             sock.sendall("Hello World!")
 
     
+.. _stdlib.ssl.create_ssl_context
+
 .. function:: create_ssl_context(cacert="",clicert="",pkey="",hostname="",options=ssl.CERT_NONE|ssl.SERVER_AUTH)
 
     This function generates an SSL context with the following data:
 
         * **cacert** is the CA certificate that will be used to authenticate the other end of the TLS connection
         * **clicert* is the certificate that the server expects to receive from the client in a two-way TLS authentication
-        * **pkey** is the private key matching **clicert**
+        * **pkey** is the private key matching **clicert**. It can be an empty string to use a hardware stored private key. To enable the use of hardware keys a hardware cryptographic interface must be started. For example, with an ``ATECC508A`` (:ref:`ATECCx08A interface <lib.microchip.ateccx08a.hwcryptointerface>`): ::
+
+            from microchip.ateccx08a import ateccx08a
+            # ...
+            ateccx08a.hwcrypto_init(I2C0, 0) # select private key stored in slot 0
+
+        (in this case ``ZERYNTH_HWCRYPTO_ATECCx08A`` must be also set to true in ``project.yml``)
+
         * **hostname** is the hostname expected to match the certificate sent by the server. If not given, the hostname check is skipped
         * **options** is an integer obtained by or'ing together one or more of the following options:
 

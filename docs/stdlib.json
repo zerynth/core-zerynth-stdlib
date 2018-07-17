@@ -3,7 +3,7 @@
 	"text":"The Zerynth standard library is composed of many modules ranging from hardware interfaces to high level functionalities.",
 	"files":[
 	 ["Builtins","__builtins__.py"],
-     ["Math","math.py"],
+	 ["Math","math.py"],
 	 ["ADC","adc.py"],
 	 ["PWM","pwm.py"],
 	 ["ICU","icu.py"],
@@ -38,10 +38,11 @@
 	 ["Power Management","pwr.py"],
 	 ["Secure Firmware","sfw.py"],
 	 ["Cryptography","crypto.json"],
-     ["Big Numbers","bignum/bignum.py"],
+    	 ["Big Numbers","bignum/bignum.py"],
 	 ["Base64","base64.py"],
 	 ["JSON Web Tokens","jwt.py"],
-     ["Struct","struct.py"],
-     ["RTC","rtc.py"]
+	 ["Struct","struct.py"],
+	 ["RTC","rtc.py"],
+	 ["X509","x509.py"]
 	]
 }

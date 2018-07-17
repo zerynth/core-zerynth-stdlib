@@ -43,6 +43,7 @@ Each microcontroller family has its own watchdog peculiarities, described in the
     * :ref:`STM32F families <sfw-stm32f>`
     * :ref:`NXP K64 families <sfw-nxpk64>`
     * :ref:`Microchip SAMD21 <sfw-samd21>`
+    * :ref:`Espressif ESP32 <sfw-esp32>`
 
 
 This module provides the following functions for watchdog usage:
@@ -64,6 +65,7 @@ This module provides the following functions for watchdog usage:
 
 
 .. _sfw-stm32f:
+
 Watchdogs for STM32Fxx families
 -------------------------------
 
@@ -71,15 +73,15 @@ For STM32 microcontrollers the watchdog is implemented using the IWDG. The maxim
 The watchdog is disabled in low power modes.
 
 .. _sfw-nxpk64:
+
 Watchdogs for NXP K64 families
 ------------------------------
 
 For K64 microcontrollers the watchdog is implemented using WDOG. The WDOG is clocked by the low power oscillator with a frequency of 1kHz.T The maximum timeout is around 74 hours and windowed mode is supported.
 The watchdog is disabled in low power modes.
 
-
-
 .. _sfw-samd21:
+
 Watchdogs for Microchip SAMD21
 ------------------------------
 
@@ -95,5 +97,16 @@ The timeout granularity of WDT is quite coarse, allowing only 12 different timeo
 
 The :func:`watchdog` function will select the nearest allowed time rounding up with respect to the specified time.
 
+.. _sfw-esp32:
+
+Watchdogs for ESP32 devices
+---------------------------
+
+For ESP32 devices the watchdog is implemented using a hardware timer. The maximum timeout is 2^31 milliseconds and there is no support for windowed mode
+(an exception is raised if time0 is greater than zero in watchdog()). There are also two additional watchdogs configured by default: 
+the task watchdog and the exception watchdog. 
+
+The task watchdog is enabled on both cores and prints out a warning when a thread is using a core for too much time. 
+The exception watchdog resets the microcontroller in case a hard fault exception is raised; before resetting, a dump of both cores is printed on the serial console.
 
     

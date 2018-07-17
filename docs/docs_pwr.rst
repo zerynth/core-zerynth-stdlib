@@ -81,6 +81,7 @@ The following constants are defined:
 
 
 .. _pwr-stm32f:
+
 Power management for STM32Fxx families
 --------------------------------------
 
@@ -99,6 +100,7 @@ The special purpose memory for low power mode status is the RTC backup domain (8
 
 
 .. _pwr-nxpk64:
+
 Power management for NXP K64 families
 -------------------------------------
 
@@ -117,6 +119,7 @@ The special purpose memory for low power mode status is the VBAT register file (
 
 
 .. _pwr-samd21:
+
 Power management for Microchip SAMD21
 -------------------------------------
 
@@ -134,6 +137,7 @@ For low power modes timeouts:
 No special purpose memory for low power mode status is present.
 
 .. _pwr-esp8266:
+
 Power management for Esp8266
 ----------------------------
 

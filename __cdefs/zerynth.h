@@ -24,6 +24,8 @@
 
 #define malloc(x) gc_malloc(x)
 #define free(x) gc_free(x)
+#define calloc(n,m) gc_malloc((n)*(m))
+#define gc_calloc(n,m) gc_malloc((n)*(m))
 
 #if defined(ZERYNTH_PRINTF)
 	#define printf(...) vbl_printf_stdout(__VA_ARGS__)

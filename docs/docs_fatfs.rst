@@ -32,7 +32,7 @@ Driver
 
             # correct format for SD Card read through SD mode
             # (be careful in choosing frequency (kHz) and bits supported by your board)
-            args = {"drv": SD0, "freq_khz": 20000, "bits": 1}
+            args = {"drv": SD1, "freq_khz": 20000, "bits": 1}
     
 ================================
 File/Directory Access/Management

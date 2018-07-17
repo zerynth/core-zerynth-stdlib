@@ -136,7 +136,7 @@ The socket class
 
         Tries to connect the underlying socket (tcp or udp) to *address*.
         A tcp socket must be connected to be used successfully. Udp sockets are connectionless and everytime a datagram
-        is sent, the receiver address must be specified (:meth:`.sendto`). However is an udp socket is connected to an address,
+        is sent, the receiver address must be specified (:meth:`.sendto`). However if an udp socket is connected to an address,
         it can be used with methods like :meth:`.recv` and :meth:`.send` without specifying a receiver address.
         When an udp socket is connected to *address*, datagram packets coming from adresses different from *address* are ignored.
         

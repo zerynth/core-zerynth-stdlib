@@ -51,4 +51,5 @@ The Zerynth standard library is composed of many modules ranging from hardware i
        docs_jwt
        docs_struct
        docs_rtc
+       docs_x509
 

@@ -416,3 +416,34 @@ System Timers
 
   Reset the timer and free its memory.
 
+
+======
+Events
+======
+
+
+.. function:: VEvent vosEventCreate(void)
+
+  Creates a VEvent. A VEvent manages a flag that can be set or cleared and on whose value a thread can be blocked.
+  The flag is initially false.
+
+.. function:: void vosEventSet(VEvent event)
+
+  Set the event flag.
+
+.. function:: void vosEventClear(VEvent event)
+
+  Clear the event flag.
+
+.. function:: int32_t vosEventWait(VEvent event, uint32_t timeout)
+
+  Wait for the event flag to be set. Return :macro:`VRES_OK` if the flag has been set, :macro:`VRES_TIMEOUT` if it has not been set in given timeout time,
+
+.. function:: int32_t vosEventGetFlag(VEvent event)
+
+  Get current flag value for selected event,
+
+.. function:: void vosEventDestroy(VEvent event)
+
+  Destroy the event and frees its memory.
+

@@ -4,17 +4,15 @@
 Real-Time Clock
 ***************
 
-This module loads the Real-Time Clock (rtc) driver of the embedded device.
+This module loads the Real-Time Clock (rtc) driver of the embedded device when available (the chip family should be equipped with a rtc and a driver should have been developed, look at the bottom of this page for info about supported chip families).
 
 When imported, automatically sets the system rtc driver to the default one.
 
-    
 .. function:: init(drvname)
 
     Loads the rtc driver identified by *drvname*
 
     Returns the previous driver without disabling it.
-
     
 .. function:: set_utc(seconds, microseconds=0)
 
@@ -23,7 +21,6 @@ When imported, automatically sets the system rtc driver to the default one.
 
     Sets a Coordinated Universal Time (UTC) reference for the rtc.
 
-    
 .. class:: TimeInfo()
 
     Class containing useful time information to be filled by the :func:`get_utc` function.
@@ -41,7 +38,6 @@ When imported, automatically sets the system rtc driver to the default one.
         * :attr:`Timeinfo.tm_wday`: days since Sunday (0-6)
         * :attr:`Timeinfo.tm_yday`: days since January 1 (0-365)
 
-    
 .. function:: get_utc(verbosity=2)
 
     When called with verbosity parameter set to :samp:`2`, returns a :class:`TimeInfo` object filled with info derived from the rtc.
@@ -52,5 +48,15 @@ When imported, automatically sets the system rtc driver to the default one.
 
     When called with verbosity parameter set to :samp:`0`, returns a single integer representing the Unix timestamp.
 
+
+.. _rtc-esp32:
+
+Real-Time Clock for ESP32 devices
+---------------------------
+
+When synchronized, ESP32 will perform timekeeping using built-in timers:
+
+    * RTC clock is used to maintain accurate time when chip is in deep sleep mode
+    * FRC1 timer is used to provide time at microsecond accuracy when ESP32 is running.
 
     

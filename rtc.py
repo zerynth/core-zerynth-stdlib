@@ -5,42 +5,16 @@
 Real-Time Clock
 ***************
 
-This module loads the Real-Time Clock (rtc) driver of the embedded device.
+This module loads the Real-Time Clock (rtc) driver of the embedded device when available (the chip family should be equipped with a rtc and a driver should have been developed, look at the bottom of this page for info about supported chip families).
 
 When imported, automatically sets the system rtc driver to the default one.
 
-    """
-
-_rtc_drv = 0
-_rtc_drvname = 0
-
-@native_c("_vbl_rtc_init",["csrc/vbl/vbl_rtc.c"],["VHAL_RTC"])
-def _vbl_rtc_init():
-    pass
-
-
-def init(drvname):
-    """
 .. function:: init(drvname)
 
     Loads the rtc driver identified by *drvname*
 
     Returns the previous driver without disabling it.
-
-    """
-    global _rtc_drv, _rtc_drvname
-    res = _rtc_drv
-    _vbl_rtc_init()
-    _rtc_drv = __driver(drvname)
-    _rtc_drvname = drvname
-    _rtc_drv.__ctl__(DRV_CMD_INIT,_rtc_drvname&0xff)
-    return res
-
-init(RTC0)
-
-
-def set_utc(seconds, microseconds=0):
-    """
+    
 .. function:: set_utc(seconds, microseconds=0)
 
     :param seconds: integer Unix timestamp containing the total number of seconds from the 1st of January 1970 at UTC
@@ -48,14 +22,6 @@ def set_utc(seconds, microseconds=0):
 
     Sets a Coordinated Universal Time (UTC) reference for the rtc.
 
-    """
-    if not _rtc_drv:
-        return None
-    _rtc_drv.__ctl__(DRV_CMD_WRITE,_rtc_drvname&0xff,seconds,microseconds)
-
-
-class TimeInfo:
-    """
 .. class:: TimeInfo()
 
     Class containing useful time information to be filled by the :func:`get_utc` function.
@@ -73,7 +39,56 @@ class TimeInfo:
         * :attr:`Timeinfo.tm_wday`: days since Sunday (0-6)
         * :attr:`Timeinfo.tm_yday`: days since January 1 (0-365)
 
+.. function:: get_utc(verbosity=2)
+
+    When called with verbosity parameter set to :samp:`2`, returns a :class:`TimeInfo` object filled with info derived from the rtc.
+    Only :attr:`Timeinfo.tv_seconds` and :attr:`Timeinfo.tv_microseconds` are guaranteed to be filled correctly.
+    The availability of the other fields depend on the underlying driver implementation.
+
+    When called with verbosity parameter set to :samp:`1`, returns a tuple containing timestamp seconds and microseconds.
+
+    When called with verbosity parameter set to :samp:`0`, returns a single integer representing the Unix timestamp.
+
+
+.. _rtc-esp32:
+
+Real-Time Clock for ESP32 devices
+---------------------------
+
+When synchronized, ESP32 will perform timekeeping using built-in timers:
+
+    * RTC clock is used to maintain accurate time when chip is in deep sleep mode
+    * FRC1 timer is used to provide time at microsecond accuracy when ESP32 is running.
+
     """
+
+_rtc_drv = 0
+_rtc_drvname = 0
+
+@native_c("_vbl_rtc_init",["csrc/vbl/vbl_rtc.c"],["VHAL_RTC"])
+def _vbl_rtc_init():
+    pass
+
+
+def init(drvname):
+    global _rtc_drv, _rtc_drvname
+    res = _rtc_drv
+    _vbl_rtc_init()
+    _rtc_drv = __driver(drvname)
+    _rtc_drvname = drvname
+    _rtc_drv.__ctl__(DRV_CMD_INIT,_rtc_drvname&0xff)
+    return res
+
+init(RTC0)
+
+
+def set_utc(seconds, microseconds=0):
+    if not _rtc_drv:
+        return None
+    _rtc_drv.__ctl__(DRV_CMD_WRITE,_rtc_drvname&0xff,seconds,microseconds)
+
+
+class TimeInfo:
     def __init__(self):
         self.tv_seconds = 0
         self.tv_microseconds = 0
@@ -89,19 +104,6 @@ class TimeInfo:
         self.tm_isdst = 0
 
 def get_utc(verbosity=2):
-    """
-.. function:: get_utc(verbosity=2)
-
-    When called with verbosity parameter set to :samp:`2`, returns a :class:`TimeInfo` object filled with info derived from the rtc.
-    Only :attr:`Timeinfo.tv_seconds` and :attr:`Timeinfo.tv_microseconds` are guaranteed to be filled correctly.
-    The availability of the other fields depend on the underlying driver implementation.
-
-    When called with verbosity parameter set to :samp:`1`, returns a tuple containing timestamp seconds and microseconds.
-
-    When called with verbosity parameter set to :samp:`0`, returns a single integer representing the Unix timestamp.
-
-
-    """
     if not _rtc_drv:
         return None
     utc_result = _rtc_drv.__ctl__(DRV_CMD_READ,_rtc_drvname&0xff,verbosity)
