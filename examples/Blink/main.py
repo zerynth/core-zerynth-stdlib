@@ -14,7 +14,8 @@ pinMode(LED0,OUTPUT)
 
 # loop forever
 while True:
-        digitalWrite(LED0, HIGH)  # turn the LED ON by setting the voltage HIGH
-        sleep(1000)               # wait for a second
-        digitalWrite(LED0, LOW)   # turn the LED OFF by setting the voltage LOW
-        sleep(1000)               # wait for a second
+    digitalWrite(LED0, HIGH)  # turn the LED ON by setting the voltage HIGH
+    sleep(1000)               # wait for a second
+    digitalWrite(LED0, LOW)   # turn the LED OFF by setting the voltage LOW
+    sleep(1000)               # wait for a second
+

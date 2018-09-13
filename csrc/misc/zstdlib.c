@@ -32,6 +32,14 @@ int strcmp(const char *s1, const char *s2)
   return ((*(unsigned char *)s1 < * (unsigned char *)s2) ? -1 : +1);
 }
 
+char *strchr(const char *s, int c)
+{
+    while (*s != (char)c)
+        if (!*s++)
+            return 0;
+    return (char *)s;
+}
+
 #define isdigit(x) ((x)>='0' && (x)<='9')
 int atoi(const char *c)
 {
