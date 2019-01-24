@@ -6,9 +6,11 @@
 
 /* Numbers */
 
-#define FLOAT_SIZE  4
+#define Z_DOUBLE_FP 1
+#define Z_INT64_VM  1
 
-#if FLOAT_SIZE==4
+#if !defined(Z_DOUBLE_FP)
+//float VM
 #define FLOAT_TYPE  float
 #define FLOAT_ZERO 0.0f
 #define FLOAT_HALF 0.5f
@@ -21,6 +23,7 @@
 #define FLOAT_MAX 3.40282347e+38f
 #define ATOF(str) strtof()
 #else
+//double VM
 #define FLOAT_TYPE  double
 #define FLOAT_ZERO 0.0
 #define FLOAT_HALF 0.5
@@ -37,15 +40,15 @@
 
 #define LONG_SIZE 4
 
-#if LONG_SIZE==8
-
+#if defined(Z_INT64_VM)
+//int64 VM
 #define INT_TYPE int64_t
 #define UINT_TYPE uint64_t
 #define INT_TYPE_MAX INT64_MAX
 #define INT_TYPE_MIN INT64_MIN
 
 #else
-
+//int32_t VM
 #define INT_TYPE int32_t
 #define UINT_TYPE uint32_t
 #define INT_TYPE_MAX INT32_MAX
@@ -53,7 +56,10 @@
 
 #endif
 
-
+//does it fit in a VM 32 bit number? ==> is a int32_t?
+#define IS_I32B(i) (((i)>=INT32_MIN)&&(i<=0x7fffffff))
+//does it fit in a 32 bit unsigned? ==> is a uint32_t  Warning: this fits in VM 64 bit number!
+#define IS_U32B(i) (((i)<=INT32_MAX)&&(i>=0))
 
 
 
@@ -61,5 +67,8 @@
 
 /* Internal Types */
 typedef uint16_t Name;
-
+typedef INT_TYPE zint_t;
+typedef UINT_TYPE zuint_t;
+typedef FLOAT_TYPE zfloat_t;
 #endif
+

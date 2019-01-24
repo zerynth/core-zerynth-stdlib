@@ -97,9 +97,9 @@ int pack_get_integer(PObject *tuple, int idx, uint8_t *buf, int mode, int size){
     PObject *item = PTUPLE_ITEM(tuple,idx);
     int tt = PTYPE(item);
     if(tt==PSMALLINT || tt==PINTEGER){
-        uint32_t v = (uint32_t)(INTEGER_VALUE(item));
+        uint64_t v = (uint64_t)(INTEGER_VALUE(item));
         printf("%x\n",v);
-        uint8_t t2[4];
+        uint8_t t2[8];
         if(size==1){
             t2[0] = v&0xff;
         } else if(size==2){
@@ -126,8 +126,27 @@ int pack_get_integer(PObject *tuple, int idx, uint8_t *buf, int mode, int size){
                 t2[0] = (v>>24)&0xff;
             }
         } else if(size==8){
-            //not supported!
-            return -1;
+            if(!packbige[mode]){
+                //little
+                t2[0] = v&0xff;
+                t2[1] = (v>>8)&0xff;
+                t2[2] = (v>>16)&0xff;
+                t2[3] = (v>>24)&0xff;
+                t2[4] = (v>>32)&0xff;
+                t2[5] = (v>>40)&0xff;
+                t2[6] = (v>>48)&0xff;
+                t2[7] = (v>>52)&0xff;
+            } else {
+                //big
+                t2[7] = v&0xff;
+                t2[6] = (v>>8)&0xff;
+                t2[5] = (v>>16)&0xff;
+                t2[4] = (v>>24)&0xff;
+                t2[3] = (v>>32)&0xff;
+                t2[2] = (v>>40)&0xff;
+                t2[1] = (v>>48)&0xff;
+                t2[0] = (v>>52)&0xff;
+            }
         }
         memcpy(buf,t2,size);
         return size;
@@ -202,10 +221,9 @@ int pack_get_string(PObject *tuple, int idx, uint8_t *buf, int size){
 }
 
 PObject* unpack_make_integer(uint8_t *buf,int size, int is_signed, int bigendian){
-    uint8_t t2[4];
-    uint32_t ii;
-    int32_t mm;
-    int32_t ss;
+    uint8_t t2[8];
+    uint64_t ii;
+    int64_t ss;
 
     memcpy(t2,buf,size);
     
@@ -217,8 +235,9 @@ PObject* unpack_make_integer(uint8_t *buf,int size, int is_signed, int bigendian
             ii=(t2[0]<<8) | t2[1];
         } else if (size==4){
             ii=(t2[0]<<24)|(t2[1]<<16)|(t2[2]<<8)|(t2[3]);
+        } else if (size==8){
+            ii=(t2[0]<<56)|(t2[1]<<48)|(t2[2]<<40)|(t2[3]<<32)|(t2[4]<<24)|(t2[5]<<16)|(t2[6]<<8)|(t2[7]);
         }
-        //no support for size 8 yet
     } else {
         if (size==1){
             ii = t2[0];
@@ -226,8 +245,9 @@ PObject* unpack_make_integer(uint8_t *buf,int size, int is_signed, int bigendian
             ii=(t2[1]<<8) | t2[0];
         } else if (size==4){
             ii=(t2[3]<<24)|(t2[2]<<16)|(t2[1]<<8)|(t2[0]);
+        } else if (size==8){
+            ii=(t2[7]<<56)|(t2[6]<<48)|(t2[5]<<40)|(t2[4]<<32)|(t2[3]<<24)|(t2[2]<<16)|(t2[1]<<8)|(t2[0]);
         }
-        //no support for size 8 yet
     }
     if (is_signed){
         ss = ii;
@@ -235,12 +255,14 @@ PObject* unpack_make_integer(uint8_t *buf,int size, int is_signed, int bigendian
             if(ii>127) ss = -(256-ii);
         } else if (size==2){
             ss = -(65536-ii);
-        } else {
+        } else if (size==4){
             ss = (int32_t)ii;
+        } else {
+            ss = (int64_t)ii;
         }
         return pinteger_new(ss);
     } else {
-        return pinteger_new(ii);
+        return pinteger_new_u(ii);
     }
 }
 
@@ -257,7 +279,7 @@ PObject *unpack_make_float(uint8_t* buf,int size, int bigendian){
     } else {
         double d;
         memcpy(&d,buf,8);
-        return pfloat_new((float)d);
+        return pfloat_new(d);
     }
 }
 
@@ -634,9 +656,6 @@ C_NATIVE(__struct_unpack) {
                 break;
             case PACK_Q:
             case PACK_q:
-                //not supported!
-                err=1;
-                goto clean_up;
             case PACK_b:
             case PACK_h:
             case PACK_i:

@@ -12,6 +12,7 @@ The Zerynth standard library is composed of many modules ranging from hardware i
 
        docs___builtins__
        docs_math
+       docs_gpio
        docs_adc
        docs_pwm
        docs_icu
@@ -26,6 +27,7 @@ The Zerynth standard library is composed of many modules ranging from hardware i
        docs_wireless_wifi
        docs_wireless_gsm
        docs_wireless_ble
+       docs_wireless_ble_beacons
        docs_eth
        docs_json
        docs_msgpack

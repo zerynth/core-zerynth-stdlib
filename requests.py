@@ -347,7 +347,7 @@ def _verb(url,data=None,params=None,headers=None,connection=None,verb=None,ctx=N
     msg = _readline(ssock,buffer,0,BUFFER_LEN)
     # print("<<",msg)
     
-    if msg.startswith("HTTP/1.1"):
+    if msg.startswith("HTTP/1."):
         rr.status = int(msg[9:12])
 
     __elements_set(msg,BUFFER_LEN)

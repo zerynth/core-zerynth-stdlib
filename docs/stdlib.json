@@ -19,6 +19,7 @@
 	 ["Wireless","wireless/wifi.py"],
 	 ["GSM","wireless/gsm.py"],
 	 ["BLE","wireless/ble.py"],
+	 ["BLE Beacons","wireless/ble_beacons.py"],
 	 ["Ethernet","eth.py"],
 	 ["JSON","json.py"],
 	 ["MsgPack","msgpack.py"],

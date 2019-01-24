@@ -239,10 +239,10 @@ The FileIO class
         """
         if self.closed:
             raise ValueError
-        __default_fs.free_fd_n('files', self._n)
         r = __default_fs.__f_close(self._n)
         if r == -1:
             raise OSError
+        __default_fs.free_fd_n('files', self._n)
         self.closed = True
 
     def size(self):

@@ -20,8 +20,8 @@
  *
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
-#include "zerynth.h"
 #include "zerynth_sockets.h"
+#include "zerynth.h"
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"

@@ -320,13 +320,13 @@ void jsmn_init(jsmn_parser *parser) {
 #include "zerynth.h"
 //#define printf(...) vbl_printf_stdout(__VA_ARGS__)
 
-int str_to_num(char *str,int size, int* ires, float* fres){
+int str_to_num(char *str,int size, int* ires, FLOAT_TYPE* fres){
     int i=0;
     int sign;
     uint32_t iacc=0;
     uint32_t macc=0;
     uint32_t dacc=0;
-    float facc=0;
+    FLOAT_TYPE facc=0;
     int is_float = 0;
 
     if(str[0]=='-'){
@@ -351,7 +351,7 @@ int str_to_num(char *str,int size, int* ires, float* fres){
         }
     }
     if (is_float){
-        facc = (float)iacc+(float)macc/(float)dacc;
+        facc = (FLOAT_TYPE)iacc+(FLOAT_TYPE)macc/(FLOAT_TYPE)dacc;
         //printf("iacc %i, macc %i, dacc %i, is_float %i, f %g %x\n",iacc,macc,dacc,is_float,facc,facc);
     }
     *ires=sign*iacc;
@@ -364,7 +364,7 @@ C_NATIVE(jsmn_loads){
     uint8_t *jstr;
     uint32_t jlen;
     int r,i,c,ii;
-    float ff;
+    FLOAT_TYPE ff;
 
     if (parse_py_args("s", nargs, args, &jstr, &jlen) != 1)
         return ERR_TYPE_EXC;

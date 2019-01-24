@@ -5,7 +5,12 @@
 #include "pobj.h"
 
 #define GC_ALIGNMENT 4
+#ifndef GC_TRIGGER_MIN
 #define GC_TRIGGER_MIN  4096
+#endif
+#ifndef GC_TRIGGER_MIN_BIGGEST
+#define GC_TRIGGER_MIN_BIGGEST  512
+#endif
 #define GC_TRIGGER_CRIT 1024
 
 

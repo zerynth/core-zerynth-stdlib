@@ -159,6 +159,9 @@ extern const char * const opstrings[];
 #define MAKE_CELL       0x75
 #define YIELD           0x76
 #define CONSTB          0x77
+#define CONSTI64        0x78
+#define CONSTU          0x79
+#define CONSTU64        0x80
 
 
 

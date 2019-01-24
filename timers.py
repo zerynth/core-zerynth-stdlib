@@ -87,10 +87,10 @@ class timer():
         """
         now = __timer_get()
         ret = self.get()
-        if now>=self.time:
-            ret = now-self.time
-        else:
-            ret = 0x3fffffff-self.time+now
+        # if now>=self.time:
+        ret = now-self.time
+        # else:
+        #     ret = 0x3fffffff-self.time+now
         self.time = now
         return ret
 
@@ -101,8 +101,8 @@ class timer():
     Return the number of milliseconds passed since the start or the last reset.
         """
         now = __timer_get()
-        if now>=self.time:
-            ret = now-self.time
-        else:
-            ret = 0x3fffffff-self.time+now
+        # if now>=self.time:
+        ret = now-self.time
+        # else:
+        #     ret = 0x3fffffff-self.time+now
         return ret

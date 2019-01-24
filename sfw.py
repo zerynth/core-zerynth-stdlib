@@ -19,6 +19,15 @@ There are many ways of securing the firmware running on a microcontroller:
 Of the above features, only watchdogs are implemented in all architectures; the rest of features are strongly platform dependent.
 This module allow access to the microcontroller watchdogs and will enable access to anti-tampering features soon. 
 
+Bytecode integrity check
+------------------------
+
+All secure firmware VMs execute an integrity check of the loaded bytecode and fail if one of the following two conditions is met:
+
+    * The calculated hash of the bytecode is not equal to the bytecode fingerprint
+    * The VM version is not the one the bytecode was compiled for
+
+
 Watchdogs
 ---------
 
@@ -103,12 +112,10 @@ The :func:`watchdog` function will select the nearest allowed time rounding up w
 Watchdogs for ESP32 devices
 ---------------------------
 
-For ESP32 devices the watchdog is implemented using a hardware timer. The maximum timeout is 2^31 milliseconds and there is no support for windowed mode
-(an exception is raised if time0 is greater than zero in watchdog()). There are also two additional watchdogs configured by default: 
-the task watchdog and the exception watchdog. 
+Starting from version r2.2.0, the watchdog for ESP32 devices is implemented using the RTC watchdog. The maximum timeout is 2^31 milliseconds and there is no support for windowed mode (an exception is raised if time0 is greater than zero in watchdog()). 
 
-The task watchdog is enabled on both cores and prints out a warning when a thread is using a core for too much time. 
-The exception watchdog resets the microcontroller in case a hard fault exception is raised; before resetting, a dump of both cores is printed on the serial console.
+The RTC watchod is enabled by the bootloader and set to 30 seconds by default. This allows to recover from a faulty firmware that does not have time to configure
+the watchdog at startup. However, when using a secure firmware VM it is mandatory to configure the watchdog in the first 30 seconds of execution.
 
     """
 

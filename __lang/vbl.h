@@ -20,11 +20,10 @@ extern uint8_t *__flash_end__;
 
 
 /* Endianess */
-
 extern uint8_t __codemem__[];
 
-#define BIG_ENDIAN  0
-#define LITTLE_ENDIAN  1
+#define Z_BIG_ENDIAN  0
+#define Z_LITTLE_ENDIAN  1
 
 
 #define BLTSWAP16(a) __builtin_bswap16(a)
@@ -34,7 +33,7 @@ extern uint8_t __codemem__[];
 
 #if (__BYTE_ORDER__) == (__ORDER_LITTLE_ENDIAN__)
 
-#define PY_ENDIANNESS   LITTLE_ENDIAN
+#define PY_ENDIANNESS   Z_LITTLE_ENDIAN
 #define OAL_MAKE_IP(ip,a,b,c,d) ip = (uint32_t)(((uint32_t)(a))|(((uint32_t)(b))<<8)|((uint32_t)(c)<<16)|((uint32_t)(d)<<24))
 #define OAL_IP_AT(ip,n) (((ip)&(0x000000ff<<(8*(n))))>>(8*(n)))
 #define OAL_IP_SET(ip,n,x) ip= ((x)<<(8*(n)))| ( (ip)&~(0xff<<(8*(n))))
@@ -44,7 +43,7 @@ extern uint8_t __codemem__[];
 
 #else
 
-#define PY_ENDIANNESS   BIG_ENDIAN
+#define PY_ENDIANNESS   Z_BIG_ENDIAN
 #define OAL_MAKE_IP(ip,a,b,c,d) ip = (uint32_t)(((uint32_t)(d))|(((uint32_t)(c))<<8)|((uint32_t)(b)<<16)|((uint32_t)(a)<<24))
 #define OAL_IP_AT(ip,n) (((ip)&(0x000000ff<<(24-8*(n))))>>(24-8*(n)))
 #define OAL_IP_SET(ip,n,x) ip= ((x)<<(24-8*(n)))| ( (ip)&~(0xff<<(24-8*(n))))
@@ -203,7 +202,7 @@ extern const SdioPins const _vm_sdio_pins[];
 /*====== BYTECODE ================================================== */
 
 
-uint8_t *vbl_init(void);
+uint8_t *vbl_init(void *);
 void *begin_bytecode_storage(int);
 void *bytecode_store(void *, uint8_t *, uint16_t);
 void *end_bytecode_storage(void);
@@ -273,7 +272,7 @@ int memcmp4(void *dst, void *src, int size);
 uint32_t __access_byte(uint32_t *c, int32_t pos);
 uint32_t __access_word(uint32_t *c, int32_t pos);
 uint32_t __access_dword(uint32_t *c, int32_t pos);
-
+uint64_t __access_qword(uint32_t *c, int32_t pos);
 #endif
 
 #endif

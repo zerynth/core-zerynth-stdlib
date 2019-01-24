@@ -134,7 +134,7 @@ typedef union _minitable {
 
 int minitable_lookup(MiniTable *table, Name name);
 
-#define MINITABLE_NO_ENTRY INT_TYPE_MIN
+#define MINITABLE_NO_ENTRY -1
 
 #ifndef BYTECODE_ACCESS_ALIGNED_4
 
@@ -145,9 +145,9 @@ int minitable_lookup(MiniTable *table, Name name);
 
 #else
 
-#define MINITABLE_SIZE(mt) __access_dword(mt,0)
+#define MINITABLE_SIZE(mt) __access_dword((uint32_t*)(mt),0)
 #define MINITABLE_BYTES(table) ((MINITABLE_SIZE(table)+1)*sizeof(MiniTable))
-#define MINITABLE_ENTRY(mt,i,ee)  (*((uint32_t*)ee)=__access_dword(mt,i*sizeof(minitable_entry)))
+#define MINITABLE_ENTRY(mt,i,ee)  (*((uint32_t*)ee)=__access_dword((uint32_t*)(mt),i*sizeof(minitable_entry)))
 
 #endif
 

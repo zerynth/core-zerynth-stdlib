@@ -139,10 +139,11 @@
     } PCNativeCode;
 
 
-    #define PCODE_GET_WORD_AT(pnt,pos)  __access_word(pnt,pos)
+    #define PCODE_GET_WORD_AT(pnt,pos)  __access_word((uint32_t*)(pnt),pos)
+    #define PCODE_GET_DWORD_AT(pnt,pos)  __access_dword((uint32_t*)(pnt),pos)
     //( (__readby4(pnt,pos))|(__readby4(pnt,(pos)+1)<<8))
     //(((*(((uint32_t*)(pnt))+((pos)/2)))>>(((pos)%2)*16))&0xffff)
-    #define PCODE_GET_BYTE_AT(pnt,pos)  __access_byte(pnt,pos)
+    #define PCODE_GET_BYTE_AT(pnt,pos)  __access_byte((uint32_t*)(pnt),pos)
     //((uint32_t)(((*(((uint32_t*)(pnt))+((pos)/4)))>>(((pos)%4)*8))&0x000000ff))
     #define PCODE_CODETYPE(c) PCODE_GET_BYTE_AT(c,0)
     #define PCODE_ARGS(c) PCODE_GET_BYTE_AT(c,1)
@@ -160,7 +161,7 @@
     #define PCODE_NMSTART(c) PCODE_GET_WORD_AT(c,12)
     #define PCODE_BCSTART(c) PCODE_GET_WORD_AT(c,14)
     #define PCODE_BYTECODE(c) ((uint8_t*)(((uint32_t*)(c))+4))
-    #define PCODE_CONST_HEADER(cheader,pos) PCODE_GET_WORD_AT(cheader,(pos)*2)
+    #define PCODE_CONST_HEADER(cheader,pos) PCODE_GET_DWORD_AT(cheader,(pos)*4)
     #define PCODE_GET_LEN(cnst) PCODE_GET_WORD_AT(cnst,0)
     
 
@@ -177,6 +178,15 @@ typedef struct _code_header {
     const uint32_t data_start;
     const uint32_t data_end;
     const uint32_t data_bss;
+    //+added in r2.2.0
+    const uint8_t hash[16];
+    const uint32_t ts;  //timestamp
+    const uint32_t marker;    //set by user
+    const uint32_t blen;
+    const uint32_t vversion;
+    const uint32_t bversion;
+    const uint32_t bcoptions; //unused yet
+    //-added in r2.2.0
     const uint32_t res_table;
 #ifndef BYTECODE_ACCESS_ALIGNED_4
     const uint32_t const codeobjs[];
@@ -195,5 +205,11 @@ typedef struct _code_header {
 #define PCODE_HASVARS(code) PCODE_NFREE(code)
 
 #define PCODE_GET_BYTECODE(code) PCODE_BYTECODE(ViperCode(code))+ PCODE_BCSTART(ViperCode(code))
+
+
+//BC OPTIONS
+#define BC_OPT_FREEZE 1
+
+
 #endif
 

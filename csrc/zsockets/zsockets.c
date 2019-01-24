@@ -1,7 +1,5 @@
-#include "zerynth.h"
-#include "vhal.h"
-#include "vbl.h"
 #include "zerynth_sockets.h"
+#include "zerynth.h" // last position since some defines might cause conflicts (ERR_OK with lwIP, opcodes)
 #pragma GCC diagnostic ignored "-Wpointer-sign"
 
 #if defined(ZERYNTH_SSL)

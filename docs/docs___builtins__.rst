@@ -127,6 +127,8 @@ Zerynth exceptions are not garbage collected. They also are not scoped: this mea
 This feature has a drawback: two modules defining an exception with the same name, can't be compiled in the same program. Exception names must be *manually* scoped by correctly choosing them (i.e. preprending the module name to the actual name).
 
 
+.. _builtins-gpio-functions:
+
 ======================
 Builtin GPIO Functions
 ======================

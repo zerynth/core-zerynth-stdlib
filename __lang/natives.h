@@ -54,6 +54,7 @@ extern const Type const _types[];
 
 /* macros for native defs */
 #define CHECK_ARG(x,t) if( PTYPE(x)!=(t) ) return ERR_TYPE_EXC
+#define CHECK_ARG_INT(x) if( PTYPE(x)!=(PSMALLINT) && PTYPE(x)!=(PINTEGER) ) return ERR_TYPE_EXC
 #define CHECK_NARGS(x,Mx,mx) if((x)<(mx) || (x)>(Mx)) return ERR_TYPE_EXC
 
 #define NATIVE_NAME(name)  ntv__##name

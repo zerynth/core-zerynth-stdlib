@@ -68,15 +68,15 @@ Macros
 
 .. macro:: PSMALLINT
 
-	Type of a PObject representing a small integer. Tagged.
+	Type of a PObject representing a small integer (30 bits signed). Tagged.
 
 .. macro:: PINTEGER
 
-	Type of a PObject representing an integer. Untagged.
+	Type of a PObject representing an integer up to int64_t. Untagged.
 
 .. macro:: PFLOAT
 
-	Type of a PObject representing a 32 bits float. Untagged.
+	Type of a PObject representing a 64 bits float. Untagged.
 
 .. macro:: PBOOL
 
@@ -203,8 +203,10 @@ Functions
 
 	*fmt* may contain any of the following characters in the nth position:
 
-		* "i": the nth argument must be of type PSMALLINT. One vararg required of type int32_t* to store the converted value.
-		* "I": the nth argument is an optional PSMALLINT. Two varargs are required, one of type int32_t holding the default value, and one of type int32_t* holding the converted value.
+		* "l": the nth argument must be of type PINTEGER. One vararg required of type int64_t* to store the converted value.
+		* "L": the nth argument is an optional PINTEGER. Two varargs are required, one of type int64_t holding the default value, and one of type int64_t* holding the converted value.
+		* "i": the nth argument must be of type PINTEGER. One vararg required of type int32_t* to store the converted value.
+		* "I": the nth argument is an optional PINTEGER. Two varargs are required, one of type int32_t holding the default value, and one of type int32_t* holding the converted value.
 		* "s": the nth argument must be of type PSTRING or PBYTES or PBYTEARRAY. Two varargs are required; the first of type uint8_t** to hold the byte sequence, the second of type int32_t* to hold the number of elements of the sequence.
 		* "S": the nth argument must be of type PSTRING or PBYTES or PBYTEARRAY. Three varargs are required; the first of type uint_8* holding a default byte sequence, the second of type uint8_t** to hold the byte sequence, the third of type int32_t* to hold the number of elements of the sequence.
 		* "b" and "B": same as "s" and "S" with the difference that the last vararg holds the maximum amount of elements storable in the sequence.
@@ -233,7 +235,7 @@ Functions
 Numbers
 =======
 
-In the current version there are only two supported type of numbers: PSMALLINT and PFLOAT. The type PINTEGER will hold arbitrary precision integers and is not yet stable enough to publish an API.
+In the current version there are only three supported type of numbers: PSMALLINT, PINTEGER and PFLOAT. 
 
 .. macro:: PSMALLINT_NEW(x)
 
@@ -247,11 +249,25 @@ In the current version there are only two supported type of numbers: PSMALLINT a
 
 	Check if *x* is of type PSMALLINT.
 
+.. macro:: INTEGER_VALUE(x)
+
+	Return the integer value contained in *x*; works for PSMALLINT and PINTEGER types.
+
 .. macro:: PFLOAT_VALUE(x)
 
 	Return the float value contained in *x*, an untagged PObject of type PFLOAT.
 
-	
+Functions
+---------
+
+.. function:: pinteger_new(int64_t x)
+
+    Return a PINTEGER object with value *x*
+
+.. function:: pfloat_new(double x)
+
+    Return a PFLOAT object with value *x*
+
 
 Bool & None
 ===========

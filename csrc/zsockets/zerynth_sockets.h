@@ -1,6 +1,9 @@
 #ifndef ZERYNTH_SOCKETS_H
 #define ZERYNTH_SOCKETS_H
 
+#include "stddef.h"
+#include "stdint.h"
+
 #if defined(ZERYNTH_SOCKETS)
 
 #define SOMAXCONN 2 // max number of waiting connections for listen

@@ -79,6 +79,7 @@ FOTA functions
     Return the FOTA record (fota) as a tuple of integers following this scheme:
 
         * fota[0] is 0 if the FOTA record is not valid
+        * fota[1] is the index of the FOTA VM
         * fota[2] is the slot of the current VM (as an index starting from 0)
         * fota[3] is the slot of the last working VM (as an index starting from 0)
         * fota[4] is the slot of the current bytecode (as an index starting from 0)

@@ -60,8 +60,16 @@ typedef struct _vm {
 #define VM_EXCEPTION_MSG_LEN(e)   *((uint16_t*)(VM_ETABLE_END()+VM_ETABLE_ENTRY(PEXCEPTION_ERR(e))->msg))
 #define VM_EXCEPTION_MSG(e) ((VM_ETABLE_END()+VM_ETABLE_ENTRY(PEXCEPTION_ERR(e))->msg)+2)
 #else
-#define VM_EXCEPTION_MSG_LEN(e)   __access_word((VM_ETABLE_END()+  PEXCEPTION_MSG(VM_ETABLE_ENTRY(PEXCEPTION_ERR(e)))),0)
+#define VM_EXCEPTION_MSG_LEN(e)   __access_word( (uint32_t*)(VM_ETABLE_END()+  PEXCEPTION_MSG(VM_ETABLE_ENTRY(PEXCEPTION_ERR(e)))) ,0)
 #define VM_EXCEPTION_MSG(e) ((VM_ETABLE_END()+PEXCEPTION_MSG(VM_ETABLE_ENTRY(PEXCEPTION_ERR(e))))+2)
+#endif
+
+#ifndef BYTECODE_ACCESS_ALIGNED_4
+#define VM_EXCEPTION_MSG_LEN_FROM_IDX(e)   *((uint16_t*)(VM_ETABLE_END()+VM_ETABLE_ENTRY(e)->msg))
+#define VM_EXCEPTION_MSG_FROM_IDX(e) ((VM_ETABLE_END()+VM_ETABLE_ENTRY(e)->msg)+2)
+#else
+#define VM_EXCEPTION_MSG_LEN_FROM_IDX(e)   __access_word( (uint32_t*)(VM_ETABLE_END()+  PEXCEPTION_MSG(VM_ETABLE_ENTRY(e))) ,0)
+#define VM_EXCEPTION_MSG_FROM_IDX(e) ((VM_ETABLE_END()+PEXCEPTION_MSG(VM_ETABLE_ENTRY(e)))+2)
 #endif
 
 #define ACQUIRE_GIL() do {\
@@ -73,7 +81,8 @@ typedef struct _vm {
     }while(0)
 
 PThread *vm_init(VM *vm);
-int vm_upload(void);
+int vm_upload(VM *vm);
+void vm_load_header(VM *vm);
 void vm_add_irq_slot_isr(int slot, int dir);
 err_t vm_fill_irq_slot(int slot, int dir, PObject *fn, PObject *args);
 void vm_add_irq(PObject *fn, PObject *args);
