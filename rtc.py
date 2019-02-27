@@ -85,6 +85,8 @@ init(RTC0)
 def set_utc(seconds, microseconds=0):
     if not _rtc_drv:
         return None
+    if seconds < 0 or microseconds < 0:
+        raise ValueError
     _rtc_drv.__ctl__(DRV_CMD_WRITE,_rtc_drvname&0xff,seconds,microseconds)
 
 

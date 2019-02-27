@@ -41,7 +41,7 @@
     BUILD_NATIVE(__write_flash      , 2 , 2 , 0),
     BUILD_NATIVE(__strpad           , 4 , 4 , 0),
     BUILD_NATIVE(__mcuuid           , 0 , 0 , 0),
-    BUILD_NATIVE(__vminfo           , 0 , 0 , 0),
+    BUILD_NATIVE(__vmctrl           , 4 , 4 , 0),
     BUILD_NATIVE(__ota_get_record   , 0 , 0 , 0),
     BUILD_NATIVE(__ota_set_record   , 1 , 1 , 0),
     BUILD_NATIVE(__ota_find_bc_slot , 0 , 0 , 0),

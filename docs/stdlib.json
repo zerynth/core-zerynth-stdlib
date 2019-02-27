@@ -22,6 +22,7 @@
 	 ["BLE Beacons","wireless/ble_beacons.py"],
 	 ["Ethernet","eth.py"],
 	 ["JSON","json.py"],
+	 ["CBOR","cbor.py"],
 	 ["MsgPack","msgpack.py"],
 	 ["Sockets","socket.py"],
 	 ["HTTP","requests.py"],

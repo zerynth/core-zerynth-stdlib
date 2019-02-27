@@ -4,8 +4,8 @@
 #include "lang.h"
 
 
-#define printf(...) vbl_printf_stdout(__VA_ARGS__)
-//#define printf(...)
+// #define printf(...) vbl_printf_stdout(__VA_ARGS__)
+#define printf(...)
 
 
 #define _SPIDRIVER_START    0
@@ -39,8 +39,6 @@ err_t _spi_ctl(int nargs, PObject *self, PObject **args, PObject **res) {
             uint32_t bits;
             uint32_t nss;
             SpiPins *spipins = ((SpiPins*)_vm_pin_map(PRPH_SPI));
-            //char fmt[5] = {'i','i','i','i','\0'};
-            //printf("FMT %x\n",fmt);
             if (parse_py_args("iiii", nargs, args, &conf.clock, &bits, &mode, &nss) != 4) goto ret_err_type;
             conf.mode = mode;
             conf.bits = bits;

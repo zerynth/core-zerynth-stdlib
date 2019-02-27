@@ -117,6 +117,10 @@ FOTA functions
 
     Write :samp:`block` (bytes, bytearray or string) at :samp:`addr` where :samp:`addr` is an address contained in a bytecode or VM slot. This function does not keep count of the written blocks, it is up to the programmer to update the address correctly.
 
+.. function:: close_slot(addr)
+
+   This function must be called once at the end of the operations (write, erase, ...) on a specific :samp:`addr` where :samp:`addr` is an address contained in a bytecode or VM slot.
+
 .. function:: checksum_slot(addr, size)
 
     Return the MD5 checksum (as a bytes object) of the slot starting at :samp:`addr` and extending for :samp:`size` bytes.

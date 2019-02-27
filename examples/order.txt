@@ -69,6 +69,7 @@
 	##Networking
 		Mini_Web_Server
 		UDP_Pinger
+		UDP_NTP_Time
 		Wifi_Scan
 		HTTP_Time
 		HTTP_Weather
@@ -105,11 +106,15 @@
         Crypto_Hash
         Crypto_ECC
 
-	##[PRO] Powersaving
+	##Powersaving
 		Powersaving
 
-	##[PRO] Secure Firmware
+	##Secure Firmware
 		Watchdogs
+
+    ##VM
+        VM_Exceptions
+        VM_HardFault
 
 ;#Other Libraries
 ;	##Smart Sensor

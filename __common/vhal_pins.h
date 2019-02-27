@@ -189,7 +189,7 @@ extern const uint8_t _vhalpinlayout;
 #define PORT_G 6
 #define PORT_H 7
 
-
+#if !defined(Z_VHAL_SKIP_PIN_DEFS)
 #define D0  MAKE_VPIN(PINCLASS_DIGITAL,0)
 #define D1  MAKE_VPIN(PINCLASS_DIGITAL,1)
 #define D2  MAKE_VPIN(PINCLASS_DIGITAL,2)
@@ -427,6 +427,9 @@ extern const uint8_t _vhalpinlayout;
 #define SCL6  MAKE_VPIN(PINCLASS_I2C,13)
 #define SDA7  MAKE_VPIN(PINCLASS_I2C,14)
 #define SCL7  MAKE_VPIN(PINCLASS_I2C,15)
+
+
+#endif
 
 
 #endif

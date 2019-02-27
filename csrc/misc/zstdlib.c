@@ -93,3 +93,26 @@ char *strncat(char *dest, const char *src, size_t n)
     *dest = 0;
     return ret;
 }
+
+char* strnstrn(const char *s, uint16_t s_len, const char *substr, uint16_t substr_len)
+{
+    for (; s_len >= substr_len; s++, s_len--)
+    {
+        if (strncmp(s, substr, substr_len) == 0)
+        {
+            return (char*)s;
+        }
+    }
+
+    return NULL;
+}
+
+size_t strnlen (const char *s, size_t maxlen)
+{
+  size_t i;
+
+  for (i = 0; i < maxlen; ++i)
+    if (s[i] == '\0')
+      break;
+  return i;
+}
