@@ -156,6 +156,8 @@ void *vbl_install_driver(const VBLDriver* drv);
 typedef struct _vm_ser_pin {
     uint16_t rxpin;
     uint16_t txpin;
+    uint16_t ctspin;
+    uint16_t rtspin;
 } SerialPins;
 
 

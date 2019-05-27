@@ -23,6 +23,20 @@ new_exception(HTTPResponseError,HTTPError)
 zverbs = ("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD")
 
 
+def get_pdata(data,json):
+    pdata = None
+    if data is not None:
+        if type(data)==PDICT:
+            pdata = [urlparse.urlencode(data),"application/x-www-form-urlencoded"]
+        else:
+            pdata = [data,""]
+    elif json is not None:
+        pdata = [json_encoder.dumps(json),"application/json"]
+
+    return pdata
+
+
+
 def get(url,params=None,headers=None, connection=None,ctx=None,stream_callback=None,stream_chunk=512):
     """
 .. function:: get(url,params=None,headers=None,connection=None,stream_callback=None,stream_chunk=512)    
@@ -70,18 +84,13 @@ def post(url,data=None,json=None,headers=None,ctx=None):
 
 
     """
-    pdata = None
-    if data is not None:
-        pdata = [urlparse.urlencode(data),"application/x-www-form-urlencoded"]
-    elif json is not None:
-        pdata = [json_encoder.dumps(json),"application/json"]
-
+    pdata = get_pdata(data,json)
     return _verb(url,pdata,None,headers,None,"POST",ctx)
 
 
-def put(url,data=None,headers=None,ctx=None):
+def put(url,data=None,json=None,headers=None,ctx=None):
     """
-.. function:: put(url,data=None,headers=None,ctx=None)    
+.. function:: put(url,data=None,json=None,headers=None,ctx=None)    
 
     Implements the PUT method of the HTTP protocol. A tcp connection is made to the host:port given in the url using the default net driver.
     
@@ -90,6 +99,10 @@ def put(url,data=None,headers=None,ctx=None):
     *headers* must contain the pair {"Connection":"Keep-Alive"}.
 
     If *data* is provided (always as dictionary), each pair (key, value) will be form-encoded and send in the body of the request with {"content-type":"application/x-www-form-urlencoded"} appended in the headers.
+    If *json* is provided (always as dictionary), json data will send in the body of the request with {"content-type":"application/json"} appended in the headers.
+
+    .. note:: if both (*data* and *json*) dict are provided, json data are ignored and post request is performed with urlencoded data.
+
 
     *put* returns a :class:`Response` instance.
 
@@ -97,13 +110,11 @@ def put(url,data=None,headers=None,ctx=None):
 
 
     """
-    pdata = None
-    if data is not None:
-        pdata = [urlparse.urlencode(data),"application/x-www-form-urlencoded"]
+    pdata = get_pdata(data,json)
     return _verb(url,pdata,None,headers,None,"PUT",ctx)
 
 
-def patch(url,data=None,headers=None,ctx=None):
+def patch(url,data=None,json=None,headers=None,ctx=None):
     """
 .. function:: patch(url,data=None,headers=None,ctx=None)    
 
@@ -114,6 +125,10 @@ def patch(url,data=None,headers=None,ctx=None):
     *headers* must contain the pair {"Connection":"Keep-Alive"}.
 
     If *data* is provided (always as dictionary), each pair (key, value) will be form-encoded and send in the body of the request with {"content-type":"application/x-www-form-urlencoded"} appended in the headers.
+    If *json* is provided (always as dictionary), json data will send in the body of the request with {"content-type":"application/json"} appended in the headers.
+
+    .. note:: if both (*data* and *json*) dict are provided, json data are ignored and post request is performed with urlencoded data.
+
 
     *patch* returns a :class:`Response` instance.
 
@@ -121,9 +136,7 @@ def patch(url,data=None,headers=None,ctx=None):
 
 
     """
-    pdata = None
-    if data is not None:
-        pdata = [urlparse.urlencode(data),"application/x-www-form-urlencoded"]
+    pdata = get_pdata(data,json)
     return _verb(url,pdata,None,headers,None,"PATCH",ctx)
 
 
@@ -313,7 +326,8 @@ def _verb(url,data=None,params=None,headers=None,connection=None,verb=None,ctx=N
 
     if data is not None:
         rh["content-length"] = str(len(data[0])) #data[0] is actual data
-        rh["content-type"] = data[1]             #data[1] is data type header
+        if data[1]:
+            rh["content-type"] = data[1]             #data[1] is data type header
 
     for k,v in rh.items():
         p = add_to_buffer(msg,k,p)

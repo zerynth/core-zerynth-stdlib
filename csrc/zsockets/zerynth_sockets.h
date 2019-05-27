@@ -159,8 +159,8 @@ int gzsock_setsockopt(int s, int level, int optname, const void *optval, socklen
 #define zsock_getaddrinfo(a,b,c,d)                      (socket_api_pointers->getaddrinfo)(a,b,c,d)
 #define zsock_freeaddrinfo(a)                           (socket_api_pointers->freeaddrinfo)(a)
 
-#define zsock_inet_addr(cp)                             (*socket_api_pointers.inet_addr)(cp)
-#define zsock_inet_ntoa(in)                             (*socket_api_pointers.inet_ntoa)(in)
+#define zsock_inet_addr(cp)                             (socket_api_pointers->inet_addr)(cp)
+#define zsock_inet_ntoa(in)                             (socket_api_pointers->inet_ntoa)(in)
 
 
 

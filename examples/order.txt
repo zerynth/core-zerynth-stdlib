@@ -91,6 +91,7 @@
 	##Flash & SD
 		Flash_Internal
 		SpiFlash
+		QSpiFlash
 		SpiSD
 
 	##Filesystem

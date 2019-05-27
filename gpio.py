@@ -1,6 +1,7 @@
 """
 .. module: gpio
 
+.. _stdlib_gpio:
 ****
 GPIO
 ****

@@ -138,7 +138,7 @@ The socket class
         A tcp socket must be connected to be used successfully. Udp sockets are connectionless and everytime a datagram
         is sent, the receiver address must be specified (:meth:`.sendto`). However if an udp socket is connected to an address,
         it can be used with methods like :meth:`.recv` and :meth:`.send` without specifying a receiver address.
-        When an udp socket is connected to *address*, datagram packets coming from adresses different from *address* are ignored.
+        When an udp socket is connected to *address*, datagram packets coming from addresses different from *address* are ignored.
         
         """
         #address = _address_to_address(address)
@@ -263,7 +263,7 @@ The socket class
             * an ip address with a port 
 
         A tcp socket needs binding when it is used to accept incoming connection (e.g. a http server socket).
-        A udp socket need to be bound before any input/output operation. After binding, the udp socket will receive
+        A udp socket needs to be bound before any input/output operation. After binding, the udp socket will receive
         every packet incoming to *address*.
         """
         if type(address)==PSMALLINT:

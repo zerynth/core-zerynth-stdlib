@@ -254,7 +254,7 @@ PObject* unpack_make_integer(uint8_t *buf,int size, int is_signed, int bigendian
         if(size==1) {
             if(ii>127) ss = -(256-ii);
         } else if (size==2){
-            ss = -(65536-ii);
+            if(ii>32767) ss = -(65536-ii);
         } else if (size==4){
             ss = (int32_t)ii;
         } else {

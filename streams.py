@@ -100,6 +100,7 @@ The stream class
             pos = 0
         else:
             line = buffer
+            __elements_set(buffer,size)
             lb = size
             pos = ofs
         sep = ord(sep)

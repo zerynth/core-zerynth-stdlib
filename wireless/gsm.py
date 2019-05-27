@@ -76,7 +76,7 @@ def mobile_info():
     """
 .. function:: mobile_info()        
 
-        Return information on the G350 device and SIM card.
+        Return information on the mobile device and SIM card.
 
         The result is a tuple where the elements are, in order:
 
@@ -158,6 +158,29 @@ def set_operator(opname):
     return __default_net["gsm"].set_operator(opname)
 
 
+GSM = 0
+CAT_M1 = 1
+CAT_NB1 = 2
+
+def set_rat(rat,bands=[]):
+    """
+.. function:: set_rat(rat,bands=[])
+
+    Try to set the Radio Access Technology to use. :samp:`rat` must be one of the constants:
+        
+        * samp:`GSM`: for GSM radio
+        * samp:`CAT_M1`: for LTE Cat M1
+        * samp:`CAT_NB1`: for LTE NB IoT
+
+    The argument *bands* is used to select a subset of bands for the selected RAT.
+    For samp:`GSM` the available bands are in the set (0,1,2,3) corresponding in order to 
+    900 MHz, 1800MHz, 850MHz and 1900MHz.
+    For LTE bands, the set of available bands can be looked up `here <https://en.wikipedia.org/wiki/LTE_frequency_bands>`_ (use the Band column).
+
+    The underlying gsm driver may not support the RAT or the bands and can raise an exception or ignore unsupported bands.
+
+    """
+    return __default_net["gsm"].set_rat(rat,bands)
 
 def select(rlist,wlist,xlist,timeout=None):
     """
@@ -190,4 +213,71 @@ def select(rlist,wlist,xlist,timeout=None):
     xx = [z for z in xlist if z.fileno() in xl]
     return (rr,ww,xx)
 
+
+
+def list_sms(unread=False,maxsms=10,offset=0):
+    """
+.. function:: list_sms(unread=False,maxsms=10,offset=0)
+
+    Return a tuple of received SMS. Each SMS is a tuple with:
+
+        * Text of the message
+        * Number of the sender
+        * Timestamp of the SMS (7 integer elements YYYY,MM,DD,hh,mm,ss,tz where tz represents the difference in minutes with GMT)
+        * SMS index
+
+    Parameter :samp:`unread` selects unread SMS only if set to True. :samp:`maxsms` defines the maximum number of SMS to return, while :samp:`offset` selects only
+    SMS with index greater than or equal to :samp:`offset`. If the device stores many SMS, it is suggested to read them in chunks by incrementing :samp:`offset`.
+    
+    """
+    return __default_net["gsm"].list_sms(unread,maxsms,offset)
+
+def send_sms(num,txt):
+    """
+.. function:: send_sms(num,txt)
+
+    Try to send the SMS with text :samp:`txt` to receiver :samp:`num`.
+    
+    Return an integer representing the index of the SMS (but this may vary from driver to driver!).
+    If the returned integer is negative, it has not been possible to send the SMS. An exception is raised if
+    the underlying drivers fails while sending the SMS.
+
+    """
+    return __default_net["gsm"].send_sms(num,txt)
+
+def delete_sms(index):
+    """
+.. function:: delete_sms(index)
+
+    Delete the SMS identified by :samp:`index`. The value of :samp:`index` to use must be taken from the result of :ref:`list_sms`.
+
+    """
+    return __default_net["gsm"].delete_sms(index)
+
+def pending_sms():
+    """
+.. function:: pending_sms()
+
+    Return the number of SMS received since startup. It is not necessarily equal to the number of unread SMS.
+
+    """
+    return __default_net["gsm"].pending_sms()
+
+def get_smsc():
+    """
+.. function:: get_smsc()
+
+    Return a string representing the Short Message Service Center
+
+    """
+    return __default_net["gsm"].get_smsc()
+
+def set_smsc(smsc):
+    """
+.. function:: set_smsc(smsc)
+
+    Set the Short Message Service Center to the value of :samp:`smsc`
+
+    """
+    return __default_net["gsm"].set_smsc(smsc)
 

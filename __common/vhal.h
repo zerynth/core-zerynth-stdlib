@@ -1561,4 +1561,49 @@ int vhalSetupWatchdog(uint32_t time0, uint32_t time1);
 int vhalKickWatchdog(void);
 
 
+/* ********************************************************************************************* */
+/*  QSPI Flash                                                                                   */
+/* ********************************************************************************************* */
+
+typedef struct {
+  uint32_t flash_size;          
+  uint32_t block_size; 
+  uint32_t subblock_size;   
+  uint32_t sector_size; 
+  uint32_t page_size;
+  uint16_t alt_bytes_pe_mode;
+  uint16_t alt_bytes_no_pe_mode; 
+  uint8_t dummy_cycles_read;
+  uint8_t dummy_cycles_read_dual;
+  uint8_t dummy_cycles_read_quad;
+  uint8_t dummy_cycles_2read;
+  uint8_t dummy_cycles_4read;
+  uint8_t sr_wip;
+  uint8_t sr_wel;
+  uint8_t sr_bp;
+  uint8_t sr_srwd;
+  uint8_t sr1_qe;
+  uint8_t sr1_sus;
+} vhalQspiFlashConf;
+
+typedef struct _vhal_qspi_conf {
+  uint16_t d0;
+  uint16_t d1;
+  uint16_t d2;
+  uint16_t d3;
+  uint16_t clk;
+  uint16_t cs;
+  uint8_t nbit_addr;
+} vhalQspiConf;
+
+int vhalQspiFlashInit(uint32_t qspi, vhalQspiConf *qspi_conf, vhalQspiFlashConf *flash_conf);
+int vhalQspiFlashDone(uint32_t qspi);
+int vhalQspiFlashRead(uint32_t qspi, uint32_t addr, uint8_t *buf, uint32_t len);
+int vhalQspiFlashWrite(uint32_t qspi, uint32_t addr, uint8_t *buf, uint32_t len);
+int vhalQspiFlashEraseChip(uint32_t qspi, uint8_t block);
+int vhalQspiFlashEraseSector(uint32_t qspi, uint32_t addr, uint8_t block);
+int vhalQspiFlashEraseBlock(uint32_t qspi, uint32_t addr, uint8_t block);
+int vhalQspiFlashWakeup(uint32_t qspi);
+int vhalQspiFlashSleep(uint32_t qspi);
+
 #endif

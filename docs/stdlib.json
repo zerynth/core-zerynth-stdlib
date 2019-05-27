@@ -33,6 +33,7 @@
 	 ["Filesystem","os.py"],
 	 ["FatFs","fatfs.py"],
 	 ["SpiFlash","spiflash.py"],
+	 ["QspiFlash","qspiflash.py"],
 	 ["SpiSD","spisd.py"],
 	 ["MCU","mcu.py"],
 	 ["VM","vm.py"],

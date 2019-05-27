@@ -18,7 +18,7 @@ import rtc
 
 def get_epoch():
     user_agent = {"user-agent": "curl/7.56.0"}
-    return int(json.loads(requests.get('http://now.httpbin.org', headers=user_agent).content)['now']['epoch'])
+    return int(json.loads(requests.get("http://now.zerynth.com/", headers=user_agent).content)['now']['epoch'])
 
 streams.serial()
 wifi_driver.auto_init()

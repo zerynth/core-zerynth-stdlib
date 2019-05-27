@@ -45,7 +45,15 @@ typedef struct _pinclass {
 } PinClass;
 
 
-
+#if defined(VM_IS_CUSTOM)
+extern const PinPort _vhalpinports[];
+extern uint16_t _vhalpinnums;
+extern PinStatus _vhalpinstatus[];
+extern PinInfo *_vhalpinmap;
+extern uint8_t _vhalpinclasses;
+extern PinClass *_vhalpinclass[];
+extern uint8_t *_vhalpinclassnum;
+#else
 extern const PinPort _vhalpinports[];
 extern const uint16_t _vhalpinnums;
 extern PinStatus _vhalpinstatus[];
@@ -53,7 +61,7 @@ extern const PinInfo const _vhalpinmap[];
 extern const uint8_t _vhalpinclasses;
 extern const PinClass *const _vhalpinclass[];
 extern const uint8_t _vhalpinclassnum[];
-extern const uint8_t _vhalpinlayout;
+#endif
 
 #define PIN_CLASS(vpin) (((vpin)&0xff00)>>8)
 #define PIN_CLASS_PAD(vpin) (((vpin)&0x00ff))
@@ -66,15 +74,8 @@ extern const uint8_t _vhalpinlayout;
 #define PIN_CLASS_DATA2(vpin) _vhalpinclass[PIN_CLASS(vpin)][PIN_CLASS_PAD(vpin)].data2
 
 
-#if defined(VM_IS_CUSTOM)
-
-#define _get_vhalpinmap() ((PinInfo*)(*((void**)_vhalpinmap)))
-
-#else
-
 #define _get_vhalpinmap() _vhalpinmap
 
-#endif
 
 
 #define PIN_PORT_NUMBER(vpin) (_get_vhalpinmap()[PIN_CLASS_ID(vpin)].port)
@@ -87,6 +88,7 @@ extern const uint8_t _vhalpinlayout;
 #define PIN_GET_PRPH(vpin) _vhalpinstatus[PIN_CLASS_ID(vpin)]
 #define PIN_FREE_OR_ASSIGNED_TO(vpin,prph) (PIN_GET_PRPH(vpin)==0xff || PIN_GET_PRPH(vpin)==prph)
 
+#if !defined(VM_IS_CUSTOM)
 
 #define VHAL_PORT_DECLARATIONS() \
   const uint8_t _vhalpinclassnum[] STORED = {\
@@ -116,6 +118,29 @@ extern const uint8_t _vhalpinlayout;
                                                   _btnclass\
                                                  };\
   const uint8_t _vhalpinclasses = sizeof(_vhalpinclass) / sizeof(PinClass *)
+
+#else
+
+#define VHAL_PORT_DECLARATIONS() \
+    PinClass *_vhalpinclass[] ={ \
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL,\
+                                                  NULL \
+    };\
+    uint8_t _vhalpinclasses = sizeof(_vhalpinclass) / sizeof(PinClass *); \
+    uint16_t _vhalpinnums; \
+    uint8_t *_vhalpinclassnum; \
+    PinInfo *_vhalpinmap;
+
+#endif //VM_IS_CUSTOM
 
 
 #define VHAL_IS_VALID_VPIN(vpin) (((PIN_CLASS(vpin))<_vhalpinclasses)&&(PIN_CLASS_PAD(vpin)<_vhalpinclassnum[PIN_CLASS(vpin)]))
@@ -188,6 +213,25 @@ extern const uint8_t _vhalpinlayout;
 #define PORT_F 5
 #define PORT_G 6
 #define PORT_H 7
+#define PORT_I 8
+#define PORT_J 9
+#define PORT_K 10
+#define PORT_L 11
+#define PORT_M 12
+#define PORT_N 13
+#define PORT_O 14
+#define PORT_P 15
+#define PORT_Q 16
+#define PORT_R 17
+#define PORT_S 18
+#define PORT_T 19
+#define PORT_U 20
+#define PORT_V 21
+#define PORT_W 22
+#define PORT_X 23
+#define PORT_Y 24
+#define PORT_Z 25
+
 
 #if !defined(Z_VHAL_SKIP_PIN_DEFS)
 #define D0  MAKE_VPIN(PINCLASS_DIGITAL,0)
@@ -260,6 +304,56 @@ extern const uint8_t _vhalpinlayout;
 #define D67  MAKE_VPIN(PINCLASS_DIGITAL,67)
 #define D68  MAKE_VPIN(PINCLASS_DIGITAL,68)
 #define D69  MAKE_VPIN(PINCLASS_DIGITAL,69)
+#define D70  MAKE_VPIN(PINCLASS_DIGITAL,70)
+#define D71  MAKE_VPIN(PINCLASS_DIGITAL,71)
+#define D72  MAKE_VPIN(PINCLASS_DIGITAL,72)
+#define D73  MAKE_VPIN(PINCLASS_DIGITAL,73)
+#define D74  MAKE_VPIN(PINCLASS_DIGITAL,74)
+#define D75  MAKE_VPIN(PINCLASS_DIGITAL,75)
+#define D76  MAKE_VPIN(PINCLASS_DIGITAL,76)
+#define D77  MAKE_VPIN(PINCLASS_DIGITAL,77)
+#define D78  MAKE_VPIN(PINCLASS_DIGITAL,78)
+#define D79  MAKE_VPIN(PINCLASS_DIGITAL,79)
+#define D80  MAKE_VPIN(PINCLASS_DIGITAL,80)
+#define D81  MAKE_VPIN(PINCLASS_DIGITAL,81)
+#define D82  MAKE_VPIN(PINCLASS_DIGITAL,82)
+#define D83  MAKE_VPIN(PINCLASS_DIGITAL,83)
+#define D84  MAKE_VPIN(PINCLASS_DIGITAL,84)
+#define D85  MAKE_VPIN(PINCLASS_DIGITAL,85)
+#define D86  MAKE_VPIN(PINCLASS_DIGITAL,86)
+#define D87  MAKE_VPIN(PINCLASS_DIGITAL,87)
+#define D88  MAKE_VPIN(PINCLASS_DIGITAL,88)
+#define D89  MAKE_VPIN(PINCLASS_DIGITAL,89)
+#define D90  MAKE_VPIN(PINCLASS_DIGITAL,90)
+#define D91  MAKE_VPIN(PINCLASS_DIGITAL,91)
+#define D92  MAKE_VPIN(PINCLASS_DIGITAL,92)
+#define D93  MAKE_VPIN(PINCLASS_DIGITAL,93)
+#define D94  MAKE_VPIN(PINCLASS_DIGITAL,94)
+#define D95  MAKE_VPIN(PINCLASS_DIGITAL,95)
+#define D96  MAKE_VPIN(PINCLASS_DIGITAL,96)
+#define D97  MAKE_VPIN(PINCLASS_DIGITAL,97)
+#define D98  MAKE_VPIN(PINCLASS_DIGITAL,98)
+#define D99  MAKE_VPIN(PINCLASS_DIGITAL,99)
+#define D100 MAKE_VPIN(PINCLASS_DIGITAL,100)
+#define D101 MAKE_VPIN(PINCLASS_DIGITAL,101)
+#define D102 MAKE_VPIN(PINCLASS_DIGITAL,102)
+#define D103 MAKE_VPIN(PINCLASS_DIGITAL,103)
+#define D104 MAKE_VPIN(PINCLASS_DIGITAL,104)
+#define D105 MAKE_VPIN(PINCLASS_DIGITAL,105)
+#define D106 MAKE_VPIN(PINCLASS_DIGITAL,106)
+#define D107 MAKE_VPIN(PINCLASS_DIGITAL,107)
+#define D108 MAKE_VPIN(PINCLASS_DIGITAL,108)
+#define D109 MAKE_VPIN(PINCLASS_DIGITAL,109)
+#define D110 MAKE_VPIN(PINCLASS_DIGITAL,110)
+#define D111 MAKE_VPIN(PINCLASS_DIGITAL,111)
+#define D112 MAKE_VPIN(PINCLASS_DIGITAL,112)
+#define D113 MAKE_VPIN(PINCLASS_DIGITAL,113)
+#define D114 MAKE_VPIN(PINCLASS_DIGITAL,114)
+#define D115 MAKE_VPIN(PINCLASS_DIGITAL,115)
+#define D116 MAKE_VPIN(PINCLASS_DIGITAL,116)
+#define D117 MAKE_VPIN(PINCLASS_DIGITAL,117)
+#define D118 MAKE_VPIN(PINCLASS_DIGITAL,118)
+#define D119 MAKE_VPIN(PINCLASS_DIGITAL,119)
 
 
 #define A0 MAKE_VPIN(PINCLASS_ANALOG,0)
@@ -393,6 +487,14 @@ extern const uint8_t _vhalpinlayout;
 #define TX4  MAKE_VPIN(PINCLASS_SER,9)
 #define RX5  MAKE_VPIN(PINCLASS_SER,10)
 #define TX5  MAKE_VPIN(PINCLASS_SER,11)
+#define RX6  MAKE_VPIN(PINCLASS_SER,12)
+#define TX6  MAKE_VPIN(PINCLASS_SER,13)
+#define RX7  MAKE_VPIN(PINCLASS_SER,14)
+#define TX7  MAKE_VPIN(PINCLASS_SER,15)
+#define RX8  MAKE_VPIN(PINCLASS_SER,16)
+#define TX8  MAKE_VPIN(PINCLASS_SER,17)
+#define RX9  MAKE_VPIN(PINCLASS_SER,18)
+#define TX9  MAKE_VPIN(PINCLASS_SER,19)
 
 
 #define MOSI0  MAKE_VPIN(PINCLASS_SPI,0)
@@ -410,6 +512,22 @@ extern const uint8_t _vhalpinlayout;
 #define MOSI4  MAKE_VPIN(PINCLASS_SPI,12)
 #define MISO4  MAKE_VPIN(PINCLASS_SPI,13)
 #define SCLK4   MAKE_VPIN(PINCLASS_SPI,14)
+#define MOSI5  MAKE_VPIN(PINCLASS_SPI,15)
+#define MISO5  MAKE_VPIN(PINCLASS_SPI,16)
+#define SCLK5   MAKE_VPIN(PINCLASS_SPI,17)
+#define MOSI6  MAKE_VPIN(PINCLASS_SPI,18)
+#define MISO6  MAKE_VPIN(PINCLASS_SPI,19)
+#define SCLK6   MAKE_VPIN(PINCLASS_SPI,20)
+#define MOSI7  MAKE_VPIN(PINCLASS_SPI,21)
+#define MISO7  MAKE_VPIN(PINCLASS_SPI,22)
+#define SCLK7   MAKE_VPIN(PINCLASS_SPI,23)
+#define MOSI8  MAKE_VPIN(PINCLASS_SPI,24)
+#define MISO8  MAKE_VPIN(PINCLASS_SPI,25)
+#define SCLK8   MAKE_VPIN(PINCLASS_SPI,26)
+#define MOSI9  MAKE_VPIN(PINCLASS_SPI,27)
+#define MISO9  MAKE_VPIN(PINCLASS_SPI,28)
+#define SCLK9   MAKE_VPIN(PINCLASS_SPI,29)
+
 
 #define SDA0  MAKE_VPIN(PINCLASS_I2C,0)
 #define SCL0  MAKE_VPIN(PINCLASS_I2C,1)
@@ -427,9 +545,12 @@ extern const uint8_t _vhalpinlayout;
 #define SCL6  MAKE_VPIN(PINCLASS_I2C,13)
 #define SDA7  MAKE_VPIN(PINCLASS_I2C,14)
 #define SCL7  MAKE_VPIN(PINCLASS_I2C,15)
+#define SDA8  MAKE_VPIN(PINCLASS_I2C,16)
+#define SCL8  MAKE_VPIN(PINCLASS_I2C,17)
+#define SDA9  MAKE_VPIN(PINCLASS_I2C,18)
+#define SCL9  MAKE_VPIN(PINCLASS_I2C,19)
 
-
-#endif
+#endif  //!defined(Z_VHAL_SKIP_PIN_DEFS)
 
 
 #endif
