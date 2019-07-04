@@ -75,7 +75,10 @@
 		HTTP_Weather
 		HTTP_Methods
 		Secure_HTTP
-		
+	
+    ##NTPClient
+        ntp_client
+
 	##Security
 		Secure_HTTP
 

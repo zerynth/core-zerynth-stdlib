@@ -54,30 +54,30 @@ QSpiFlash class
 
         To initialize a custom external memory qspi flash several params must be passed to the init method:
 
-            :param d0: D0 pin of the Qspi peripheral
-            :param d1: D1 pin of the Qspi peripheral
-            :param d2: D2 pin of the Qspi peripheral
-            :param d3: D3 pin of the Qspi peripheral
-            :param clk: CLK pin of the Qspi peripheral
-            :param cs: CS pin of the Qspi peripheral
-            :param flash_size: Flash size of the qspi flash
-            :param block_size: Block size of the qspi flash
-            :param subblock_size: Sub-block size of the qspi flash
-            :param sector_size Sector size of the qspi flash
-            :param page_size: Page size of the qspi flash
-            :param dummy_cycles_read: Dummy cycles simple read
-            :param dummy_cycles_read_dual: Dummy cycles Dual flash read
-            :param dummy_cycles_read_quad: Dummy cicles Quad Flash read
-            :param dummy_cycles_2read: Dummy cycles 2read
-            :param dummy_cycles_4read: Dummy Cycles 4read
-            :param alt_bytes_pe_mode: Alternate Bytes for PE mode
-            :param alt_bytes_no_pe_mode: Alternate Bytes for NO PE mode
-            :param sr_wip: Write in progress of the flash mamory status register
-            :param sr_wel: Write enable latch of the flash mamory status register
-            :param sr_bp: Block protect of the flash mamory status register
-            :param sr_srwd: Write disable of the flash mamory status register
-            :param sr1_qe: Quad enable of the flash mamory status register1
-            :param sr1_sus: Suspend status of the flash mamory status register1
+        :param d0: D0 pin of the Qspi peripheral
+        :param d1: D1 pin of the Qspi peripheral
+        :param d2: D2 pin of the Qspi peripheral
+        :param d3: D3 pin of the Qspi peripheral
+        :param clk: CLK pin of the Qspi peripheral
+        :param cs: CS pin of the Qspi peripheral
+        :param flash_size: Flash size of the qspi flash
+        :param block_size: Block size of the qspi flash
+        :param subblock_size: Sub-block size of the qspi flash
+        :param sector_size Sector size of the qspi flash
+        :param page_size: Page size of the qspi flash
+        :param dummy_cycles_read: Dummy cycles simple read
+        :param dummy_cycles_read_dual: Dummy cycles Dual flash read
+        :param dummy_cycles_read_quad: Dummy cicles Quad Flash read
+        :param dummy_cycles_2read: Dummy cycles 2read
+        :param dummy_cycles_4read: Dummy Cycles 4read
+        :param alt_bytes_pe_mode: Alternate Bytes for PE mode
+        :param alt_bytes_no_pe_mode: Alternate Bytes for NO PE mode
+        :param sr_wip: Write in progress of the flash mamory status register
+        :param sr_wel: Write enable latch of the flash mamory status register
+        :param sr_bp: Block protect of the flash mamory status register
+        :param sr_srwd: Write disable of the flash mamory status register
+        :param sr1_qe: Quad enable of the flash mamory status register1
+        :param sr1_sus: Suspend status of the flash mamory status register1
 
     """
     def __init__(self, d0=None, d1=None, d2=None, d3=None, clk=None, cs=None, flash_size=None, block_size=None, subblock_size=None, sector_size=None, page_size=None, dummy_cycles_read=None, dummy_cycles_read_dual=None, dummy_cycles_read_quad=None, dummy_cycles_2read=None, dummy_cycles_4read=None, alt_bytes_pe_mode=None, alt_bytes_no_pe_mode=None, sr_wip=None, sr_wel=None, sr_bp=None, sr_srwd=None, sr1_qe=None, sr1_sus=None):
