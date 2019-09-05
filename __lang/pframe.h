@@ -25,7 +25,8 @@ typedef struct _pframe {
     uint16_t pc;
     uint16_t module;
     uint16_t code;
-    uint16_t sb;
+    uint8_t sb;
+    uint8_t delegate;
     uint16_t temp;
     //PObject *caller;
     struct _pframe *parent;
@@ -50,19 +51,19 @@ typedef struct _pframe {
 
 PFrame *pframe_new(uint16_t ncode, PFrame *parent);
 
-/*
-#define PFRAME_ACTIVATE(f) (((PObject*)(f))->header.flags|=0x80)
-#define PFRAME_DEACTIVATE(f) (((PObject*)(f))->header.flags&=(~0x80))
-#define PFRAME_IS_ACTIVE(f) (((PObject*)(f))->header.flags&(0x80))
-*/
+//bit 6 for activated frame
+#define PFRAME_ACTIVATE(f) (((PObject*)(f))->header.flags|=0x40)
+#define PFRAME_DEACTIVATE(f) (((PObject*)(f))->header.flags&=(~0x40))
+#define PFRAME_IS_ACTIVE(f) (((PObject*)(f))->header.flags&(0x40))
 
+//bit 7 for ret/no ret
 #define PFRAME_NO_RET(f) (((PObject*)(f))->header.flags|=0x80)
 #define PFRAME_IS_NO_RET(f) (((PObject*)(f))->header.flags&(0x80))
 
-#define PFRAME_HAS_DELEGATE(f) (((PObject*)(f))->header.flags&(0x7f))
-#define PFRAME_DELEGATE(f,op) (((PObject*)(f))->header.flags=(((PObject*)(f))->header.flags&0x80)|(op))
-#define PFRAME_UNDELEGATE(f) (((PObject*)(f))->header.flags&=0x80)
-#define PFRAME_DELEGATED_OP(f) (((PObject*)(f))->header.flags&(0x7f))
+// #define PFRAME_HAS_DELEGATE(f) (((PObject*)(f))->header.flags&(0x7f))
+// #define PFRAME_DELEGATE(f,op) (((PObject*)(f))->header.flags=(((PObject*)(f))->header.flags&0x80)|(op))
+// #define PFRAME_UNDELEGATE(f) (((PObject*)(f))->header.flags&=0x80)
+// #define PFRAME_DELEGATED_OP(f) (((PObject*)(f))->header.flags&(0x7f))
 
 /*
 #define PFRAME_FREEVARS(f) ((PTuple*)(*((f)->storage+PCODE_MAKE((f)->code)->nlocals+PCODE_MAKE((f)->code)->stacksize)))

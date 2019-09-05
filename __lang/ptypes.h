@@ -1,7 +1,7 @@
 #ifndef __PTYPES__
 #define __PTYPES__
 
-#include "pnames.h"
+#include "opcodes.h"
 
 #define PSMALLINT   0
 #define PINTEGER    1

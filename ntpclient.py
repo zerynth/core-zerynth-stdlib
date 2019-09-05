@@ -48,12 +48,12 @@ NTPClient class
         
         ip_string = self._conn.gethostbyname(self._server)
 
-        ip = sock.ip_to_tuple(ip_string)
+        ip = socket.ip_to_tuple(ip_string)
 
         addr = (ip[0], ip[0], ip[0], ip[0], 123)
         sock.sendto(pkt, addr)
 
-        res = sock.recv(48)
+        res = sock.recvfrom(48)
         ts = (res[40] << 24) | (res[41] << 16) | (res[42] << 8) | res[43]
 
         sock.close()

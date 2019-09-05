@@ -73,7 +73,7 @@ Fifo class
         """
         if self.elem==0:
             raise FifoEmptyError
-        res = self._fifo[self.head]
+        res = self._fifo[self.head % self.l]
         self.elem-=1
         self.head+=1
         return res
@@ -87,7 +87,7 @@ Fifo class
         """
         if self.elem==0:
             raise FifoEmptyError
-        return self._fifo[self.head]
+        return self._fifo[self.head % self.l]
 
     def put_all(self,objs):
         """

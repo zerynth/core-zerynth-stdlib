@@ -1,7 +1,7 @@
 #ifndef __LANG__
 #define __LANG__
 
-// #include "opcodes.h"
+#include "opcodes.h"
 #include "pobj.h"
 #include "pnums.h"
 #include "phash.h"
@@ -17,6 +17,7 @@
 
 #include "gc.h"
 #include "vm.h"
+#include "ptrace.h"
 
 #endif
 

@@ -49,6 +49,17 @@ def ntc_ts_to_datetime(self, t):
 
 try:
     wifi_driver.auto_init()
+    for i in range(0, 5):
+        try:
+            # Change this line to match your network configuration
+            wifi.link("SSID",wifi.WIFI_WPA2,"PASSWORD")
+            break
+        except Exception as e:
+            print(e)
+            sleep(500)
+    else:
+        print("Could not link :(")
+        raise IOError
 
     client = ntpclient.NTPClient(wifi_driver)
     t = client.get_time()

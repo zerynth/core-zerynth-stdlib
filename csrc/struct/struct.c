@@ -222,31 +222,31 @@ int pack_get_string(PObject *tuple, int idx, uint8_t *buf, int size){
 
 PObject* unpack_make_integer(uint8_t *buf,int size, int is_signed, int bigendian){
     uint8_t t2[8];
-    uint64_t ii;
-    int64_t ss;
+    uint64_t ii = 0;
+    int64_t ss = 0;
 
     memcpy(t2,buf,size);
     
     //TODO: support big endian mcu! At the moment all mcu are little endian
     if (bigendian) {
         if(size==1){
-            ii = t2[0];
+            ii|= t2[0] & 0xff;
         } else if (size==2){
-            ii=(t2[0]<<8) | t2[1];
+            ii|=((t2[0]<<8) | t2[1]) & 0xffff;
         } else if (size==4){
-            ii=(t2[0]<<24)|(t2[1]<<16)|(t2[2]<<8)|(t2[3]);
+            ii|=((t2[0]<<24)|(t2[1]<<16)|(t2[2]<<8)|(t2[3])) & 0xffffffff;
         } else if (size==8){
-            ii=(t2[0]<<56)|(t2[1]<<48)|(t2[2]<<40)|(t2[3]<<32)|(t2[4]<<24)|(t2[5]<<16)|(t2[6]<<8)|(t2[7]);
+            ii|=(t2[0]<<56)|(t2[1]<<48)|(t2[2]<<40)|(t2[3]<<32)|(t2[4]<<24)|(t2[5]<<16)|(t2[6]<<8)|(t2[7]);
         }
     } else {
         if (size==1){
-            ii = t2[0];
+            ii|= (t2[0] & 0xff);
         } else if (size==2){
-            ii=(t2[1]<<8) | t2[0];
+            ii|=((t2[1]<<8) | t2[0]) & 0xffff;
         } else if (size==4){
-            ii=(t2[3]<<24)|(t2[2]<<16)|(t2[1]<<8)|(t2[0]);
+            ii|=((t2[3]<<24)|(t2[2]<<16)|(t2[1]<<8)|(t2[0])) & 0xffffffff;
         } else if (size==8){
-            ii=(t2[7]<<56)|(t2[6]<<48)|(t2[5]<<40)|(t2[4]<<32)|(t2[3]<<24)|(t2[2]<<16)|(t2[1]<<8)|(t2[0]);
+            ii|=(t2[7]<<56)|(t2[6]<<48)|(t2[5]<<40)|(t2[4]<<32)|(t2[3]<<24)|(t2[2]<<16)|(t2[1]<<8)|(t2[0]);
         }
     }
     if (is_signed){
@@ -256,7 +256,7 @@ PObject* unpack_make_integer(uint8_t *buf,int size, int is_signed, int bigendian
         } else if (size==2){
             if(ii>32767) ss = -(65536-ii);
         } else if (size==4){
-            ss = (int32_t)ii;
+            if(ii>2147483647) ss = -(4294967296-ii);
         } else {
             ss = (int64_t)ii;
         }

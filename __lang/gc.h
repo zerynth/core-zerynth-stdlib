@@ -56,9 +56,17 @@ void gc_pause(void);
 void gc_resume(uint32_t period);
 void gc_keep(PObject **objs, uint32_t nobjs);
 uint32_t gc_info(int32_t what);
+void gc_unstage_threadlist(PObject *pth);
 
-#define gc_wait() vosSemWait(_memlock)
-#define gc_signal() vosSemSignal(_memlock)
+
+#define gc_wait()  do { \
+    vosSemWait(_memlock); \
+} while (0)
+
+#define gc_signal() do { \
+    vosSemSignal(_memlock); \
+} while (0)
+
 
 #define GCM_KEEP(o) do { gc_wait(); gc_keep(&(o),1); gc_signal(); } while(0)
 #define GCM_KEEP_NOTNULL(o)  do { if(o) {gc_wait(); gc_keep(&(o),1); gc_signal();} } while(0)
@@ -87,8 +95,8 @@ uint32_t gc_info(int32_t what);
 #define GCH_SIZE(b) (((PObject*)(b))->header.size)
 #define GCH_SIZE_SET(b,sz) (((PObject*)(b))->header.size=(uint16_t)(sz))
 
-#define GCH_HEAP_NEXT(b) (PObject*)(((int32_t)b)+ ((int32_t)((GCH_OBJ(b).gch.ext.hnext))&(GC_IMASK)) )
-#define GCH_HEAP_PREV(b) (PObject*)(((int32_t)b)+ ((int32_t)((GCH_OBJ(b).gch.ext.hprev))&(GC_IMASK)) )
+#define GCH_HEAP_NEXT(b) (PObject*)(((int32_t)(b))+ ((int32_t)((GCH_OBJ(b).gch.ext.hnext))&(GC_IMASK)) )
+#define GCH_HEAP_PREV(b) (PObject*)(((int32_t)(b))+ ((int32_t)((GCH_OBJ(b).gch.ext.hprev))&(GC_IMASK)) )
 #define GCH_HEAP_NEXT_SET(b,nxt) (GCH_OBJ(b).gch.ext.hnext=(int16_t)( (int32_t)(nxt)-(int32_t)(b))|GC_STAGED)
 #define GCH_HEAP_PREV_SET(b,prv) (GCH_OBJ(b).gch.ext.hprev=(int16_t)( (int32_t)(prv)-(int32_t)(b))|GC_STAGED)
 
@@ -104,17 +112,12 @@ uint32_t gc_info(int32_t what);
 #define GC_STOP_STAGING() gc_signal()
 
 
-//#define GC_ALIGN_SIZE(s) (((s)&(GC_ALIGNMENT-1)) ? (((s)+GC_ALIGNMENT)&~(GC_ALIGNMENT-1)):(s))
 #define GC_ALIGN_SIZE(s)  (((s)&(GC_ALIGNMENT-1)) ? ((s)+(GC_ALIGNMENT - ((s)&(GC_ALIGNMENT-1)) )):(s))
 #define GC_ALIGN_PREV_SIZE(s) ((s)&~(GC_ALIGNMENT-1))
 
 
 #define ALLOC_OBJ(type,htype,hflags, extrasize) (type *) gc_alloc(htype,hflags,sizeof(type)+(extrasize),0)
 #define ALLOC_OBJ_HEAP(type,htype,hflags, extrasize) (type *) gc_alloc(htype,hflags,sizeof(type)+(extrasize),1)
-
-
-
-//void gc_dump(Stream *ps, int thid);
 
 
 #endif

@@ -44,6 +44,7 @@ typedef PObject *PBool;
 #define PSMALLINT_UNDERFLOWED(o) (((o)<=-1073741824))
 
 #define IS_NUMBER_TYPE(x)  ((x)<=PNUMBER)
+#define IS_INTEGER_TYPE(x)  ((x)<=PINTEGER)
 #define IS_PNUMBER(o) ((PTYPE(o))<=PNUMBER)
 #define IS_PNUMBER_TYPE(o) ((o)<=PNUMBER)
 #define IS_INTEGER(o) ((PTYPE(o))<=PINTEGER)

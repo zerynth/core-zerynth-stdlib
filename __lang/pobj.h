@@ -35,6 +35,10 @@ typedef struct _p_obj_header {
 #define PFLAG_HAS_CLASS (0x1<<6)
 #define PCHECK_HASHABLE(o) ((IS_TAGGED(o))||(((PObject*)(o))->header.flags&PFLAG_HASHABLE))
 
+#define POBJ_COLLECTABLE(f) (((PObject*)(f))->header.flags|=0x40)
+#define POBJ_UNCOLLECTABLE(f) (((PObject*)(f))->header.flags&=(~0x40))
+#define POBJ_IS_COLLECTABLE(f) (((PObject*)(f))->header.flags&(0x40))
+
 typedef struct _p_obj {
     PObjectHeader header;
 } PObject;

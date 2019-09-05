@@ -1,6 +1,6 @@
 
 def _auto_init():
-    if __defined(BOARD, "polaristracker_v3"):
+    if __defined(BOARD, "polaris_3g"):
         _init(D34,D33,D25,D24,D74,D75,0x100000,0x10000,0x8000,0x1000,0x100,8,4,4,2,4,0xA5,0x00,0x01,0x02,0x7C,0x80,0x02,0x80)
     else:
         raise UnsupportedError
