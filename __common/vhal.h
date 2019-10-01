@@ -887,12 +887,20 @@ Macros
 #define SERIAL_BITS_8 0
 #define SERIAL_BITS_7 1
 
+#define SERIAL_HWFC 1
+#define SERIAL_NO_HWFC 0
+
+#define SERIAL_CTS(x) (((x)&0xff))
+#define SERIAL_RTS(x) (((x)&0xff)<<8)
+
 #define SERIAL_CFG(parity,stop,bits,hw,other) ((parity)| ((stop)<<4) | ((bits)<<8) | ((hw)<<12) | ((other)<<16))
 #define SERIAL_CFG_PARITY(cfg) ((cfg)&0xf)
 #define SERIAL_CFG_STOP(cfg) (((cfg)>>4)&0xf)
 #define SERIAL_CFG_BITS(cfg) (((cfg)>>8)&0xf)
 #define SERIAL_CFG_HW(cfg) (((cfg)>>12)&0xf)
-#define SERIAL_CFG_OTHER(cfg) (((cfg)>>12))
+#define SERIAL_CFG_CTS(cfg) (((cfg)>>16)&0xff)
+#define SERIAL_CFG_RTS(cfg) (((cfg)>>24)&0xff)
+#define SERIAL_CFG_OTHER(cfg) (((cfg)>>16))
 
 DECLARE_PERIPHERAL_MAP(serial);
 

@@ -77,7 +77,7 @@ typedef struct _vm {
     }while(0)
 
 #define RELEASE_GIL() do {\
-        vosSemSignalCap(_gillock,1); \
+        vosSemSignal(_gillock); \
     }while(0)
 
 PThread *vm_init(VM *vm);

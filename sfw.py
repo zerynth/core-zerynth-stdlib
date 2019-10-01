@@ -7,7 +7,7 @@ Secure Firmware
 
 This module enables access to secure firmware functionalities specific to the target microcontroller.
 It can be safely imported in every program, however its functions will raise `UnsupportedError` if the target VM is not enabled
-for secure firmware features (**available for Pro users only**).
+for secure firmware features (**a premium VM with the OTA feature enabled is needed**).
 
 There are many ways of securing the firmware running on a microcontroller:
 

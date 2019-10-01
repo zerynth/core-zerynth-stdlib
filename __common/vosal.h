@@ -17,6 +17,7 @@ and abstracts the details of the underlying RTOS, so that it can be changed as n
 
 #include "viperlib.h"
 #include "vboard.h"
+#include "ptrace.h"
 #if defined(VM_OTA)
 #include "ota.h"
 #endif
@@ -129,7 +130,7 @@ extern VSemaphore _gillock;
 
   Holds the number of seconds passed since VM startup. It is not guaranteed to be implemented in every architecture or RTOS.
 
-.. var:: volatile uint32_t _systime_millis
+.. var:: volatile uint64_t _systime_millis
 
   Holds the number of milliseconds passed since VM startup. It is not guaranteed to be implemented in every architecture or RTOS.
 
@@ -140,7 +141,7 @@ extern VSemaphore _gillock;
 */
 
 extern volatile uint32_t _systime_seconds;
-extern volatile uint32_t _systime_millis;
+extern volatile uint64_t _systime_millis;
 extern volatile uint32_t _system_frequency;
 
 
@@ -398,7 +399,7 @@ extern void _port_irq_prologue(void);
 
 uint32_t time_to_ticks(uint32_t time);
 uint32_t* vosTicks(void);
-uint32_t vosMillis(void);
+uint64_t vosMillis(void);
 vos_irq_handler vosInstallHandler(int32_t hpos, vos_irq_handler fn);
 
 
@@ -766,12 +767,12 @@ System Timers
 VSysTimer vosTimerCreate(void);
 
 /**
-.. function:: uint32_t vosTimerReadMillis(VSysTimer tm)
+.. function:: uint64_t vosTimerReadMillis(VSysTimer tm)
 
   Returns the amount of milliseconds elapsed since *tm* creation or last reset.
 
 */
-uint32_t vosTimerReadMillis(VSysTimer tm);
+uint64_t vosTimerReadMillis(VSysTimer tm);
 
 /**
 .. function:: uint32_t vosTimerReadMicros(VSysTimer tm)

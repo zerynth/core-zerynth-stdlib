@@ -69,13 +69,13 @@ static inline void debug_send_line( const mbedtls_ssl_context *ssl, int level,
      * Since there is no portable way to get one, use the address of the ssl
      * context instead, as it shouldn't be shared between threads.
      */
-#if defined(MBEDTLS_THREADING_C)
-    char idstr[20 + DEBUG_BUF_SIZE]; /* 0x + 16 nibbles + ': ' */
-    mbedtls_snprintf( idstr, sizeof( idstr ), "%p: %s", (void*)ssl, str );
-    ssl->conf->f_dbg( ssl->conf->p_dbg, level, file, line, idstr );
-#else
+// #if defined(MBEDTLS_THREADING_C)
+//     char idstr[20 + DEBUG_BUF_SIZE]; /* 0x + 16 nibbles + ': ' */
+//     mbedtls_snprintf( idstr, sizeof( idstr ), "%p: %s", (void*)ssl, str );
+//     ssl->conf->f_dbg( ssl->conf->p_dbg, level, file, line, idstr );
+// #else
     ssl->conf->f_dbg( ssl->conf->p_dbg, level, file, line, str );
-#endif
+// #endif
 }
 
 void mbedtls_debug_print_msg( const mbedtls_ssl_context *ssl, int level,
@@ -110,6 +110,9 @@ void mbedtls_debug_print_msg( const mbedtls_ssl_context *ssl, int level,
     {
         str[ret]     = '\n';
         str[ret + 1] = '\0';
+    } else {
+        str[DEBUG_BUF_SIZE-2]='\n';
+        str[DEBUG_BUF_SIZE-1]='\0';
     }
 
     debug_send_line( ssl, level, file, line, str );
@@ -131,7 +134,7 @@ void mbedtls_debug_print_ret( const mbedtls_ssl_context *ssl, int level,
      */
     if( ret == MBEDTLS_ERR_SSL_WANT_READ )
         return;
-
+    
     mbedtls_snprintf( str, sizeof( str ), "%s() returned %d (-0x%04x)\n",
               text, ret, -ret );
 

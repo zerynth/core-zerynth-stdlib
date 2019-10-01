@@ -1,6 +1,7 @@
 #include "zerynth_sockets.h"
 #include "zerynth.h" // last position since some defines might cause conflicts (ERR_OK with lwIP, opcodes)
 #pragma GCC diagnostic ignored "-Wpointer-sign"
+// #define printf(...) vbl_printf_stdout(__VA_ARGS__)
 
 #if defined(ZERYNTH_SSL)
 
@@ -8,6 +9,7 @@
 #include "mbedtls/net.h"
 #include "mbedtls/net_sockets.h"
 #include "mbedtls/ssl.h"
+#include "mbedtls/ssl_internal.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/error.h"
@@ -36,11 +38,15 @@ typedef struct _sslsock {
     uint8_t initialized;
 } SSLSock;
 
+#if !defined(ZERYNTH_SSL_MAX_SOCKS)
 #define MAX_SSLSOCKS 2
+#else
+#define MAX_SSLSOCKS ZERYNTH_SSL_MAX_SOCKS
+#endif
+
 #define SSLSOCK_OFFSET 8192
 
 SSLSock sslsocks[MAX_SSLSOCKS];
-
 
 int mbedtls_full_connect(SSLSock* ssock, const struct sockaddr* name, socklen_t namelen);
 int mbedtls_full_close(SSLSock* ssock);
@@ -61,7 +67,29 @@ void _tls_uninit(SSLSock* ssock){
     ssock->assigned=0;
 }
 
+#if defined(ZERYNTH_SSL_DEBUG)
+void mbedtls_f_dbg(void *ctx, int lvl, const char *file, int line, const char* message){
+    printf("%s:%i:%i %s",file,line,lvl,message);
+}
+#endif
+
+#if defined(ZERYNTH_SSL_STATIC_BUFFERS) && defined(ZERYNTH_SSL_STATIC_MEMORY)
+#error "Can't use ZERYNTH_SSL_STATIC_BUFFERS and ZERYNTH_SSL_STATIC_MEMORY together"
+#endif
+
+#if defined(ZERYNTH_SSL_STATIC_MEMORY)
+#if !defined(ZERYNTH_SSL_STATIC_MEMORY_BYTES)
+#define ZERYNTH_SSL_STATIC_MEMORY_BYTES 32768
+#endif
+unsigned char _ssl_memory_buf[ZERYNTH_SSL_STATIC_MEMORY_BYTES];
+
+
+#endif //STATIC MEMORY
+
+
 #endif //ZERYNTH_SSL
+
+
 
 int gzsock_socket(int domain, int type, int protocol, void *info){
     int32_t i;
@@ -102,6 +130,9 @@ int gzsock_socket(int domain, int type, int protocol, void *info){
             mbedtls_ctr_drbg_init(&sslsock->ctr_drbg);
             mbedtls_ssl_config_init(&sslsock->conf);
             mbedtls_entropy_init(&sslsock->entropy);
+#if defined(ZERYNTH_SSL_DEBUG)
+            mbedtls_ssl_conf_dbg(&sslsock->conf,mbedtls_f_dbg,NULL);
+#endif
             if ((err = mbedtls_ctr_drbg_seed(&sslsock->ctr_drbg, mbedtls_entropy_func, &sslsock->entropy, vhalNfoGetUIDStr(), vhalNfoGetUIDLen())) != 0) {
                 printf("-%i\n", err);
                 return err;
@@ -137,7 +168,6 @@ int gzsock_socket(int domain, int type, int protocol, void *info){
                 printf("--%i\n", err);
                 return err;
             }
-
             mbedtls_ssl_conf_authmode(
                     &sslsock->conf,
                     (sinfo->options&_CERT_NONE) ? MBEDTLS_SSL_VERIFY_NONE: ((sinfo->options&_CERT_OPTIONAL) ? MBEDTLS_SSL_VERIFY_OPTIONAL:MBEDTLS_SSL_VERIFY_REQUIRED));
@@ -173,7 +203,6 @@ int gzsock_socket(int domain, int type, int protocol, void *info){
             }
 
             mbedtls_ssl_conf_rng(&sslsock->conf, mbedtls_ctr_drbg_random, &sslsock->ctr_drbg);
-
             if ((err = mbedtls_ssl_setup(&sslsock->ssl, &sslsock->conf)) != 0) {
                 printf("---%i\n", err);
                 return err;
@@ -221,6 +250,7 @@ int mbedtls_full_connect(SSLSock* ssock, const struct sockaddr* name, socklen_t 
         if (ret != MBEDTLS_ERR_SSL_WANT_READ && ret != MBEDTLS_ERR_SSL_WANT_WRITE) {
             mbedtls_ssl_session_reset(&ssock->ssl);
             mbedtls_net_free(ctx);
+            _tls_uninit(ssock);
             printf("full connect 2 %x\n",ret);
             return ret;
         }
@@ -246,15 +276,57 @@ int mbedtls_mutex_unlock_alt( mbedtls_threading_mutex_t *mutex ){
     return 0;
 }
 
-
+#if defined(ZERYNTH_SSL_STATIC_BUFFERS)
+#if defined(ZERYNTH_SSL_STATIC_BUFFERS_NUM)
+#define SSL_BUFFERS_NUM (2*(ZERYNTH_SSL_STATIC_BUFFERS_NUM))
+#else
+#define SSL_BUFFERS_NUM (2*MAX_SSLSOCKS)
+#endif
+typedef struct _sslbuf {
+    uint8_t buffer[MBEDTLS_SSL_BUFFER_LEN];
+    uint8_t taken;
+} SSLBuffer;
+SSLBuffer _sslbuffers[SSL_BUFFERS_NUM];
+#endif
 
 void * mbedtls_gc_calloc( size_t n, size_t m){
+    // printf("requested calloc of %i\n",n*m);
+#if defined(ZERYNTH_SSL_STATIC_BUFFERS)
+    if((n*m)==MBEDTLS_SSL_BUFFER_LEN) {
+        // printf("requested alloc for buffer\n");
+        int i;
+        for (i=0;i<SSL_BUFFERS_NUM;i++){
+            if(!_sslbuffers[i].taken) {
+                //it's free
+                _sslbuffers[i].taken=1;
+                // printf("alloc buffer %i\n",i);
+                memset(_sslbuffers[i].buffer,0,MBEDTLS_SSL_BUFFER_LEN);
+                return _sslbuffers[i].buffer;
+            }
+        }
+        // printf("no buffers!\n");
+        return NULL;
+    }
+#endif
     uint8_t *res = gc_malloc(n*m);
+    // printf("calloc'd %x\n",res);
     return res;
 }
 
 void mbedtls_gc_free( void *pnt){
+    // printf("requested free of %x\n",pnt);
     if (pnt) {
+#if defined(ZERYNTH_SSL_STATIC_BUFFERS)
+        //TODO: remove for, use mem comparison  pnt>=_sslbuffers && pnt<_sslbuffer+sizeof()
+        int i;
+        for (i=0;i<SSL_BUFFERS_NUM;i++){
+            if (pnt==(void*)_sslbuffers[i].buffer && _sslbuffers[i].taken==1) {
+                // printf("freeing buffer %i\n",i);
+                _sslbuffers[i].taken=0;
+                return;
+            }
+        }
+#endif
         gc_free(pnt);
     }
 }
@@ -286,7 +358,17 @@ SocketAPIPointers *gzsock_init(SocketAPIPointers *pointers) {
     SocketAPIPointers *old = socket_api_pointers;
     socket_api_pointers = pointers;
 #if defined(ZERYNTH_SSL)
+#if !defined(ZERYNTH_SSL_STATIC_MEMORY)
+    //set zerynth calloc/free
     mbedtls_platform_set_calloc_free(mbedtls_gc_calloc,mbedtls_gc_free);
+#else
+    //static memory
+    mbedtls_memory_buffer_alloc_init( _ssl_memory_buf, sizeof(_ssl_memory_buf) );
+#endif
+#if defined(ZERYNTH_SSL_DEBUG)
+    mbedtls_debug_set_threshold( ZERYNTH_SSL_DEBUG );
+    mbedtls_platform_set_snprintf(snprintf);
+#endif
     mbedtls_threading_set_alt(
             mbedtls_mutex_init_alt,
             mbedtls_mutex_free_alt,
@@ -427,4 +509,41 @@ int gzsock_setsockopt(int s, int level, int optname, const void *optval, socklen
     return zsock_setsockopt(thesock, level, optname, optval, optlen);
 }
 
+int zs_addr_to_string(struct sockaddr_in *addr, uint8_t *saddr) {
+    uint8_t *buf = saddr;
+    buf+=modp_itoa10(OAL_IP_AT(addr->sin_addr.s_addr, 0),buf);
+    *buf++='.';
+    buf+=modp_itoa10(OAL_IP_AT(addr->sin_addr.s_addr, 1),buf);
+    *buf++='.';
+    buf+=modp_itoa10(OAL_IP_AT(addr->sin_addr.s_addr, 2),buf);
+    *buf++='.';
+    buf+=modp_itoa10(OAL_IP_AT(addr->sin_addr.s_addr, 3),buf);
+    return buf-saddr;
+}
+
+int zs_string_to_addr(uint8_t *saddr, int len, struct sockaddr_in *addr) {
+    
+    int32_t cnt = 0, ph = 3, cnz = 0, oct = 0;
+    while (cnt < len) {
+        if (saddr[cnt] >= '0' && saddr[cnt] <= '9') {
+            oct *= 10;
+            oct += saddr[cnt] - '0';
+            cnz++;
+        } else if (saddr[cnt] == '.') {
+            OAL_IP_SET(addr->sin_addr.s_addr, 3 - ph, oct);
+            ph--;
+            cnz = oct = 0;
+        } else return -1;
+        cnt++;
+        if (cnz > 3 || ph < 0)
+            return -1;
+    }
+    if (ph != 0) return -1;
+    OAL_IP_SET(addr->sin_addr.s_addr, 3, oct);
+    return ERR_OK;
+}
+
+#if !defined(ZERYNTH_EXTERNAL_LWIP)
+int errno;
+#endif
 

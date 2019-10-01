@@ -7,7 +7,7 @@ Power Management
 
 This module enables access to power management functionalities specific to the target microcontroller.
 It can be safely imported in every program, however its functions will raise `UnsupportedError` if the target VM is not enabled
-for power management features (**available for Pro users only**).
+for power management features (**a premium VM with the OTA feature enabled is needed**).
 
 
 There exists two methods of reducing power consumption:

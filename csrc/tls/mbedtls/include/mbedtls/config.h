@@ -190,7 +190,7 @@
  * Uncomment a macro to enable alternate implementation of specific base
  * platform function
  */
-//#define MBEDTLS_PLATFORM_EXIT_ALT
+#define MBEDTLS_PLATFORM_EXIT_ALT
 //#define MBEDTLS_PLATFORM_TIME_ALT
 #define MBEDTLS_PLATFORM_FPRINTF_ALT
 #define MBEDTLS_PLATFORM_PRINTF_ALT
@@ -1801,7 +1801,9 @@
  *
  * This module provides debugging functions.
  */
-//#define MBEDTLS_DEBUG_C
+#if defined(ZERYNTH_SSL_DEBUG)
+#define MBEDTLS_DEBUG_C
+#endif
 
 /**
  * \def MBEDTLS_DES_C
@@ -2033,7 +2035,7 @@
  * This module is required for SSL/TLS and X.509.
  * PEM_PARSE uses MD5 for decrypting encrypted keys.
  */
-//#define MBEDTLS_MD5_C
+#define MBEDTLS_MD5_C
 
 /**
  * \def MBEDTLS_MEMORY_BUFFER_ALLOC_C
@@ -2049,7 +2051,9 @@
  *
  * Enable this module to enable the buffer memory allocator.
  */
-//#define MBEDTLS_MEMORY_BUFFER_ALLOC_C
+#if defined(ZERYNTH_SSL_STATIC_MEMORY)
+#define MBEDTLS_MEMORY_BUFFER_ALLOC_C
+#endif
 
 /**
  * \def MBEDTLS_NET_C
@@ -2655,7 +2659,11 @@
 //#define MBEDTLS_SSL_CACHE_DEFAULT_MAX_ENTRIES      50 /**< Maximum entries in cache */
 
 /* SSL options */
+#if defined(ZERYNTH_SSL_MAX_CONTENT_LEN)
+#define MBEDTLS_SSL_MAX_CONTENT_LEN ZERYNTH_SSL_MAX_CONTENT_LEN
+#else
 #define MBEDTLS_SSL_MAX_CONTENT_LEN             8192 /**< Maxium fragment length in bytes, determines the size of each of the two internal I/O buffers */
+#endif
 //#define MBEDTLS_SSL_DEFAULT_TICKET_LIFETIME     86400 /**< Lifetime of session tickets (if enabled) */
 //#define MBEDTLS_PSK_MAX_LEN               32 /**< Max size of TLS pre-shared keys, in bytes (default 256 bits) */
 //#define MBEDTLS_SSL_COOKIE_TIMEOUT        60 /**< Default expiration delay of DTLS cookies, in seconds if HAVE_TIME, or in number of cookies issued */
@@ -2672,7 +2680,29 @@
  *
  * The value below is only an example, not the default.
  */
-#define MBEDTLS_SSL_CIPHERSUITES MBEDTLS_TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+#define MBEDTLS_SSL_CIPHERSUITES \
+MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, \
+MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, \
+MBEDTLS_TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256,  \
+MBEDTLS_TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384,  \
+MBEDTLS_TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,   \
+MBEDTLS_TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,   \
+MBEDTLS_TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256,    \
+MBEDTLS_TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384,    \
+MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256, \
+MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384, \
+MBEDTLS_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256,  \
+MBEDTLS_TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384,  \
+MBEDTLS_TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,   \
+MBEDTLS_TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,   \
+MBEDTLS_TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256,    \
+MBEDTLS_TLS_RSA_WITH_AES_128_GCM_SHA256,         \
+MBEDTLS_TLS_RSA_WITH_AES_256_GCM_SHA384,         \
+MBEDTLS_TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,     \
+MBEDTLS_TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,     \
+MBEDTLS_TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,     \
+MBEDTLS_TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,     \
+MBEDTLS_TLS_RSA_WITH_AES_128_CBC_SHA
 
 /* X509 options */
 //#define MBEDTLS_X509_MAX_INTERMEDIATE_CA   8   /**< Maximum number of intermediate CAs in a verification chain. */
@@ -2696,7 +2726,7 @@
 * of SHA-1 in handshake signatures, hence this option is turned on by default
 * for compatibility with existing peers.
 */
-//#define MBEDTLS_TLS_DEFAULT_ALLOW_SHA1_IN_KEY_EXCHANGE
+#define MBEDTLS_TLS_DEFAULT_ALLOW_SHA1_IN_KEY_EXCHANGE
 
 /* \} name SECTION: Customisation configuration options */
 

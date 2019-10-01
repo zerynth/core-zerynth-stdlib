@@ -9,7 +9,7 @@ Firmware Over the Air update (FOTA)
 
 This module enables access to VM functionalities for updating firmware and/or VM at runtime.
 It can be safely imported in every program, however its functions will raise `UnsupportedError` if the target VM is not enabled
-for FOTA features (**available for Pro users only**).
+for FOTA features (**a premium VM with the OTA feature enabled is needed**).
 
 In Zerynth FOTA can be performed for bytecode only or for bytecode and VM if the target device supports a multiple VM layout. 
 In order to support FOTA updates, the flash memory of the target device is divided in segments that can hold either a VM or bytecode.

@@ -207,7 +207,6 @@ def select(rlist,wlist,xlist,timeout=None):
     wwlist = [y.fileno() for y in wlist]
     xxlist = [z.fileno() for z in xlist]
     rl,wl,xl = __default_net["gsm"].select(rrlist,wwlist,xxlist,timeout)
-    print(rl)
     rr = [x for x in rlist if x.fileno() in rl]
     ww = [y for y in wlist if y.fileno() in wl]
     xx = [z for z in xlist if z.fileno() in xl]

@@ -15,11 +15,15 @@ VM_SETOPT = 1
 VM_GETOPT = 2
 VM_ENCRYPT = 3
 VM_DECRYPT = 4
+VM_TRACEMASK = 5
+VM_TRACE = 6
 
 VM_OPT_RESET_ON_EXCEPTION = 0
 VM_OPT_TRACE_ON_EXCEPTION = 1
 VM_OPT_RESET_ON_HARDFAULT = 2
 VM_OPT_TRACE_ON_HARDFAULT = 3
+VM_OPT_RESET_ON_OUTOFMEMORY = 4
+VM_OPT_TRACE_ON_OUTOFMEMORY = 5
 
 def info():
     """
@@ -94,4 +98,12 @@ def decrypt(bin,nonce=0):
     __vmctrl(VM_DECRYPT,0,nonce,buf)
     return buf
 
+def set_tracemask(mask):
+    return __vmctrl(VM_TRACEMASK,mask,0,0)
+
+def trace(msg):
+    return __vmctrl(VM_TRACE,0,0,msg)
+
+def tracebin(msg):
+    return __vmctrl(VM_TRACE,1,0,msg)
 

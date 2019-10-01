@@ -6,81 +6,17 @@
 
 #if defined(ZERYNTH_SOCKETS)
 
-#define SOMAXCONN 2 // max number of waiting connections for listen
-
 #if defined(ZERYNTH_EXTERNAL_LWIP)
-
 //LWIP is provided by the driver itself
 #include "lwip/sockets.h"
 #include "lwip/netdb.h"
+#include "lwip/err.h"
 
 #else
-
 //LWIP is not provided or must be provided by stdlib
+#include  "zlwip.h"
 
-
-/* If your port already typedef's in_addr_t, define IN_ADDR_T_DEFINED
-   to prevent this code from redefining it. */
-// #if !defined(in_addr_t) && !defined(IN_ADDR_T_DEFINED)
-typedef uint32_t in_addr_t;
-// #endif
-
-#if !defined(sa_family_t) && !defined(SA_FAMILY_T_DEFINED)
-typedef uint8_t sa_family_t;
 #endif
-/* If your port already typedef's in_port_t, define IN_PORT_T_DEFINED
-   to prevent this code from redefining it. */
-#if !defined(in_port_t) && !defined(IN_PORT_T_DEFINED)
-typedef uint16_t in_port_t;
-#endif
-
-typedef uint32_t socklen_t;
-
-
-struct in_addr {
-  in_addr_t s_addr;
-};
-
-/* members are in network byte order */
-struct sockaddr_in {
-  uint8_t            sin_len;
-  sa_family_t     sin_family;
-  in_port_t       sin_port;
-  struct in_addr  sin_addr;
-#define SIN_ZERO_LEN 8
-  char            sin_zero[SIN_ZERO_LEN];
-};
-
-struct sockaddr {
-  uint8_t        sa_len;
-  sa_family_t sa_family;
-#if defined(ZERYNTH_SOCKETS_IPV6)
-  char        sa_data[22];
-#else /* LWIP_IPV6 */
-  char        sa_data[14];
-#endif /* LWIP_IPV6 */
-};
-
-struct addrinfo {
-    int               ai_flags;      /* Input flags. */
-    int               ai_family;     /* Address family of socket. */
-    int               ai_socktype;   /* Socket type. */
-    int               ai_protocol;   /* Protocol of socket. */
-    socklen_t         ai_addrlen;    /* Length of socket address. */
-    struct sockaddr  *ai_addr;       /* Socket address of socket. */
-    char             *ai_canonname;  /* Canonical name of service location. */
-    struct addrinfo  *ai_next;       /* Pointer to next in list. */
-};
-
-struct timeval {
-  long    tv_sec;         /* seconds */
-  long    tv_usec;        /* and microseconds */
-};
-
-// TODO: LWIP has 0xfff instead of BSD 0xffff!!!
-#define SOL_SOCKET  0xfff      /* options for socket level */
-
-#endif //ZERYNTH_EXTERNAL_LWIP
 
 
 typedef struct _socket_api_pointers
@@ -105,15 +41,14 @@ typedef struct _socket_api_pointers
     int (*select)(int maxfdp1, void *readset, void *writeset, void *exceptset, struct timeval *timeout);
     int (*ioctl)(int s, long cmd, void *argp);
     int (*fcntl)(int s, int cmd, int val);
-
     int (*getaddrinfo)(const char *node, const char* service, const struct addrinfo *hints, struct addrinfo **res);
     void (*freeaddrinfo)(struct addrinfo *res);
     uint32_t (*inet_addr)(const char *cp);
     char* (*inet_ntoa)(struct in_addr *in);
 } SocketAPIPointers;
 
+//TODO: add more api objects for different interfaces (wifi, eth, gsm,...)
 extern SocketAPIPointers *socket_api_pointers;
-
 SocketAPIPointers *gzsock_init(SocketAPIPointers *pointers);
 
 int gzsock_socket(int domain, int type, int protocol, void *info); //info points to SSLInfo
@@ -124,8 +59,11 @@ int gzsock_read(int s, void *mem, size_t len);
 int gzsock_send(int s, const void *dataptr, size_t size, int flags);
 int gzsock_write(int s, const void *dataptr, size_t size);
 int gzsock_setsockopt(int s, int level, int optname, const void *optval, socklen_t optlen);
+int zs_addr_to_string(struct sockaddr_in *addr, uint8_t *saddr);
+int zs_string_to_addr(uint8_t *saddr, int len, struct sockaddr_in *addr);
 
 
+//MACROS
 #define zsock_accept(s,addr,addrlen)                    (socket_api_pointers->accept)(s,addr,addrlen)
 #define gzsock_accept(s,addr,addrlen)                    (socket_api_pointers->accept)(s,addr,addrlen)
 #define zsock_bind(s,name,namelen)                      (socket_api_pointers->bind)(s,name,namelen)

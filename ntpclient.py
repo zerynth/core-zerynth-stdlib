@@ -50,10 +50,10 @@ NTPClient class
 
         ip = socket.ip_to_tuple(ip_string)
 
-        addr = (ip[0], ip[0], ip[0], ip[0], 123)
+        addr = (ip[0], ip[1], ip[2], ip[3], 123)
         sock.sendto(pkt, addr)
 
-        res = sock.recvfrom(48)
+        res, from_addr = sock.recvfrom(48)
         ts = (res[40] << 24) | (res[41] << 16) | (res[42] << 8) | res[43]
 
         sock.close()

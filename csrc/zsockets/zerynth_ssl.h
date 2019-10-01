@@ -1,6 +1,10 @@
 #ifndef ZERYNTH_SSL_H
 #define ZERYNTH_SSL_H
 
+#if defined(ZERYNTH_SSL) || defined(NATIVE_MBEDTLS)
+#include "mbedtls/ssl.h"
+#endif
+
 #if defined(ZERYNTH_SOCKETS)
 
 #define _CERT_NONE 1

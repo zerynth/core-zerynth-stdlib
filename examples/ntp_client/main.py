@@ -17,7 +17,7 @@ from wireless import wifi
 # in order to control the board hardware.
 # This example can be used as is with ESP32 based devices
 from espressif.esp32net import esp32wifi as wifi_driver
-def ntc_ts_to_datetime(self, t):
+def ntc_ts_to_datetime(t):
    ts = t - 2208988800
     
    s = ts % 60

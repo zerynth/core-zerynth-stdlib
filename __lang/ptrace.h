@@ -6,81 +6,22 @@
 #define VM_TRACING_MASK 0
 #endif
 
-#if VM_TRACING
-#include "SEGGER_RTT.h"
-
-#define ztracef(...) SEGGER_RTT_printf(0,__VA_ARGS__);
-#define ztraceb(obj,sz) SEGGER_RTT_Write(0,(void*)(obj),sz);
-
+void ztrace(uint8_t *sFormat, ...);
+void ztraceb(uint8_t *buf, uint32_t len);
+void ztraceobj(uint32_t what, uint32_t tag, uint32_t size, uint8_t* obj);
+void ztracemvv(uint32_t what, uint8_t *msg, uint32_t size, uint32_t val32, uint16_t val16);
+void vm_set_tracing(uint32_t mask);
+void vm_tracing_init(void);
 extern uint32_t vm_trace_mask;
 void vm_set_tracing(uint32_t mask);
 
-typedef struct _pytraceobj {
-    uint8_t tag;
-    uint8_t size;
-    uint16_t th;
-    uint32_t addr;
-} PyTraceObj;
+//if not tracing, avoid calling functions
+#define ztracemv2(what, msg, val32, val16) ztracemvv(what,(uint8_t*)(msg),sizeof(msg),(uint32_t)(val32),val16)
+#define ztracemv(what, msg, val32) ztracemvv(what,(uint8_t*)(msg),sizeof(msg),(uint32_t)(val32),0)
+#define ztracem(what, msg) ztracemvv(what,(uint8_t*)(msg),sizeof(msg),0,0)
+#define ztraceo(what,tag,size,obj) ztraceobj(what,tag,size,(uint8_t*)(obj))
 
 #define VM_IS_TRACING(f) ((vm_trace_mask)&(f))
-
-#define ztrace(what, ...) do { \
-    if (VM_IS_TRACING(what)) {  \
-        ztracef(__VA_ARGS__);      \
-    }                            \
-} while(0)
-
-#define ztraceo(what, thetag, thesize, obj) do { \
-    if (VM_IS_TRACING(what)) {  \
-        PyTraceObj __ptf;\
-        __ptf.tag=(thetag);\
-        __ptf.th = vosThGetId(vosThCurrent());\
-        __ptf.addr=(uint32_t)(obj);\
-        __ptf.size=(thesize); \
-        SEGGER_RTT_LOCK(); \
-        SEGGER_RTT_WriteNoLock(0,(void*)&__ptf,sizeof(PyTraceObj)); \
-        if(__ptf.size) SEGGER_RTT_WriteNoLock(0,(void*)(obj),__ptf.size); \
-        SEGGER_RTT_UNLOCK(); \
-    }                            \
-} while(0)
-
-
-#define ztracemv2(what, msg, val32, val16) do { \
-    if (VM_IS_TRACING(what)) {  \
-        PyTraceObj __ptf;\
-        __ptf.tag=(TRACING_MESSAGE);\
-        __ptf.th = (uint16_t)(val16);\
-        __ptf.addr=(uint32_t)(val32);\
-        __ptf.size=sizeof(msg); \
-        SEGGER_RTT_LOCK(); \
-        SEGGER_RTT_WriteNoLock(0,(void*)&__ptf,sizeof(PyTraceObj)); \
-        if(__ptf.size) SEGGER_RTT_WriteNoLock(0,(void*)(msg),__ptf.size); \
-        SEGGER_RTT_UNLOCK(); \
-    }                            \
-} while(0)
-
-#define ztracemv(what, msg, val32) ztracemv2(what,msg,val32,0)
-#define ztracem(what, msg) ztracemv2(what,msg,0,0)
-
-#define vm_tracing_init(...)  do {\
-    SEGGER_RTT_Init(); \
-    vm_set_tracing(VM_TRACING_MASK); \
-} while (0);
-
-#else
-
-#define ztracef(...)
-#define ztrace(...)
-#define ztraceb(...)
-#define ztraceo(...)
-#define ztracem(...)
-#define ztracemv(...)
-#define ztracemv2(...)
-#define vm_tracing_init(...)
-#define VM_IS_TRACING(f) (0)
-
-#endif //VMTRACING
-
 
 //Tracing flags
 //32 bits = 32 flags
@@ -126,10 +67,15 @@ typedef struct _pytraceobj {
 #define VM_TRACING_SFW             (1<<15)
 //traces reset/restarts
 #define VM_TRACING_RESET           (1<<16)
+#define VM_TRACING_ERRORS           (1<<17)
+#define VM_TRACING_DEBUG            (1<<18)
 
+
+#define VM_TRACING_CUSTOM           (1<<20)
 
 //TRACING TAGS
 #define TRACING_MESSAGE 'm'
+#define TRACING_ERROR 'E'
 #define TRACING_GC_OBJECT 'O'
 #define TRACING_GC_KEEP 'K'
 #define TRACING_GC_ALLOC 'A'
@@ -148,3 +94,4 @@ typedef struct _pytraceobj {
 #define TRACING_PY_BLOCK 'B'
 
 #endif
+

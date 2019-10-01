@@ -59,12 +59,14 @@ void gc_free(void *pnt);
 #define GET_TIME_VALUE(n) ((n)>>2)
 //NANOS not supported yet
 #define GET_TIME_MICROS(n) (GET_TIME_VALUE(n)*((GET_TIME_UNIT(n)==MILLIS) ? 1000:((GET_TIME_UNIT(n)==SECONDS) ? 1000000:1)))
+#define GET_TIME_MILLIS(n) (GET_TIME_VALUE(n)*((GET_TIME_UNIT(n)==MILLIS) ? 1:((GET_TIME_UNIT(n)==SECONDS) ? 1000:0)))
+
 #define TIME_IS_ZERO(x) ((x)<=0x3)
 /* ========================================================================
     MISC
    ======================================================================== */
 
-#ifdef ESP8266_RTOS
+#if defined(ESP8266_RTOS) || defined(ESP32_RTOS) || defined(NRF52840_XXAA) || defined(NRF52)
 #define STORED
 #else
 #define STORED __attribute__ ((section (".storedata")))

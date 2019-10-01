@@ -200,6 +200,10 @@ extern const SdioPins const _vm_sdio_pins[];
 
 #define VM_RXPIN(ch) _vm_serial_pins[ch].rxpin
 #define VM_TXPIN(ch) _vm_serial_pins[ch].txpin
+#define VM_RTSPIN(ch)  _vm_serial_pins[ch].rtspin
+#define VM_CTSPIN(ch)  _vm_serial_pins[ch].ctspin
+#define VM_HWFC(ch) (((VM_RTSPIN(ch)!=0xff)&&(VM_CTSPIN(ch)!=0xff)) ? SERIAL_HWFC:SERIAL_NO_HWFC)
+#define VM_HWFCPINS(ch) (SERIAL_CTS(VM_CTSPIN((ch)))|SERIAL_RTS(VM_RTSPIN(ch)))
 
 /*====== BYTECODE ================================================== */
 
@@ -215,7 +219,9 @@ uint32_t adler32(uint8_t *buf, uint32_t len);
 
 
 void vbl_printf_stdout(uint8_t *fmt,...);
-
+void vbl_printf_noos(uint8_t *fmt,...);
+void zerynth_hardfault_handler(void*);
+void zerynth_outofmemory_handler(void*);
 #define printf(...) vbl_printf_stdout(__VA_ARGS__)
 
 #define _DEBUG 0
