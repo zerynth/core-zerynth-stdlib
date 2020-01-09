@@ -103,7 +103,7 @@ int zs_string_to_addr(uint8_t *saddr, int len, struct sockaddr_in *addr);
 
 
 
-#if defined(ZERYNTH_SSL)
+#if defined(ZERYNTH_SSL) || defined(NATIVE_MBEDTLS)
 //ADD SSL defs as needed
 #include "zerynth_ssl.h"
 #endif

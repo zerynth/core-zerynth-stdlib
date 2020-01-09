@@ -197,6 +197,26 @@ def options(url,headers=None,ctx=None):
     return _verb(url,None,None,headers,None,"OPTIONS",ctx)
 
 
+def upload(url,fd,ctx=None,mime_type="application/octet-stream",method="POST"):
+    """
+.. function:: upload(url,fd,ctx=None,mime_type="application/octet-stream",method="POST")
+
+    Upload a file identified by *fd* to *url*. *fd* must provide methods read and size.
+
+    A tcp connection is made to the host:port given in the url using the default net driver.
+
+    The type of the file contents and the HTTP method (POST pr PUT) can be customized.
+
+    *upload* returns a :class:`Response` instance.
+
+    Exceptions can be raised: :exc:`HTTPConnectionError` when the HTTP server can't be contacted; :exc:`IOError` when the source of error lies at the socket level (i.e. closed sockets, invalid sockets, file, etc..)
+
+
+    """
+    return _verb(url,None,None,{"content-type":mime_type},None,method,ctx,None,0,fd)
+
+
+
 def _connect(host,port,scheme,ctx):
     try:
         #print("_connect",host,port,scheme)
@@ -256,7 +276,7 @@ def add_to_buffer(buffer,what,pos):
     return pos 
 
 
-def _verb(url,data=None,params=None,headers=None,connection=None,verb=None,ctx=None,stream_callback=None,stream_chunk=512):
+def _verb(url,data=None,params=None,headers=None,connection=None,verb=None,ctx=None,stream_callback=None,stream_chunk=512,fd=None):
     urlp = urlparse.parse(url)
     netl = urlparse.parse_netloc(urlp[1])
     host = netl[2]
@@ -328,6 +348,10 @@ def _verb(url,data=None,params=None,headers=None,connection=None,verb=None,ctx=N
         rh["content-length"] = str(len(data[0])) #data[0] is actual data
         if data[1]:
             rh["content-type"] = data[1]             #data[1] is data type header
+    if fd is not None:
+        rh["content-length"] = str(fd.size())
+
+
 
     for k,v in rh.items():
         p = add_to_buffer(msg,k,p)
@@ -350,6 +374,14 @@ def _verb(url,data=None,params=None,headers=None,connection=None,verb=None,ctx=N
     # print(">>",msg)
     sock.sendall(msg)
     __elements_set(msg,BUFFER_LEN)
+    # stream body
+    if fd is not None:
+        while True:
+            rd = fd.read(512)
+            if len(rd)>0:
+                sock.sendall(rd)
+            else:
+                break
     p = 0
 
 
@@ -385,65 +417,69 @@ def _verb(url,data=None,params=None,headers=None,connection=None,verb=None,ctx=N
     #print(rr.headers)
     rr.connection=sock
 
-    if "content-length" in rr.headers:
-        bodysize=int(rr.headers["content-length"])
-        #print("bodysize",bodysize)
-        contentsize = bodysize
-        reset_content = False
-        if stream_callback is not None:
-            reset_content = True
-            contentsize = stream_chunk
+    if verb != "HEAD":
+        # read response body
+        if "content-length" in rr.headers:
+            bodysize=int(rr.headers["content-length"])
+            #print("bodysize",bodysize)
+            contentsize = bodysize
+            reset_content = False
+            if stream_callback is not None:
+                reset_content = True
+                contentsize = stream_chunk
 
-        rr.content = bytearray(contentsize)
-        tmp = 0
-        rdr = 0
-        while bodysize>0:
-            if reset_content:
-                ofs=0
-            else:
-                ofs=tmp
-            rdr = sock.recv_into(rr.content,min(bodysize,contentsize),ofs=ofs)
-            if rdr and stream_callback:
-                __elements_set(rr.content,rdr)
-                stream_callback(rr.content)
-            #print(rdr,rr.content[tmp:tmp+rdr])
-            tmp+=rdr
-            bodysize-=rdr
-            if not rdr:
-                break
-        #print("CLOSED SOCKET A",sock.channel,rdr,tmp,bodysize)
-        sock.close()
-        rr.connection=None
-    elif "transfer-encoding" in rr.headers:
-        while True:
-            __elements_set(msg,BUFFER_LEN)
-            msg = _readline(ssock,buffer,0,BUFFER_LEN)
-            chsize = int(msg,16)
-            #print("chsize",chsize)
-            if chsize:
-                msg = sock.recv(chsize)
-                #print(msg)
-                if msg:
-                    rr.content.extend(msg)
+            rr.content = bytearray(contentsize)
+            tmp = 0
+            rdr = 0
+            while bodysize>0:
+                if reset_content:
+                    ofs=0
+                else:
+                    ofs=tmp
+                rdr = sock.recv_into(rr.content,min(bodysize,contentsize),ofs=ofs)
+                if rdr and stream_callback:
+                    __elements_set(rr.content,rdr)
+                    stream_callback(rr.content)
+                #print(rdr,rr.content[tmp:tmp+rdr])
+                tmp+=rdr
+                bodysize-=rdr
+                if not rdr:
+                    break
+            #print("CLOSED SOCKET A",sock.channel,rdr,tmp,bodysize)
+        elif "transfer-encoding" in rr.headers:
+            while True:
+                __elements_set(msg,BUFFER_LEN)
+                msg = _readline(ssock,buffer,0,BUFFER_LEN)
+                chsize = int(msg,16)
+                #print("chsize",chsize)
+                if chsize:
+                    msg = sock.recv(chsize)
+                    #print(msg)
+                    if msg:
+                        rr.content.extend(msg)
+                    else:
+                        break
+                    __elements_set(buffer,BUFFER_LEN)
+                    msg = _readline(ssock,buffer,0,BUFFER_LEN)
+                else:
+                    __elements_set(buffer,BUFFER_LEN)
+                    msg = _readline(ssock,buffer,0,BUFFER_LEN) #terminator
+                    break
+            #print("CLOSED SOCKET B",sock.channel)
+        else:
+            while True:
+                tmp = sock.recv(32)
+                if tmp:
+                    rr.content.extend(tmp)
+                    #print(tmp)
                 else:
                     break
-                __elements_set(buffer,BUFFER_LEN)
-                msg = _readline(ssock,buffer,0,BUFFER_LEN)
-            else:
-                __elements_set(buffer,BUFFER_LEN)
-                msg = _readline(ssock,buffer,0,BUFFER_LEN) #terminator
-                break
-        #print("CLOSED SOCKET B",sock.channel)
-        sock.close()
+            #print("CLOSED SOCKET C",sock.channel)
+
+    # handle connection close or keep-alive
+    if "connection" in rr.headers and rr.headers["connection"] == "keep-alive":
+        rr.connection = sock
     else:
-        while True:
-            tmp = sock.recv(32)
-            if tmp:
-                rr.content.extend(tmp)
-                #print(tmp)
-            else:
-                break
-        #print("CLOSED SOCKET C",sock.channel)
         sock.close()
         rr.connection = None
 

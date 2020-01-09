@@ -2,7 +2,6 @@
 #include "diskio.h"
 #include "vbl.h"
 
-#define printf(...) vbl_printf_stdout(__VA_ARGS__)
 
 #if defined(VHAL_CUSTOM_SPISD) && VHAL_CUSTOM_SPISD
 
@@ -61,15 +60,15 @@ BYTE CardType;			/* Card type flags */
 // #define	MMC_CD		!(GPIOC_IDR & _BV(4))	/* Card detect (yes:true, no:false, default:true) */
 // #define	MMC_WP		0 /* Write protected (yes:true, no:false, default:false) */
 
-static VSysTimer Timer1, Timer2;
+static uint64_t Timer1, Timer2;
 
 static uint32_t Timer1_millis;
 static uint32_t Timer2_millis;
 
-#define Timer1_eq(n)   { Timer1 = vosTimerCreate(); Timer1_millis = n; }
-#define Timer1_        (vosTimerReadMillis(Timer1) < Timer1_millis)
-#define Timer2_eq(n)   { Timer2 = vosTimerCreate(); Timer2_millis = n; }
-#define Timer2_        (vosTimerReadMillis(Timer2) < Timer2_millis)
+#define Timer1_eq(n)   { Timer1 = vosMillis(); Timer1_millis = n; }
+#define Timer1_        ((uint32_t)(vosMillis()-Timer1) < Timer1_millis)
+#define Timer2_eq(n)   { Timer2 = vosMillis(); Timer2_millis = n; }
+#define Timer2_        ( (uint32_t)(vosMillis()-Timer2) < Timer2_millis)
 
 /*-----------------------------------------------------------------------*/
 /* SPI controls                                                          */

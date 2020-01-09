@@ -12,7 +12,7 @@
 #include "spisd.h"
 #include "vbl.h"
 
-#define printf(...) vbl_printf_stdout(__VA_ARGS__)
+//#define printf(...) vbl_printf_stdout(__VA_ARGS__)
 
 /* Definitions of physical drive number for each drive */
 #define SPISD	0	/* Example: Map ATA harddisk to physical drive 0 */

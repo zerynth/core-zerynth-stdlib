@@ -14,20 +14,36 @@ uint32_t mnt_cnt = 0;
 FIL fil[4];
 DIR dir[4];
 
+#define GET_NAMED_PYPATH(arg,name) \
+    uint8_t *__##name = PSEQUENCE_BYTES(arg);  \
+    int __##name##len = PSEQUENCE_ELEMENTS(arg); \
+    uint8_t *name = gc_malloc(__##name##len+1);  \
+    memcpy(name,__##name,__##name##len);           \
+    name[__##name##len]=0
+
+#define GET_PYPATH(arg) GET_NAMED_PYPATH(arg,path)
+
+#define DEL_NAMED_PYPATH(name) gc_free(name)
+
+#define DEL_PYPATH() DEL_NAMED_PYPATH(path)
 // Volume Management
 
 C_NATIVE(__f_mount) {
     NATIVE_UNWARN();
     FRESULT fr;
-    TCHAR *path = PSEQUENCE_BYTES(args[0]);
+    GET_PYPATH(args[0]);
+    printf("mounting path %i %s\n",__pathlen,path);
     if (mnt_cnt < _VOLUMES) {
         fr = f_mount(&FatFs[mnt_cnt], path, 0);
         if (fr != 0) {
+            DEL_PYPATH();
             return ERR_VALUE_EXC;
         }
         mnt_cnt += 1;
+        DEL_PYPATH();
         return ERR_OK;
     }
+    DEL_PYPATH();
     return ERR_VALUE_EXC;
 }
 
@@ -36,13 +52,16 @@ C_NATIVE(__f_mount) {
 C_NATIVE(__f_open) {
     NATIVE_UNWARN();
     FRESULT fr;
-    uint8_t *path = PSEQUENCE_BYTES(args[0]);
+    GET_PYPATH(args[0]);
     uint8_t flag  = (uint8_t)PSMALLINT_VALUE(args[1]);
     uint8_t n     = (uint8_t)PSMALLINT_VALUE(args[2]);
+    printf("opening file %i %s\n",__pathlen,path);
+
     fr = f_open(&fil[n], path, flag);
     if (fr != 0) {
         *res = PSMALLINT_NEW(-1);
     }
+    gc_free(path);
     return ERR_OK;
 }
 
@@ -177,12 +196,18 @@ C_NATIVE(__f_eof) {
 C_NATIVE(__f_opendir) {
     NATIVE_UNWARN();
     FRESULT fr;
-    uint8_t *path = PSEQUENCE_BYTES(args[0]);
+    uint8_t *lpath = PSEQUENCE_BYTES(args[0]);
     uint8_t n     = (uint8_t)PSMALLINT_VALUE(args[1]);
+    int pathlen = PSEQUENCE_ELEMENTS(args[0]);
+    uint8_t *path = gc_malloc(pathlen+1);
+    memcpy(path,lpath,pathlen);
+    path[pathlen]=0;
+    printf("opening file %i %s\n",pathlen,path);
     fr = f_opendir(&dir[n], path);
     if (fr != 0) {
         *res = PSMALLINT_NEW(-1);
     }
+    DEL_PYPATH();
     return ERR_OK;
 }
 
@@ -244,7 +269,8 @@ C_NATIVE(__f_exists) {
     NATIVE_UNWARN();
     FRESULT fr;
     FILINFO fno;
-    uint8_t *path = PSEQUENCE_BYTES(args[0]);
+    GET_PYPATH(args[0]);
+    printf("check exists file %i %s\n",__pathlen,path);
     fr = f_stat(path, &fno);
     if (fr == FR_OK) {
         *res = PBOOL_TRUE();
@@ -252,6 +278,7 @@ C_NATIVE(__f_exists) {
     else {
         *res = PBOOL_FALSE();
     }
+    DEL_PYPATH();
     return ERR_OK;
 }
 
@@ -259,7 +286,8 @@ C_NATIVE(__f_isdir) {
     NATIVE_UNWARN();
     FRESULT fr;
     FILINFO fno;
-    uint8_t *path = PSEQUENCE_BYTES(args[0]);
+    GET_PYPATH(args[0]);
+    printf("isdir %i %s\n",__pathlen,path);
     fr = f_stat(path, &fno);
     if (fr == FR_OK) {
         if (fno.fattrib & AM_DIR) {
@@ -272,6 +300,7 @@ C_NATIVE(__f_isdir) {
     else {
         *res = PBOOL_FALSE();
     }
+    DEL_PYPATH();
     return ERR_OK;
 }
 
@@ -280,19 +309,24 @@ C_NATIVE(__f_copy) {
     FRESULT fr_1, fr_2;          /* FatFs function common result code */
     UINT br, bw;         /* File read/write count */
     BYTE *buffer;   /* File copy buffer */
-    uint8_t* src = PSEQUENCE_BYTES(args[0]);
-    uint8_t* dst = PSEQUENCE_BYTES(args[1]);
+    // uint8_t* src = PSEQUENCE_BYTES(args[0]);
+    // uint8_t* dst = PSEQUENCE_BYTES(args[1]);
     uint32_t n_src = (uint8_t)PSMALLINT_VALUE(args[2]);
     uint32_t n_dst = (uint8_t)PSMALLINT_VALUE(args[3]);
-
+    GET_NAMED_PYPATH(args[0],src);
+    GET_NAMED_PYPATH(args[1],dst);
     fr_1 = f_open(&fil[n_src], src, FA_READ);
     fr_2 = f_open(&fil[n_dst], dst, FA_WRITE | FA_CREATE_ALWAYS);
     if (fr_1 != FR_OK || fr_2 != FR_OK) {
         *res = PSMALLINT_NEW(-1);
+        DEL_NAMED_PYPATH(src);
+        DEL_NAMED_PYPATH(dst);
         return ERR_OK;
     }
     buffer = malloc(128 * sizeof(BYTE));
     if (buffer == NULL) {
+        DEL_NAMED_PYPATH(src);
+        DEL_NAMED_PYPATH(dst);
         return ERR_VALUE_EXC;
     }
     for (;;) {
@@ -310,51 +344,63 @@ C_NATIVE(__f_copy) {
     if (fr_1 != FR_OK || fr_2 != FR_OK) {
         *res = PSMALLINT_NEW(-1);
     }
+    DEL_NAMED_PYPATH(src);
+    DEL_NAMED_PYPATH(dst);
     return ERR_OK;
 }
 
 C_NATIVE(__f_unlink) {
     NATIVE_UNWARN();
     FRESULT fr;
-    uint8_t *path = PSEQUENCE_BYTES(args[0]);
+    GET_PYPATH(args[0]);
+    printf("unlink %i %s\n",__pathlen,path);
     fr = f_unlink(path);
     if (fr != FR_OK) {
         *res = PSMALLINT_NEW(-1);
     }
+    DEL_PYPATH();
     return ERR_OK;
 }
 
 C_NATIVE(__f_rename) {
     NATIVE_UNWARN();
     FRESULT fr;
-    uint8_t *src_path = PSEQUENCE_BYTES(args[0]);
-    uint8_t *dst_path = PSEQUENCE_BYTES(args[1]);
+    // uint8_t *src_path = PSEQUENCE_BYTES(args[0]);
+    // uint8_t *dst_path = PSEQUENCE_BYTES(args[1]);
+    GET_NAMED_PYPATH(args[0],src_path);
+    GET_NAMED_PYPATH(args[1],dst_path);
     fr = f_rename(src_path, dst_path);
     if (fr != FR_OK) {
         *res = PSMALLINT_NEW(-1);
     }
+    DEL_NAMED_PYPATH(src_path);
+    DEL_NAMED_PYPATH(dst_path);
     return ERR_OK;
 }
 
 C_NATIVE(__f_mkdir) {
     NATIVE_UNWARN();
     FRESULT fr;
-    uint8_t *path = PSEQUENCE_BYTES(args[0]);
+    GET_PYPATH(args[0]);
+    printf("mkdir %i %s\n",__pathlen,path);
     fr = f_mkdir(path);
     if (fr != FR_OK) {
         *res = PSMALLINT_NEW(-1);
     }
+    DEL_PYPATH();
     return ERR_OK;
 }
 
 C_NATIVE(__f_chdir) {
     NATIVE_UNWARN();
     FRESULT fr;
-    uint8_t *path = PSEQUENCE_BYTES(args[0]);
+    GET_PYPATH(args[0]);
+    printf("chdir %i %s\n",__pathlen,path);
     fr = f_chdir(path);
     if (fr != FR_OK) {
         *res = PSMALLINT_NEW(-1);
     }
+    DEL_PYPATH();
     return ERR_OK;
 }
 
