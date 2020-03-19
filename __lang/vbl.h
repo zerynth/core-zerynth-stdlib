@@ -178,13 +178,19 @@ typedef struct _vm_sdio_pins {
     uint16_t sdio_pins[10];
 } SdioPins;
 
+typedef struct _vm_can_pin {
+    uint16_t rxpin;
+    uint16_t txpin;
+} CanPins;
+
 #if defined(VM_IS_CUSTOM)
 extern SerialPins *_vm_serial_pins;
 extern SpiPins *_vm_spi_pins;
 extern I2CPins *_vm_i2c_pins;
 extern SdioPins *_vm_sdio_pins;
+extern CanPins *_vm_can_pins;
 
-#define _vm_pin_map(prph) ( ((prph)==0x02) ? (((void*)_vm_spi_pins)):( ((prph)==0x03) ? (((void*)_vm_i2c_pins)):( NULL ))  )
+#define _vm_pin_map(prph) ( ((prph)==0x02) ? ((void*)_vm_spi_pins):( ((prph)==0x03) ? ((void*)_vm_i2c_pins):((prph)==PRPH_CAN) ? ((void*)_vm_can_pins):( NULL )  ))
 
 #else
 
@@ -192,8 +198,9 @@ extern const SerialPins const _vm_serial_pins[];
 extern const SpiPins const _vm_spi_pins[];
 extern const I2CPins const _vm_i2c_pins[];
 extern const SdioPins const _vm_sdio_pins[];
+extern const CanPins const _vm_can_pins[];
 
-#define _vm_pin_map(prph) ( ((prph)==0x02) ? ((void*)_vm_spi_pins):( ((prph)==0x03) ? ((void*)_vm_i2c_pins):( NULL ))  )
+#define _vm_pin_map(prph) ( ((prph)==0x02) ? ((void*)_vm_spi_pins):( ((prph)==0x03) ? ((void*)_vm_i2c_pins):((prph)==PRPH_CAN) ? ((void*)_vm_can_pins):( NULL )  ))
 
 #endif
 

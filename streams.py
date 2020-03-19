@@ -138,7 +138,7 @@ class serial(stream):
 The serial class
 ================
 
-.. class:: serial(drivername=SERIAL0,baud=115200,set_default=True)
+.. class:: serial(drivername=SERIAL0,baud=115200,stopbits=STOPBIT_1, parity=PARITY_NONE, bitsize=BITSIZE_8,set_default=True,rxsize=0,txsize=0)
 
         This class implements a stream that can be used to connect to a serial port.
         It inhertis all of its methods from :class:`stream`.
@@ -146,6 +146,13 @@ The serial class
         Initialize the serial port driver identified by *drivername* and starts it up with a baud rate of *baud*.
         Also, if *set_default* is True, sets itself as the default stream used by :func:`__builtins__.print`.
         This means that the serial stream will be the system default one.
+        Additional parameters can be passed such as:
+        * *parity* : :samp:`PARITY_NONE` or :samp:`PARITY_ONE`
+        * *stopbits* : :samp:`STOPBIT_1` , :samp:`STOPBIT_1_HALF`, :samp:`STOPBIT_2`
+        * *bitsize* : :samp:`BITSIZE_8`
+        * *rxsize* and *txsize* : the size in bytes of the receive and transmit buffers (0 selects the board default)
+
+        Not all of the additional parameters are always supported by the underlying device.
 
         This is the code needed to print something on the default serial port: ::
 
@@ -160,11 +167,17 @@ The serial class
             print("Hello World!")
 
     """
-    def __init__(self,drvname=SERIAL0,baud=115200,stopbits=STOPBIT_1,parity=PARITY_NONE,bitsize=BITSIZE_8,set_default=True):
+    def __init__(self,drvname=SERIAL0,baud=115200,stopbits=STOPBIT_1,parity=PARITY_NONE,bitsize=BITSIZE_8,set_default=True,rxsize=0,txsize=0):
         stream.__init__(self)
         self.channel = __driver(drvname)
         self.hidx = drvname&0xff
-        self.channel.__ctl__(DRV_CMD_INIT,self.hidx,baud,parity,stopbits,bitsize)
+        try:
+            # some boards throw erros on custom buffers...
+            self.channel.__ctl__(DRV_CMD_INIT,self.hidx,baud,parity,stopbits,bitsize,rxsize,txsize)
+        except:
+            # ...ignore them and try again
+            self.channel.__ctl__(DRV_CMD_INIT,self.hidx,baud,parity,stopbits,bitsize)
+
         if set_default:
             __builtins__.__default_stream = self
 

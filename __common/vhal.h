@@ -31,17 +31,73 @@ int vhalInit(void *data);
 #include "vhal_pins.h"
 
 #define PERIPHERAL_ID(n) ((uint8_t)((n)-1))
-#if defined(VM_IS_CUSTOM)
-#define GET_PERIPHERAL_ID(name,vprph) (((*((uint8_t**)_vhal_ ## name ## _map))[vprph]))
-#else
+
 #define GET_PERIPHERAL_ID(name,vprph) _vhal_ ## name ## _map[vprph]
-#endif
+
 #define PERIPHERAL_NUM(name) (_vhal_ ## name ## _num)
 #define BEGIN_PERIPHERAL_MAP(name) const uint8_t _vhal_ ## name ## _map[] STORED = {
 #define END_PERIPHERAL_MAP(name) }; \
   const uint8_t _vhal_ ## name ## _num = sizeof(_vhal_ ## name ## _map)
+
+
+#if defined(VM_IS_CUSTOM)
+
+#define DECLARE_PERIPHERAL_MAP(name) extern uint8_t* _vhal_ ## name ## _map; \
+  extern uint8_t _vhal_ ## name ## _num
+
+#define BEGIN_PERIPHERAL_MAPS() \
+    uint8_t* _vhal_adc_map;\
+    uint8_t _vhal_adc_num;\
+    uint8_t* _vhal_spi_map;\
+    uint8_t _vhal_spi_num;\
+    uint8_t* _vhal_i2c_map;\
+    uint8_t _vhal_i2c_num;\
+    uint8_t* _vhal_pwm_map;\
+    uint8_t _vhal_pwm_num;\
+    uint8_t* _vhal_icu_map;\
+    uint8_t _vhal_icu_num;\
+    uint8_t* _vhal_can_map;\
+    uint8_t _vhal_can_num;\
+    uint8_t* _vhal_serial_map;\
+    uint8_t _vhal_serial_num;\
+    uint8_t* _vhal_dac_map;\
+    uint8_t _vhal_dac_num;\
+    uint8_t* _vhal_htm_map;\
+    uint8_t _vhal_htm_num;\
+    uint8_t* _vhal_rtc_map;\
+    uint8_t _vhal_rtc_num;\
+    uint8_t* _vhal_led_map;\
+    uint8_t _vhal_led_num;\
+    uint8_t* _vhal_btn_map;\
+    uint8_t _vhal_btn_num;
+    
+extern uint8_t* _vhal_adc_map;
+extern uint8_t _vhal_adc_num;
+extern uint8_t* _vhal_spi_map;
+extern uint8_t _vhal_spi_num;
+extern uint8_t* _vhal_i2c_map;
+extern uint8_t _vhal_i2c_num;
+extern uint8_t* _vhal_pwm_map;
+extern uint8_t _vhal_pwm_num;
+extern uint8_t* _vhal_icu_map;
+extern uint8_t _vhal_icu_num;
+extern uint8_t* _vhal_can_map;
+extern uint8_t _vhal_can_num;
+extern uint8_t* _vhal_ser_map;
+extern uint8_t _vhal_ser_num;
+extern uint8_t* _vhal_dac_map;
+extern uint8_t _vhal_dac_num;
+extern uint8_t* _vhal_led_map;
+extern uint8_t _vhal_led_num;
+extern uint8_t* _vhal_btn_map;
+extern uint8_t _vhal_btn_num;
+
+#else
+
 #define DECLARE_PERIPHERAL_MAP(name) extern const uint8_t _vhal_ ## name ## _map[]; \
   extern const uint8_t _vhal_ ## name ## _num
+
+#endif
 
 
 int vhalGetPeripheralForPin(int vpin, int pinclass);
@@ -904,6 +960,22 @@ Macros
 
 DECLARE_PERIPHERAL_MAP(serial);
 
+typedef struct _serial_cfg {
+    uint32_t baudrate;
+    uint16_t rxbufsize;
+    uint16_t txbufsize;
+    uint8_t parity;
+    uint8_t stop;
+    uint8_t bits;
+    uint8_t hwflow;
+    uint8_t mode;
+    uint8_t unused;
+    uint16_t rx;
+    uint16_t tx;
+    uint16_t rts;
+    uint16_t cts;
+    uint16_t nss;
+} vhalSerialConf;
 /**
 
 Functions
@@ -917,6 +989,7 @@ Functions
 
 */
 int vhalSerialInit(uint32_t ser, uint32_t baud, uint32_t cfg, uint16_t rxpin, uint16_t txpin);
+int vhalSerialInitEx(uint32_t ser, vhalSerialConf *cfg);
 /**
 .. function:: int vhalSerialRead(uint32_t ser, uint8_t *buf, uint32_t len)
 
@@ -926,6 +999,7 @@ int vhalSerialInit(uint32_t ser, uint32_t baud, uint32_t cfg, uint16_t rxpin, ui
 
 */
 int vhalSerialRead(uint32_t ser, uint8_t *buf, uint32_t len);
+int vhalSerialReadEx(uint32_t ser, uint8_t *buf, uint32_t len, int end, int *rd, uint32_t timeout);
 /**
 .. function:: int vhalSerialWrite(uint32_t ser, uint8_t *buf, uint32_t len)
 
@@ -1256,6 +1330,55 @@ int vhalSpiExchange(uint32_t spi, void *tosend, void *toread, uint32_t blocks);
 */
 int vhalSpiDone(uint32_t spi);
 
+/**
+
+Macros
+------
+
+.. macro:: QSPI_MODE_LOW_FIRST
+
+  Low polarity (idle low), phase zero (bits captured on the first clock edge)
+
+.. macro:: QSPI_MODE_LOW_SECOND
+
+  Low polarity (idle low), phase one (bits captured on the second clock edge)
+
+.. macro:: QSPI_MODE_HIGH_FIRST
+
+  High polarity (idle high), phase zero (bits captured on the first clock edge)
+
+.. macro:: QSPI_MODE_HIGH_SECOND
+
+  High polarity (idle high), phase one (bits captured on the second clock edge)
+
+*/
+
+// #define QSPI_MODE_LOW_FIRST 0
+// #define QSPI_MODE_LOW_SECOND 1
+// #define QSPI_MODE_HIGH_FIRST 2
+// #define QSPI_MODE_HIGH_SECOND 3
+
+// typedef struct _vhal_qspi_conf {
+//   uint32_t clock;
+//   uint16_t miso;
+//   uint16_t mosi;
+//   uint16_t sclk;
+//   uint16_t nss;
+//   uint16_t sio2;
+//   uint16_t sio3;
+// } vhalQSpiConf;
+
+// DECLARE_PERIPHERAL_MAP(qspi);
+
+// int vhalQSpiInit(uint32_t spi, vhalQSpiConf *conf);
+// int vhalQSpiLock(uint32_t spi);
+// int vhalQSpiUnlock(uint32_t spi);
+// int vhalQSpiSelect(uint32_t spi);
+// int vhalQSpiUnselect(uint32_t spi);
+// int vhalQSpiExchange(uint32_t spi, void *tosend, void *toread, uint32_t blocks);
+// int vhalQSpiDone(uint32_t spi);
+
+
 
 /* ========================================================================
     SDIO
@@ -1546,6 +1669,7 @@ Error code are non positive integers. They have been encoded in such a way that 
 #define POWERSAVE_INTERRUPT  1
 #define POWERSAVE_TIMEOUT    2
 #define POWERSAVE_WATCHDOG   3
+#define POWERSAVE_BROWNOUT   4
 
 
 
@@ -1574,13 +1698,13 @@ int vhalKickWatchdog(void);
 /* ********************************************************************************************* */
 
 typedef struct {
-  uint32_t flash_size;          
-  uint32_t block_size; 
-  uint32_t subblock_size;   
-  uint32_t sector_size; 
+  uint32_t flash_size;
+  uint32_t block_size;
+  uint32_t subblock_size;
+  uint32_t sector_size;
   uint32_t page_size;
   uint16_t alt_bytes_pe_mode;
-  uint16_t alt_bytes_no_pe_mode; 
+  uint16_t alt_bytes_no_pe_mode;
   uint8_t dummy_cycles_read;
   uint8_t dummy_cycles_read_dual;
   uint8_t dummy_cycles_read_quad;
@@ -1613,5 +1737,88 @@ int vhalQspiFlashEraseSector(uint32_t qspi, uint32_t addr, uint8_t block);
 int vhalQspiFlashEraseBlock(uint32_t qspi, uint32_t addr, uint8_t block);
 int vhalQspiFlashWakeup(uint32_t qspi);
 int vhalQspiFlashSleep(uint32_t qspi);
+
+/* ********************************************************************************************* */
+/*  CAN Controller                                                                               */
+/* ********************************************************************************************* */
+
+// configuration struct
+typedef struct _vhal_can_conf
+{
+  uint32_t speed;     // baud rate (up to 1M bps for classic CAN)
+  uint8_t prop_seg;   // propagation time quanta (1-8)
+  uint8_t phase1_seg; // phase 1 time quanta (1-8)
+  uint8_t phase2_seg; // phase 2 time quanta (1-8)
+  uint8_t sjw;        // resynchronization jump width (1-4)
+  uint16_t rx;        // pin rx
+  uint16_t tx;        // pin tx
+  uint8_t options;    // optional features (no automatic bus-off recovery, no retry, etc.)
+} vhalCanConf;
+
+// configuration options
+#define CAN_OPTION_NO_RETRY     0x01  // disable automatic retransmission
+#define CAN_OPTION_NO_AUTO_OFF  0x02  // disable automatic recovery from Bus Off state
+#define CAN_OPTION_KEEP_ORDER   0x04  // keep chronological order of messages
+#define CAN_OPTION_LISTEN_ONLY  0x08  // passive listening mode (messages are Ack'ed internally)
+#define CAN_OPTION_LOOPBACK     0x10  // enable loopback mode (receive only own messages)
+
+// filter definition
+typedef struct _vhal_can_errors
+{
+  uint32_t flags;     // latest cumulative error flags
+  uint16_t rx_count;  // receive error counter
+  uint16_t tx_count;  // transmit error counter
+} vhalCanErrors;
+
+// error flags
+#define CAN_ERROR_WARNING     0x0001  // Protocol Error Warning
+#define CAN_ERROR_PASSIVE     0x0002  // Error Passive
+#define CAN_ERROR_BUSOFF      0x0004  // Bus-off error
+#define CAN_ERROR_STUFF       0x0008  // Stuff error
+#define CAN_ERROR_FORM        0x0010  // Form error
+#define CAN_ERROR_ACK         0x0020  // Acknowledgment error
+#define CAN_ERROR_RECESSIVE   0x0040  // Bit recessive error
+#define CAN_ERROR_DOMINANT    0x0080  // Bit dominant error
+#define CAN_ERROR_CRC         0x0100  // CRC error
+#define CAN_ERROR_RX_OVERRUN  0x0200  // Rx FIFO overrun error
+#define CAN_ERROR_TX_ARBLOST  0x0400  // Tx failure due to arbitration lost
+#define CAN_ERROR_TX_ERROR    0x0800  // Tx failure due to transmit error
+
+// filter definition
+typedef struct _vhal_can_filter
+{
+  uint32_t id;
+  uint32_t mask;
+} vhalCanFilter;
+
+// frame header
+typedef struct _vhal_can_frame
+{
+  uint32_t id; // Message Id (11-bit standard or 29-bit extended) + Flags (IDE, RTR, Error)
+  uint8_t dlc; // Data Length Code: 0-8 (for CAN 2.0) or 0-64 (for CAN-FD)
+} vhalCanFrame;
+
+// special address description flags for the CAN ID
+#define CAN_EXT_FLAG 0x80000000ul // ID Extension flag (Extended Frame format)
+#define CAN_RTR_FLAG 0x40000000ul // Remote Transmission Request flag (no data)
+
+// valid bits in CAN ID for frame formats
+#define CAN_STD_MASK 0x000007FFul // mask for Standard Frame format (SFF) id
+#define CAN_EXT_MASK 0x1FFFFFFFul // mask for Extended Frame format (EFF) id
+
+DECLARE_PERIPHERAL_MAP(can);
+
+int vhalCanInit(uint32_t can, vhalCanConf *conf);
+int vhalCanFindTiming(uint32_t can, vhalCanConf *conf, uint32_t speed, uint32_t sample_point, uint32_t min_quanta);
+int vhalCanAddFilter(uint32_t can, vhalCanFilter *filter);
+int vhalCanRemoveFilter(uint32_t can, int filter_id);
+int vhalCanRx(uint32_t can, vhalCanFrame *frame, uint8_t *data, uint32_t timeout_ms);
+int vhalCanTx(uint32_t can, vhalCanFrame *frame, uint8_t *data, uint32_t timeout_ms);
+int vhalCanAbortRx(uint32_t can);
+int vhalCanAbortTx(uint32_t can);
+int vhalCanResumeRx(uint32_t can);
+int vhalCanResumeTx(uint32_t can);
+int vhalCanGetErrors(uint32_t can, vhalCanErrors *err);
+int vhalCanDone(uint32_t can);
 
 #endif

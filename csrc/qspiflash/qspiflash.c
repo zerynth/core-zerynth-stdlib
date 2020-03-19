@@ -26,7 +26,7 @@ C_NATIVE(qspiflash_init) {
                                                  &alt_bytes_no_pe_mode,
                                                  &sr_wip, &sr_wel, &sr_bp,
                                                  &sr_srwd, &sr1_qe, &sr1_sus) != 24)
-        return ERR_VALUE_EXC;
+        return ERR_TYPE_EXC;
 
     qspi_conf.d0 = d0;
     qspi_conf.d1 = d1;
@@ -59,6 +59,19 @@ C_NATIVE(qspiflash_init) {
     return ERR_OK;
 }
 
+C_NATIVE(qspiflash_get_geometry) {
+    NATIVE_UNWARN();
+
+    PTuple* tpl = ptuple_new(5,NULL);
+    PTUPLE_SET_ITEM(tpl,0,PSMALLINT_NEW(flash_conf.flash_size));
+    PTUPLE_SET_ITEM(tpl,1,PSMALLINT_NEW(flash_conf.block_size));
+    PTUPLE_SET_ITEM(tpl,2,PSMALLINT_NEW(flash_conf.subblock_size));
+    PTUPLE_SET_ITEM(tpl,3,PSMALLINT_NEW(flash_conf.sector_size));
+    PTUPLE_SET_ITEM(tpl,4,PSMALLINT_NEW(flash_conf.page_size));
+    *res = tpl;
+    return ERR_OK;
+}
+
 C_NATIVE(qspiflash_done) {
     NATIVE_UNWARN();
 
@@ -75,7 +88,7 @@ C_NATIVE(qspiflash_read_data) {
     uint32_t readaddr, toread_len;
 
     if (parse_py_args("ii", nargs, args, &readaddr, &toread_len) != 2) 
-        return ERR_VALUE_EXC;
+        return ERR_TYPE_EXC;
 
     *res = pbytes_new(toread_len, NULL);
     if (vhalQspiFlashRead(0, readaddr, PSEQUENCE_BYTES(*res), toread_len) != VHAL_OK) {
@@ -94,7 +107,7 @@ C_NATIVE(qspiflash_write_data) {
     uint8_t *tosend; 
 
     if (parse_py_args("is", nargs, args, &writeaddr, &tosend, &len) != 2) 
-        return ERR_VALUE_EXC;
+        return ERR_TYPE_EXC;
 
 
     /* Calculation of the size between the write address and the end of the page */
@@ -132,7 +145,11 @@ C_NATIVE(qspiflash_erase_block) {
     uint32_t blockaddr;
 
     if (parse_py_args("i", nargs, args, &blockaddr) != 1)
+        return ERR_TYPE_EXC;
+
+    if (blockaddr >= flash_conf.flash_size) {
         return ERR_VALUE_EXC;
+    }
 
     if (vhalQspiFlashEraseBlock(0, blockaddr, 1) != VHAL_OK) {
         return ERR_PERIPHERAL_ERROR_EXC;
@@ -146,10 +163,11 @@ C_NATIVE(qspiflash_erase_sector) {
 
     uint32_t sectoraddr;
 
-    if (parse_py_args("i", nargs, args, &sectoraddr) != 1) return ERR_VALUE_EXC;
+    if (parse_py_args("i", nargs, args, &sectoraddr) != 1)
+        return ERR_TYPE_EXC;
 
-    if (sectoraddr >= (uint32_t)(flash_conf.flash_size/flash_conf.sector_size)) {
-        return ERR_PERIPHERAL_ERROR_EXC;
+    if (sectoraddr >= flash_conf.flash_size) {
+        return ERR_VALUE_EXC;
     }
 
     if (vhalQspiFlashEraseSector(0, sectoraddr, 1) != VHAL_OK) {

@@ -35,6 +35,10 @@
 		Oscilloscope
 		Sensor_Driven_Multi_Blink
 
+    ##CAN
+        CAN_Auto-baudrate
+        CAN_Bus_Example
+
 	##DAC
 		Dac_Basic
 

@@ -2,6 +2,10 @@
 def _auto_init():
     if __defined(BOARD, "polaris_3g"):
         _init(D34,D33,D25,D24,D74,D75,0x100000,0x10000,0x8000,0x1000,0x100,8,4,4,2,4,0xA5,0x00,0x01,0x02,0x7C,0x80,0x02,0x80)
+    elif __defined(BOARD, "polaris_nbiot"):
+        _init(D34,D33,D25,D24,D74,D75,0x100000,0x10000,0x8000,0x1000,0x100,8,4,4,2,4,0xA5,0x00,0x01,0x02,0x7C,0x80,0x02,0x80)
+    elif __defined(BOARD, "polaris_2g"):
+        _init(D34,D33,D25,D24,D74,D75,0x100000,0x10000,0x8000,0x1000,0x100,8,4,4,2,4,0xA5,0x00,0x01,0x02,0x7C,0x80,0x02,0x80)
     else:
         raise UnsupportedError
 
@@ -9,6 +13,9 @@ def _auto_init():
 def _init(d0,d1,d2,d3,clk,cs,flash_size,block_size,subblock_size,sector_size,page_size,dummy_cycles_read,dummy_cycles_read_dual,dummy_cycles_read_quad,dummy_cycles_2read,dummy_cycles_4read,alt_bytes_pe_mode,alt_bytes_no_pe_mode,sr_wip,sr_wel,sr_bp,sr_srwd,sr1_qe,sr1_sus):
     pass
 
+@c_native("qspiflash_get_geometry",[],[])
+def _get_geometry():
+    pass
 @c_native("qspiflash_read_data",[],[])
 def _read_data(addr,n=1):
     pass
@@ -50,7 +57,7 @@ QSpiFlash class
 .. class:: QSpiFlash()
 
         Initialize a a QspiFlash peripheral (external flash memory handled by qspi).
-        This peripheral is available only for stm32l4 family chip and for Polaris Tracker device the auto_init is implemented (pins and memory data already configured). 
+        This peripheral is available only for stm32l4 family chip and for Polaris device the auto_init is implemented (pins and memory data already configured). 
 
         To initialize a custom external memory qspi flash several params must be passed to the init method:
 
@@ -63,7 +70,7 @@ QSpiFlash class
         :param flash_size: Flash size of the qspi flash
         :param block_size: Block size of the qspi flash
         :param subblock_size: Sub-block size of the qspi flash
-        :param sector_size Sector size of the qspi flash
+        :param sector_size: Sector size of the qspi flash
         :param page_size: Page size of the qspi flash
         :param dummy_cycles_read: Dummy cycles simple read
         :param dummy_cycles_read_dual: Dummy cycles Dual flash read
@@ -91,6 +98,20 @@ QSpiFlash class
 
     def __setitem__(self, addr, data):
         _write_data(addr, data)
+    def get_geometry(self):
+        """
+.. method:: get_geometry()
+
+        Return a tuple holding flash geometry:
+
+        * *flash_size*, Flash size of the qspi flash
+        * *block_size*, Block size of the qspi flash
+        * *subblock_size*, Sub-block size of the qspi flash
+        * *sector_size*, Sector size of the qspi flash
+        * *page_size*, Page size of the qspi flash
+
+        """
+        return _get_geometry()
 
     def write_data(self, addr, data):
         """

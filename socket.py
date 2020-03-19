@@ -12,7 +12,7 @@ The following constants are defined:
 
     * For socket families: AF_INET, AF_INET6, AF_CAN
     * For socket types: SOCK_STREAM, SOCK_DGRAM, SOCK_RAW 
-    * For socket options: SOL_SOCKET, SO_RCVTIMEO
+    * For socket options: SOL_SOCKET, SO_RCVTIMEO, SO_REUSEADDR
 
 IPv4 addresses can be passed to functions and methods in the following forms:
 
@@ -37,6 +37,7 @@ SOCK_RAW = 2
 
 SOL_SOCKET = 0xffff
 SO_RCVTIMEO = 1
+SO_REUSEADDR= 4
 SO_KEEPALIVE = 8
 
 TCP_KEEPIDLE=0x03
@@ -240,7 +241,7 @@ The socket class
 
     def settimeout(self,timeout):
         """
-.. method:: sendtimeout(timeout)
+.. method:: settimeout(timeout)
         
         Set a timeout on blocking socket operations. The *timeout* argument can be a nonnegative integer number expressing milliseconds, or *None*. 
         If a non-zero value is given, subsequent socket operations will raise a timeout exception if the timeout period value has elapsed before the operation has completed. 
