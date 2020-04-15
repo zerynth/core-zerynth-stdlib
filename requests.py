@@ -447,24 +447,49 @@ def _verb(url,data=None,params=None,headers=None,connection=None,verb=None,ctx=N
                     break
             #print("CLOSED SOCKET A",sock.channel,rdr,tmp,bodysize)
         elif "transfer-encoding" in rr.headers:
+            if stream_callback:
+                chbuf = bytearray(stream_chunk)
+            last_term = False
             while True:
                 __elements_set(msg,BUFFER_LEN)
                 msg = _readline(ssock,buffer,0,BUFFER_LEN)
-                chsize = int(msg,16)
-                #print("chsize",chsize)
-                if chsize:
-                    msg = sock.recv(chsize)
-                    #print(msg)
-                    if msg:
-                        rr.content.extend(msg)
-                    else:
-                        break
-                    __elements_set(buffer,BUFFER_LEN)
-                    msg = _readline(ssock,buffer,0,BUFFER_LEN)
-                else:
-                    __elements_set(buffer,BUFFER_LEN)
-                    msg = _readline(ssock,buffer,0,BUFFER_LEN) #terminator
+                # print(">>",msg,len(msg),[hex(x) for x in msg])
+                if len(msg)==0:
+                    # print("breaking out of loop")
                     break
+                if msg=="\r\n":
+                    # print("received terminator",last_term)
+                    if last_term:
+                        break
+                    else:
+                        continue
+                chsize = int(msg,16)
+                # print("chsize",chsize)
+                if chsize:
+                    if stream_callback:
+                        while chsize>0:
+                            rdr = sock.recv_into(chbuf,min(chsize,stream_chunk),ofs=0)
+                            chsize-=rdr
+                            # print("rdr",rdr,chsize)
+                            __elements_set(chbuf,rdr)
+                            stream_callback(chbuf)
+                            __elements_set(chbuf,stream_chunk)
+                    else:
+                        chbuf = sock.recv(chsize)
+                        # print(msg)
+                        # if msg:
+                        rr.content.extend(chbuf)
+                        # else:
+                            # break
+                        # __elements_set(buffer,BUFFER_LEN)
+                        # msg = _readline(ssock,buffer,0,BUFFER_LEN)
+                else:
+                    last_term=True
+                # else:
+                #     print("Read terminator")
+                #     __elements_set(buffer,BUFFER_LEN)
+                #     msg = _readline(ssock,buffer,0,2) #terminator
+                    # break
             #print("CLOSED SOCKET B",sock.channel)
         else:
             while True:

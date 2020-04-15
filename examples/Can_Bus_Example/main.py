@@ -13,7 +13,7 @@ pinMode(polaris.internal.PIN_CAN_STANDBY, OUTPUT)
 digitalWrite(polaris.internal.PIN_CAN_STANDBY, LOW)
 sleep(100)
 
-canbus = can.Can(CAN0, 500000, options=OPTION_LOOPBACK)
+canbus = can.Can(CAN0, 500000)
 
 def can_rx(timeout=-1):
     print("rx, listening...")

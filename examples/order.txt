@@ -37,7 +37,7 @@
 
     ##CAN
         CAN_Auto-baudrate
-        CAN_Bus_Example
+        Can_Bus_Example
 
 	##DAC
 		Dac_Basic
