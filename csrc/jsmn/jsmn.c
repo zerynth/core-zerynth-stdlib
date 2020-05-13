@@ -320,12 +320,12 @@ void jsmn_init(jsmn_parser *parser) {
 #include "zerynth.h"
 //#define printf(...) vbl_printf_stdout(__VA_ARGS__)
 
-int str_to_num(char *str,int size, int* ires, FLOAT_TYPE* fres){
+int str_to_num(char *str,int size, int64_t* ires, FLOAT_TYPE* fres){
     int i=0;
     int sign;
-    uint32_t iacc=0;
-    uint32_t macc=0;
-    uint32_t dacc=0;
+    uint64_t iacc=0;
+    uint64_t macc=0;
+    uint64_t dacc=0;
     FLOAT_TYPE facc=0;
     int is_float = 0;
 
@@ -364,6 +364,7 @@ C_NATIVE(jsmn_loads){
     uint8_t *jstr;
     uint32_t jlen;
     int r,i,c,ii;
+    int64_t nn;
     FLOAT_TYPE ff;
 
     if (parse_py_args("s", nargs, args, &jstr, &jlen) != 1)
@@ -433,13 +434,13 @@ C_NATIVE(jsmn_loads){
                     default:
                         if ((c>='0' && c<='9') || c=='-') {
                             //it's a number
-                            if (str_to_num(jstr+token->start,token->end-token->start,&ii,&ff)){
+                            if (str_to_num(jstr+token->start,token->end-token->start,&nn,&ff)){
                                 //is float
                                 token->obj = (void*)pfloat_new(ff);
                                 printf("FLOAT %i %i ch %i p %i %x\n",token->start,token->end,token->size, token->parent,(int)token->obj);
                             } else {
                                 //is int
-                                token->obj = (void*)PSMALLINT_NEW(ii);
+                                token->obj = (void*)pinteger_new(nn);
                                 printf("INT %i %i ch %i p %i %x\n",token->start,token->end,token->size, token->parent,(int)token->obj);
                             }
                         }
