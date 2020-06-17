@@ -749,6 +749,22 @@ def sum(x,start=0):
     return start
 
 @builtin
+def divmod(a,b):
+    """
+.. function:: divmod(a, b)
+
+    Take two (non complex) numbers as arguments and return a pair of numbers
+    consisting of their quotient and remainder when using integer division.
+    When *a* and *b* are integers, the result is the same as `(a // b, a % b)`.
+    For floating point numbers the result is `(q, a % b)`, where *q* is
+    `float(int(a / b))`.
+
+    """
+    if type(a) == PFLOAT or type(b) == PFLOAT:
+        return float(int(a/b)), a % b
+    return a // b, a % b
+
+@builtin
 def max(*args):
     """
 .. function:: max(*args)
