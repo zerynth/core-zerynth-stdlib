@@ -801,6 +801,12 @@ def round(number, ndigits=None):
    return value is an integer if *ndigits* is omitted or ``None``. Otherwise
    the return value has the same type as number.
 
+   The behavior of :func:`round` for floats can be surprising: for example,
+   `round(1.125, 2)` gives `1.1200000000000001` instead of the expected `1.12`.
+   This is not a bug: it’s a result of the fact that most decimal fractions
+   can’t be represented exactly as a float (e.g., `print(2.675)` gives
+   `2.6749999999999998` in Zerynth).
+
    For a general Python object *number*, :func:`round` is not implemented.
 
     """
@@ -813,9 +819,15 @@ def round(number, ndigits=None):
             n += 1
         return s*n
     elif type(ndigits) in (PSMALLINT, PINTEGER):
-        shift10 = 10**ndigits
-        ret = round(N*shift10, None)/shift10
-        return ret if type(N) == PFLOAT else int(ret)
+        if ndigits == 0:
+            ret = round(N)
+        elif ndigits > 0:
+            shift10 = 10 ** ndigits
+            ret = round(N*shift10)/shift10
+        else:
+            shift10 = 10 ** -ndigits
+            ret = round(N/shift10)*shift10
+        return float(ret) if type(N) == PFLOAT else int(ret)
     else:
         raise TypeError
 
