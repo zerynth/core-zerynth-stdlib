@@ -96,6 +96,28 @@ def link(ssid,security,password=""):
     """
     __default_net["wifi"].link(ssid,security,password)
 
+def try_link(ssid,password,sec=WIFI_WPA2, attempts=5,delay=2000):
+    """
+.. function:: try_link(ssid,password,sec=WIFI_WPA2, attempts=5,delay=2000)        
+
+        Try to establish a link for with the Access Point handling the wifi network identified by *ssid*. *security* must be one
+        of the WIFI_ constants, and *password* is needed if *security* is different from WIFI_OPEN
+        
+        The driver will try to link through a number of *attepmts*, each attempt with a *delay* delay in ms.
+        An exception can be raised if the link is not successful.
+
+    """
+    exc = None
+    for _ in range(attempts):
+        try:
+            __default_net["wifi"].link(ssid, sec, password)
+            break
+        except Exception as e:
+            exc = e
+            sleep(delay)
+    else:
+        raise exc
+
 def unlink():
     """
 .. function:: unlink()        

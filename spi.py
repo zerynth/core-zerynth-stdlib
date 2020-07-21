@@ -90,6 +90,8 @@ __define(_SPIDRIVER_READ,6)
 __define(_SPIDRIVER_SKIP,7)
 __define(_SPIDRIVER_WRITE,8)
 __define(_SPIDRIVER_EXCHANGE,9)
+__define(_SPIDRIVER_READ_INTO,10)
+__define(_SPIDRIVER_EXCHANGE_INTO,11)
 
 SPI_MODE_LOW_FIRST=0
 SPI_MODE_LOW_SECOND=1
@@ -203,6 +205,17 @@ The Spi class
         """
         return self.drv.__ctl__(_SPIDRIVER_READ,self.drvid,n)
 
+    def read_into(self, buffer):
+        """
+.. method:: read_into(buffer)        
+
+        Fills *buffer* with a sequence of *len(buffer)* bytes read from MISO. MOSI is ignored.
+
+        Useful to reuse the same buffer and avoid the creation of temporary objects.
+
+        """
+        return self.drv.__ctl__(_SPIDRIVER_READ_INTO,self.drvid,buffer)
+
     def skip(self, n):
         """
 .. method:: skip(n)        
@@ -220,6 +233,20 @@ The Spi class
 
         """    
         return self.drv.__ctl__(_SPIDRIVER_EXCHANGE,self.drvid,data)
+
+    def exchange_into(self, wdata, rdata):
+        """
+.. method:: exchange_into(wdata, rdata)        
+
+        *wdata* is written to MOSI, and a sequence of bytes read from MISO is copied into *rdata*.
+        *wdata* and *rdata* must be of the same length or :samp:`ValueError` is raised.
+        *wdata* and *rdata* can be the same buffer, but the result (or the error) is dependent on the 
+        underlying hardware capability to share the same memory area for read an write.
+
+        """
+        if len(wdata)!=len(rdata):
+            raise ValueError
+        return self.drv.__ctl__(_SPIDRIVER_EXCHANGE_INTO,self.drvid,wdata,rdata)
 
     def _stop(self):
         _ispi[self.drvid][0].discard(self)

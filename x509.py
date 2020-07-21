@@ -24,6 +24,7 @@ This module allows to perform useful operations involving `x509 certificates <x5
     [
         "csrc/x509/x509_ifc.c",
         "#csrc/misc/zstdlib.c",
+        "#csrc/hwcrypto/*",
 #-if !HAS_BUILTIN_MBEDTLS
         # compile whole mbedtls library except for net_sockets.c since socks are not needed
         "#csrc/tls/mbedtls/library/pk_wrap.c",
@@ -95,7 +96,6 @@ This module allows to perform useful operations involving `x509 certificates <x5
         "#csrc/tls/mbedtls/library/ecp.c",
         "#csrc/tls/mbedtls/library/platform.c",
         "#csrc/tls/mbedtls/library/ecp_curves.c",
-        "#csrc/tls/mbedtls/library/zhwcrypto.c"
 #-endif
     ],
     [
@@ -105,6 +105,7 @@ This module allows to perform useful operations involving `x509 certificates <x5
 #-endif
     ],
     [
+        "-I#csrc/hwcrypto",
 #-if !HAS_BUILTIN_MBEDTLS
         "-I#csrc/tls/mbedtls/include"
 #-endif

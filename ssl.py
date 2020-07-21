@@ -127,161 +127,149 @@ To check the TLS feature available in a particular network driver, refer to the 
 
 
 
-The following CA certificates are available with the __lookup primitive:
+The following CA certificates are available with the __lookup primitive: 
 
-
-* *GlobalSign Root CA* : :samp:`SSL_CACERT_GLOBALSIGN_ROOT_CA`
-* *GlobalSign Root CA - R2* : :samp:`SSL_CACERT_GLOBALSIGN_ROOT_CA___R2`
-* *Verisign Class 3 Public Primary Certification Authority - G3* : :samp:`SSL_CACERT_VERISIGN_CLASS_3_PUBLIC_PRIMARY_CERTIFICATION_AUTHORITY___G3`
-* *Entrust.net Premium 2048 Secure Server CA* : :samp:`SSL_CACERT_ENTRUST.NET_PREMIUM_2048_SECURE_SERVER_CA`
-* *Baltimore CyberTrust Root* : :samp:`SSL_CACERT_BALTIMORE_CYBERTRUST_ROOT`
-* *AddTrust Low-Value Services Root* : :samp:`SSL_CACERT_ADDTRUST_LOW_VALUE_SERVICES_ROOT`
-* *AddTrust External Root* : :samp:`SSL_CACERT_ADDTRUST_EXTERNAL_ROOT`
-* *AddTrust Public Services Root* : :samp:`SSL_CACERT_ADDTRUST_PUBLIC_SERVICES_ROOT`
-* *AddTrust Qualified Certificates Root* : :samp:`SSL_CACERT_ADDTRUST_QUALIFIED_CERTIFICATES_ROOT`
-* *Entrust Root Certification Authority* : :samp:`SSL_CACERT_ENTRUST_ROOT_CERTIFICATION_AUTHORITY`
-* *RSA Security 2048 v3* : :samp:`SSL_CACERT_RSA_SECURITY_2048_V3`
-* *GeoTrust Global CA* : :samp:`SSL_CACERT_GEOTRUST_GLOBAL_CA`
-* *GeoTrust Global CA 2* : :samp:`SSL_CACERT_GEOTRUST_GLOBAL_CA_2`
-* *GeoTrust Universal CA* : :samp:`SSL_CACERT_GEOTRUST_UNIVERSAL_CA`
-* *GeoTrust Universal CA 2* : :samp:`SSL_CACERT_GEOTRUST_UNIVERSAL_CA_2`
-* *Visa eCommerce Root* : :samp:`SSL_CACERT_VISA_ECOMMERCE_ROOT`
-* *Certum Root CA* : :samp:`SSL_CACERT_CERTUM_ROOT_CA`
-* *Comodo AAA Services root* : :samp:`SSL_CACERT_COMODO_AAA_SERVICES_ROOT`
-* *Comodo Secure Services root* : :samp:`SSL_CACERT_COMODO_SECURE_SERVICES_ROOT`
-* *Comodo Trusted Services root* : :samp:`SSL_CACERT_COMODO_TRUSTED_SERVICES_ROOT`
-* *QuoVadis Root CA* : :samp:`SSL_CACERT_QUOVADIS_ROOT_CA`
-* *QuoVadis Root CA 2* : :samp:`SSL_CACERT_QUOVADIS_ROOT_CA_2`
-* *QuoVadis Root CA 3* : :samp:`SSL_CACERT_QUOVADIS_ROOT_CA_3`
-* *Security Communication Root CA* : :samp:`SSL_CACERT_SECURITY_COMMUNICATION_ROOT_CA`
-* *Sonera Class 2 Root CA* : :samp:`SSL_CACERT_SONERA_CLASS_2_ROOT_CA`
-* *UTN USERFirst Hardware Root CA* : :samp:`SSL_CACERT_UTN_USERFIRST_HARDWARE_ROOT_CA`
-* *Camerfirma Chambers of Commerce Root* : :samp:`SSL_CACERT_CAMERFIRMA_CHAMBERS_OF_COMMERCE_ROOT`
-* *Camerfirma Global Chambersign Root* : :samp:`SSL_CACERT_CAMERFIRMA_GLOBAL_CHAMBERSIGN_ROOT`
-* *XRamp Global CA Root* : :samp:`SSL_CACERT_XRAMP_GLOBAL_CA_ROOT`
-* *Go Daddy Class 2 CA* : :samp:`SSL_CACERT_GO_DADDY_CLASS_2_CA`
-* *Starfield Class 2 CA* : :samp:`SSL_CACERT_STARFIELD_CLASS_2_CA`
-* *StartCom Certification Authority* : :samp:`SSL_CACERT_STARTCOM_CERTIFICATION_AUTHORITY`
-* *Taiwan GRCA* : :samp:`SSL_CACERT_TAIWAN_GRCA`
-* *Swisscom Root CA 1* : :samp:`SSL_CACERT_SWISSCOM_ROOT_CA_1`
-* *DigiCert Assured ID Root CA* : :samp:`SSL_CACERT_DIGICERT_ASSURED_ID_ROOT_CA`
-* *DigiCert Global Root CA* : :samp:`SSL_CACERT_DIGICERT_GLOBAL_ROOT_CA`
-* *DigiCert High Assurance EV Root CA* : :samp:`SSL_CACERT_DIGICERT_HIGH_ASSURANCE_EV_ROOT_CA`
-* *Certplus Class 2 Primary CA* : :samp:`SSL_CACERT_CERTPLUS_CLASS_2_PRIMARY_CA`
-* *DST Root CA X3* : :samp:`SSL_CACERT_DST_ROOT_CA_X3`
-* *DST ACES CA X6* : :samp:`SSL_CACERT_DST_ACES_CA_X6`
-* *SwissSign Gold CA - G2* : :samp:`SSL_CACERT_SWISSSIGN_GOLD_CA___G2`
-* *SwissSign Silver CA - G2* : :samp:`SSL_CACERT_SWISSSIGN_SILVER_CA___G2`
-* *GeoTrust Primary Certification Authority* : :samp:`SSL_CACERT_GEOTRUST_PRIMARY_CERTIFICATION_AUTHORITY`
-* *thawte Primary Root CA* : :samp:`SSL_CACERT_THAWTE_PRIMARY_ROOT_CA`
-* *VeriSign Class 3 Public Primary Certification Authority - G5* : :samp:`SSL_CACERT_VERISIGN_CLASS_3_PUBLIC_PRIMARY_CERTIFICATION_AUTHORITY___G5`
-* *SecureTrust CA* : :samp:`SSL_CACERT_SECURETRUST_CA`
-* *Secure Global CA* : :samp:`SSL_CACERT_SECURE_GLOBAL_CA`
-* *COMODO Certification Authority* : :samp:`SSL_CACERT_COMODO_CERTIFICATION_AUTHORITY`
-* *Network Solutions Certificate Authority* : :samp:`SSL_CACERT_NETWORK_SOLUTIONS_CERTIFICATE_AUTHORITY`
-* *WellsSecure Public Root Certificate Authority* : :samp:`SSL_CACERT_WELLSSECURE_PUBLIC_ROOT_CERTIFICATE_AUTHORITY`
-* *COMODO ECC Certification Authority* : :samp:`SSL_CACERT_COMODO_ECC_CERTIFICATION_AUTHORITY`
-* *Security Communication EV RootCA1* : :samp:`SSL_CACERT_SECURITY_COMMUNICATION_EV_ROOTCA1`
-* *OISTE WISeKey Global Root GA CA* : :samp:`SSL_CACERT_OISTE_WISEKEY_GLOBAL_ROOT_GA_CA`
-* *Microsec e-Szigno Root CA* : :samp:`SSL_CACERT_MICROSEC_E_SZIGNO_ROOT_CA`
-* *Certigna* : :samp:`SSL_CACERT_CERTIGNA`
-* *Deutsche Telekom Root CA 2* : :samp:`SSL_CACERT_DEUTSCHE_TELEKOM_ROOT_CA_2`
-* *Cybertrust Global Root* : :samp:`SSL_CACERT_CYBERTRUST_GLOBAL_ROOT`
-* *ePKI Root Certification Authority* : :samp:`SSL_CACERT_EPKI_ROOT_CERTIFICATION_AUTHORITY`
-* *Buypass Class 2 CA 1* : :samp:`SSL_CACERT_BUYPASS_CLASS_2_CA_1`
-* *certSIGN ROOT CA* : :samp:`SSL_CACERT_CERTSIGN_ROOT_CA`
-* *CNNIC ROOT* : :samp:`SSL_CACERT_CNNIC_ROOT`
-* *ApplicationCA - Japanese Government* : :samp:`SSL_CACERT_APPLICATIONCA___JAPANESE_GOVERNMENT`
-* *GeoTrust Primary Certification Authority - G3* : :samp:`SSL_CACERT_GEOTRUST_PRIMARY_CERTIFICATION_AUTHORITY___G3`
-* *thawte Primary Root CA - G2* : :samp:`SSL_CACERT_THAWTE_PRIMARY_ROOT_CA___G2`
-* *thawte Primary Root CA - G3* : :samp:`SSL_CACERT_THAWTE_PRIMARY_ROOT_CA___G3`
-* *GeoTrust Primary Certification Authority - G2* : :samp:`SSL_CACERT_GEOTRUST_PRIMARY_CERTIFICATION_AUTHORITY___G2`
-* *VeriSign Universal Root Certification Authority* : :samp:`SSL_CACERT_VERISIGN_UNIVERSAL_ROOT_CERTIFICATION_AUTHORITY`
-* *VeriSign Class 3 Public Primary Certification Authority - G4* : :samp:`SSL_CACERT_VERISIGN_CLASS_3_PUBLIC_PRIMARY_CERTIFICATION_AUTHORITY___G4`
-* *NetLock Arany (Class Gold) Főtanúsítvány* : :samp:`SSL_CACERT_NETLOCK_ARANY_(CLASS_GOLD)_FŐTANÚSÍTVÁNY`
-* *Staat der Nederlanden Root CA - G2* : :samp:`SSL_CACERT_STAAT_DER_NEDERLANDEN_ROOT_CA___G2`
-* *Hongkong Post Root CA 1* : :samp:`SSL_CACERT_HONGKONG_POST_ROOT_CA_1`
-* *SecureSign RootCA11* : :samp:`SSL_CACERT_SECURESIGN_ROOTCA11`
-* *ACEDICOM Root* : :samp:`SSL_CACERT_ACEDICOM_ROOT`
-* *Microsec e-Szigno Root CA 2009* : :samp:`SSL_CACERT_MICROSEC_E_SZIGNO_ROOT_CA_2009`
-* *GlobalSign Root CA - R3* : :samp:`SSL_CACERT_GLOBALSIGN_ROOT_CA___R3`
-* *Autoridad de Certificacion Firmaprofesional CIF A62634068* : :samp:`SSL_CACERT_AUTORIDAD_DE_CERTIFICACION_FIRMAPROFESIONAL_CIF_A62634068`
-* *Izenpe.com* : :samp:`SSL_CACERT_IZENPE.COM`
-* *Chambers of Commerce Root - 2008* : :samp:`SSL_CACERT_CHAMBERS_OF_COMMERCE_ROOT___2008`
-* *Global Chambersign Root - 2008* : :samp:`SSL_CACERT_GLOBAL_CHAMBERSIGN_ROOT___2008`
-* *Go Daddy Root Certificate Authority - G2* : :samp:`SSL_CACERT_GO_DADDY_ROOT_CERTIFICATE_AUTHORITY___G2`
-* *Starfield Root Certificate Authority - G2* : :samp:`SSL_CACERT_STARFIELD_ROOT_CERTIFICATE_AUTHORITY___G2`
-* *Starfield Services Root Certificate Authority - G2* : :samp:`SSL_CACERT_STARFIELD_SERVICES_ROOT_CERTIFICATE_AUTHORITY___G2`
-* *AffirmTrust Commercial* : :samp:`SSL_CACERT_AFFIRMTRUST_COMMERCIAL`
-* *AffirmTrust Networking* : :samp:`SSL_CACERT_AFFIRMTRUST_NETWORKING`
-* *AffirmTrust Premium* : :samp:`SSL_CACERT_AFFIRMTRUST_PREMIUM`
-* *AffirmTrust Premium ECC* : :samp:`SSL_CACERT_AFFIRMTRUST_PREMIUM_ECC`
-* *Certum Trusted Network CA* : :samp:`SSL_CACERT_CERTUM_TRUSTED_NETWORK_CA`
-* *Certinomis - Autorité Racine* : :samp:`SSL_CACERT_CERTINOMIS___AUTORITÉ_RACINE`
-* *Root CA Generalitat Valenciana* : :samp:`SSL_CACERT_ROOT_CA_GENERALITAT_VALENCIANA`
-* *TWCA Root Certification Authority* : :samp:`SSL_CACERT_TWCA_ROOT_CERTIFICATION_AUTHORITY`
-* *Security Communication RootCA2* : :samp:`SSL_CACERT_SECURITY_COMMUNICATION_ROOTCA2`
-* *Hellenic Academic and Research Institutions RootCA 2011* : :samp:`SSL_CACERT_HELLENIC_ACADEMIC_AND_RESEARCH_INSTITUTIONS_ROOTCA_2011`
-* *Actalis Authentication Root CA* : :samp:`SSL_CACERT_ACTALIS_AUTHENTICATION_ROOT_CA`
-* *Trustis FPS Root CA* : :samp:`SSL_CACERT_TRUSTIS_FPS_ROOT_CA`
-* *StartCom Certification Authority* : :samp:`SSL_CACERT_STARTCOM_CERTIFICATION_AUTHORITY`
-* *StartCom Certification Authority G2* : :samp:`SSL_CACERT_STARTCOM_CERTIFICATION_AUTHORITY_G2`
-* *Buypass Class 2 Root CA* : :samp:`SSL_CACERT_BUYPASS_CLASS_2_ROOT_CA`
-* *Buypass Class 3 Root CA* : :samp:`SSL_CACERT_BUYPASS_CLASS_3_ROOT_CA`
-* *T-TeleSec GlobalRoot Class 3* : :samp:`SSL_CACERT_T_TELESEC_GLOBALROOT_CLASS_3`
-* *EE Certification Centre Root CA* : :samp:`SSL_CACERT_EE_CERTIFICATION_CENTRE_ROOT_CA`
-* *TURKTRUST Certificate Services Provider Root 2007* : :samp:`SSL_CACERT_TURKTRUST_CERTIFICATE_SERVICES_PROVIDER_ROOT_2007`
-* *D-TRUST Root Class 3 CA 2 2009* : :samp:`SSL_CACERT_D_TRUST_ROOT_CLASS_3_CA_2_2009`
-* *D-TRUST Root Class 3 CA 2 EV 2009* : :samp:`SSL_CACERT_D_TRUST_ROOT_CLASS_3_CA_2_EV_2009`
-* *PSCProcert* : :samp:`SSL_CACERT_PSCPROCERT`
-* *China Internet Network Information Center EV Certificates Root* : :samp:`SSL_CACERT_CHINA_INTERNET_NETWORK_INFORMATION_CENTER_EV_CERTIFICATES_ROOT`
-* *Swisscom Root CA 2* : :samp:`SSL_CACERT_SWISSCOM_ROOT_CA_2`
-* *Swisscom Root EV CA 2* : :samp:`SSL_CACERT_SWISSCOM_ROOT_EV_CA_2`
-* *CA Disig Root R1* : :samp:`SSL_CACERT_CA_DISIG_ROOT_R1`
-* *CA Disig Root R2* : :samp:`SSL_CACERT_CA_DISIG_ROOT_R2`
-* *ACCVRAIZ1* : :samp:`SSL_CACERT_ACCVRAIZ1`
-* *TWCA Global Root CA* : :samp:`SSL_CACERT_TWCA_GLOBAL_ROOT_CA`
-* *TeliaSonera Root CA v1* : :samp:`SSL_CACERT_TELIASONERA_ROOT_CA_V1`
-* *E-Tugra Certification Authority* : :samp:`SSL_CACERT_E_TUGRA_CERTIFICATION_AUTHORITY`
-* *T-TeleSec GlobalRoot Class 2* : :samp:`SSL_CACERT_T_TELESEC_GLOBALROOT_CLASS_2`
-* *Atos TrustedRoot 2011* : :samp:`SSL_CACERT_ATOS_TRUSTEDROOT_2011`
-* *QuoVadis Root CA 1 G3* : :samp:`SSL_CACERT_QUOVADIS_ROOT_CA_1_G3`
-* *QuoVadis Root CA 2 G3* : :samp:`SSL_CACERT_QUOVADIS_ROOT_CA_2_G3`
-* *QuoVadis Root CA 3 G3* : :samp:`SSL_CACERT_QUOVADIS_ROOT_CA_3_G3`
-* *DigiCert Assured ID Root G2* : :samp:`SSL_CACERT_DIGICERT_ASSURED_ID_ROOT_G2`
-* *DigiCert Assured ID Root G3* : :samp:`SSL_CACERT_DIGICERT_ASSURED_ID_ROOT_G3`
-* *DigiCert Global Root G2* : :samp:`SSL_CACERT_DIGICERT_GLOBAL_ROOT_G2`
-* *DigiCert Global Root G3* : :samp:`SSL_CACERT_DIGICERT_GLOBAL_ROOT_G3`
-* *DigiCert Trusted Root G4* : :samp:`SSL_CACERT_DIGICERT_TRUSTED_ROOT_G4`
-* *WoSign* : :samp:`SSL_CACERT_WOSIGN`
-* *WoSign China* : :samp:`SSL_CACERT_WOSIGN_CHINA`
-* *COMODO RSA Certification Authority* : :samp:`SSL_CACERT_COMODO_RSA_CERTIFICATION_AUTHORITY`
-* *USERTrust RSA Certification Authority* : :samp:`SSL_CACERT_USERTRUST_RSA_CERTIFICATION_AUTHORITY`
-* *USERTrust ECC Certification Authority* : :samp:`SSL_CACERT_USERTRUST_ECC_CERTIFICATION_AUTHORITY`
-* *GlobalSign ECC Root CA - R4* : :samp:`SSL_CACERT_GLOBALSIGN_ECC_ROOT_CA___R4`
-* *GlobalSign ECC Root CA - R5* : :samp:`SSL_CACERT_GLOBALSIGN_ECC_ROOT_CA___R5`
-* *Staat der Nederlanden Root CA - G3* : :samp:`SSL_CACERT_STAAT_DER_NEDERLANDEN_ROOT_CA___G3`
-* *Staat der Nederlanden EV Root CA* : :samp:`SSL_CACERT_STAAT_DER_NEDERLANDEN_EV_ROOT_CA`
-* *IdenTrust Commercial Root CA 1* : :samp:`SSL_CACERT_IDENTRUST_COMMERCIAL_ROOT_CA_1`
-* *IdenTrust Public Sector Root CA 1* : :samp:`SSL_CACERT_IDENTRUST_PUBLIC_SECTOR_ROOT_CA_1`
-* *Entrust Root Certification Authority - G2* : :samp:`SSL_CACERT_ENTRUST_ROOT_CERTIFICATION_AUTHORITY___G2`
-* *Entrust Root Certification Authority - EC1* : :samp:`SSL_CACERT_ENTRUST_ROOT_CERTIFICATION_AUTHORITY___EC1`
-* *CFCA EV ROOT* : :samp:`SSL_CACERT_CFCA_EV_ROOT`
-* *TÜRKTRUST Elektronik Sertifika Hizmet Sağlayıcısı H5* : :samp:`SSL_CACERT_TÜRKTRUST_ELEKTRONIK_SERTIFIKA_HIZMET_SAĞLAYICISI_H5`
-* *TÜRKTRUST Elektronik Sertifika Hizmet Sağlayıcısı H6* : :samp:`SSL_CACERT_TÜRKTRUST_ELEKTRONIK_SERTIFIKA_HIZMET_SAĞLAYICISI_H6`
-* *Certinomis - Root CA* : :samp:`SSL_CACERT_CERTINOMIS___ROOT_CA`
-* *OISTE WISeKey Global Root GB CA* : :samp:`SSL_CACERT_OISTE_WISEKEY_GLOBAL_ROOT_GB_CA`
-* *Certification Authority of WoSign G2* : :samp:`SSL_CACERT_CERTIFICATION_AUTHORITY_OF_WOSIGN_G2`
-* *CA WoSign ECC Root* : :samp:`SSL_CACERT_CA_WOSIGN_ECC_ROOT`
-* *SZAFIR ROOT CA2* : :samp:`SSL_CACERT_SZAFIR_ROOT_CA2`
-* *Certum Trusted Network CA 2* : :samp:`SSL_CACERT_CERTUM_TRUSTED_NETWORK_CA_2`
-* *Hellenic Academic and Research Institutions RootCA 2015* : :samp:`SSL_CACERT_HELLENIC_ACADEMIC_AND_RESEARCH_INSTITUTIONS_ROOTCA_2015`
-* *Hellenic Academic and Research Institutions ECC RootCA 2015* : :samp:`SSL_CACERT_HELLENIC_ACADEMIC_AND_RESEARCH_INSTITUTIONS_ECC_ROOTCA_2015`
-* *Certplus Root CA G1* : :samp:`SSL_CACERT_CERTPLUS_ROOT_CA_G1`
-* *Certplus Root CA G2* : :samp:`SSL_CACERT_CERTPLUS_ROOT_CA_G2`
-* *OpenTrust Root CA G1* : :samp:`SSL_CACERT_OPENTRUST_ROOT_CA_G1`
-* *OpenTrust Root CA G2* : :samp:`SSL_CACERT_OPENTRUST_ROOT_CA_G2`
-* *OpenTrust Root CA G3* : :samp:`SSL_CACERT_OPENTRUST_ROOT_CA_G3`
+* *Zerynth IoT CA*: ZERYNTH_IOT_CA
+* *Zerynth IoT Test CA*: ZERYNTH_IOT_TEST_CA
+* *Zerynth IoT Stage CA*: ZERYNTH_IOT_STAGE_CA
+* *ACCVRAIZ1*: ACCVRAIZ1
+* *AC RAIZ FNMT-RCM*: AC_RAIZ_FNMT_RCM
+* *Actalis Authentication Root CA*: ACTALIS_AUTHENTICATION_ROOT_CA
+* *AddTrust External Root*: ADDTRUST_EXTERNAL_ROOT
+* *AffirmTrust Commercial*: AFFIRMTRUST_COMMERCIAL
+* *AffirmTrust Networking*: AFFIRMTRUST_NETWORKING
+* *AffirmTrust Premium*: AFFIRMTRUST_PREMIUM
+* *AffirmTrust Premium ECC*: AFFIRMTRUST_PREMIUM_ECC
+* *Amazon Root CA 1*: AMAZON_ROOT_CA_1
+* *Amazon Root CA 2*: AMAZON_ROOT_CA_2
+* *Amazon Root CA 3*: AMAZON_ROOT_CA_3
+* *Amazon Root CA 4*: AMAZON_ROOT_CA_4
+* *Atos TrustedRoot 2011*: ATOS_TRUSTEDROOT_2011
+* *Autoridad de Certificacion Firmaprofesional CIF A62634068*: AUTORIDAD_DE_CERTIFICACION_FIRMAPROFESIONAL_CIF_A62634068
+* *Baltimore CyberTrust Root*: BALTIMORE_CYBERTRUST_ROOT
+* *Buypass Class 2 Root CA*: BUYPASS_CLASS_2_ROOT_CA
+* *Buypass Class 3 Root CA*: BUYPASS_CLASS_3_ROOT_CA
+* *CA Disig Root R2*: CA_DISIG_ROOT_R2
+* *Certigna*: CERTIGNA
+* *Certigna Root CA*: CERTIGNA_ROOT_CA
+* *certSIGN ROOT CA*: CERTSIGN_ROOT_CA
+* *Certum Trusted Network CA 2*: CERTUM_TRUSTED_NETWORK_CA_2
+* *Certum Trusted Network CA*: CERTUM_TRUSTED_NETWORK_CA
+* *CFCA EV ROOT*: CFCA_EV_ROOT
+* *Chambers of Commerce Root - 2008*: CHAMBERS_OF_COMMERCE_ROOT___2008
+* *Comodo AAA Services root*: COMODO_AAA_SERVICES_ROOT
+* *COMODO Certification Authority*: COMODO_CERTIFICATION_AUTHORITY
+* *COMODO ECC Certification Authority*: COMODO_ECC_CERTIFICATION_AUTHORITY
+* *COMODO RSA Certification Authority*: COMODO_RSA_CERTIFICATION_AUTHORITY
+* *Cybertrust Global Root*: CYBERTRUST_GLOBAL_ROOT
+* *DigiCert Assured ID Root CA*: DIGICERT_ASSURED_ID_ROOT_CA
+* *DigiCert Assured ID Root G2*: DIGICERT_ASSURED_ID_ROOT_G2
+* *DigiCert Assured ID Root G3*: DIGICERT_ASSURED_ID_ROOT_G3
+* *DigiCert Global Root CA*: DIGICERT_GLOBAL_ROOT_CA
+* *DigiCert Global Root G2*: DIGICERT_GLOBAL_ROOT_G2
+* *DigiCert Global Root G3*: DIGICERT_GLOBAL_ROOT_G3
+* *DigiCert High Assurance EV Root CA*: DIGICERT_HIGH_ASSURANCE_EV_ROOT_CA
+* *DigiCert Trusted Root G4*: DIGICERT_TRUSTED_ROOT_G4
+* *DST Root CA X3*: DST_ROOT_CA_X3
+* *D-TRUST Root Class 3 CA 2 2009*: D_TRUST_ROOT_CLASS_3_CA_2_2009
+* *D-TRUST Root Class 3 CA 2 EV 2009*: D_TRUST_ROOT_CLASS_3_CA_2_EV_2009
+* *EC-ACC*: EC_ACC
+* *EE Certification Centre Root CA*: EE_CERTIFICATION_CENTRE_ROOT_CA
+* *emSign ECC Root CA - C3*: EMSIGN_ECC_ROOT_CA___C3
+* *emSign ECC Root CA - G3*: EMSIGN_ECC_ROOT_CA___G3
+* *emSign Root CA - C1*: EMSIGN_ROOT_CA___C1
+* *emSign Root CA - G1*: EMSIGN_ROOT_CA___G1
+* *Entrust.net Premium 2048 Secure Server CA*: ENTRUST.NET_PREMIUM_2048_SECURE_SERVER_CA
+* *Entrust Root Certification Authority*: ENTRUST_ROOT_CERTIFICATION_AUTHORITY
+* *Entrust Root Certification Authority - EC1*: ENTRUST_ROOT_CERTIFICATION_AUTHORITY___EC1
+* *Entrust Root Certification Authority - G2*: ENTRUST_ROOT_CERTIFICATION_AUTHORITY___G2
+* *Entrust Root Certification Authority - G4*: ENTRUST_ROOT_CERTIFICATION_AUTHORITY___G4
+* *ePKI Root Certification Authority*: EPKI_ROOT_CERTIFICATION_AUTHORITY
+* *E-Tugra Certification Authority*: E_TUGRA_CERTIFICATION_AUTHORITY
+* *GDCA TrustAUTH R5 ROOT*: GDCA_TRUSTAUTH_R5_ROOT
+* *GeoTrust Global CA*: GEOTRUST_GLOBAL_CA
+* *GeoTrust Primary Certification Authority*: GEOTRUST_PRIMARY_CERTIFICATION_AUTHORITY
+* *GeoTrust Primary Certification Authority - G2*: GEOTRUST_PRIMARY_CERTIFICATION_AUTHORITY___G2
+* *GeoTrust Primary Certification Authority - G3*: GEOTRUST_PRIMARY_CERTIFICATION_AUTHORITY___G3
+* *GeoTrust Universal CA*: GEOTRUST_UNIVERSAL_CA
+* *GeoTrust Universal CA 2*: GEOTRUST_UNIVERSAL_CA_2
+* *Global Chambersign Root - 2008*: GLOBAL_CHAMBERSIGN_ROOT___2008
+* *GlobalSign ECC Root CA - R4*: GLOBALSIGN_ECC_ROOT_CA___R4
+* *GlobalSign ECC Root CA - R5*: GLOBALSIGN_ECC_ROOT_CA___R5
+* *GlobalSign Root CA*: GLOBALSIGN_ROOT_CA
+* *GlobalSign Root CA - R2*: GLOBALSIGN_ROOT_CA___R2
+* *GlobalSign Root CA - R3*: GLOBALSIGN_ROOT_CA___R3
+* *GlobalSign Root CA - R6*: GLOBALSIGN_ROOT_CA___R6
+* *Go Daddy Class 2 CA*: GO_DADDY_CLASS_2_CA
+* *Go Daddy Root Certificate Authority - G2*: GO_DADDY_ROOT_CERTIFICATE_AUTHORITY___G2
+* *GTS Root R1*: GTS_ROOT_R1
+* *GTS Root R2*: GTS_ROOT_R2
+* *GTS Root R3*: GTS_ROOT_R3
+* *GTS Root R4*: GTS_ROOT_R4
+* *Hellenic Academic and Research Institutions ECC RootCA 2015*: HELLENIC_ACADEMIC_AND_RESEARCH_INSTITUTIONS_ECC_ROOTCA_2015
+* *Hellenic Academic and Research Institutions RootCA 2011*: HELLENIC_ACADEMIC_AND_RESEARCH_INSTITUTIONS_ROOTCA_2011
+* *Hellenic Academic and Research Institutions RootCA 2015*: HELLENIC_ACADEMIC_AND_RESEARCH_INSTITUTIONS_ROOTCA_2015
+* *Hongkong Post Root CA 1*: HONGKONG_POST_ROOT_CA_1
+* *Hongkong Post Root CA 3*: HONGKONG_POST_ROOT_CA_3
+* *IdenTrust Commercial Root CA 1*: IDENTRUST_COMMERCIAL_ROOT_CA_1
+* *IdenTrust Public Sector Root CA 1*: IDENTRUST_PUBLIC_SECTOR_ROOT_CA_1
+* *ISRG Root X1*: ISRG_ROOT_X1
+* *Izenpe.com*: IZENPE.COM
+* *LuxTrust Global Root 2*: LUXTRUST_GLOBAL_ROOT_2
+* *Microsec e-Szigno Root CA 2009*: MICROSEC_E_SZIGNO_ROOT_CA_2009
+* *NetLock Arany (Class Gold) Főtanúsítvány*: NETLOCK_ARANY_(CLASS_GOLD)_FŐTANÚSÍTVÁNY
+* *Network Solutions Certificate Authority*: NETWORK_SOLUTIONS_CERTIFICATE_AUTHORITY
+* *OISTE WISeKey Global Root GA CA*: OISTE_WISEKEY_GLOBAL_ROOT_GA_CA
+* *OISTE WISeKey Global Root GB CA*: OISTE_WISEKEY_GLOBAL_ROOT_GB_CA
+* *OISTE WISeKey Global Root GC CA*: OISTE_WISEKEY_GLOBAL_ROOT_GC_CA
+* *QuoVadis Root CA 1 G3*: QUOVADIS_ROOT_CA_1_G3
+* *QuoVadis Root CA 2*: QUOVADIS_ROOT_CA_2
+* *QuoVadis Root CA*: QUOVADIS_ROOT_CA
+* *QuoVadis Root CA 2 G3*: QUOVADIS_ROOT_CA_2_G3
+* *QuoVadis Root CA 3*: QUOVADIS_ROOT_CA_3
+* *QuoVadis Root CA 3 G3*: QUOVADIS_ROOT_CA_3_G3
+* *Secure Global CA*: SECURE_GLOBAL_CA
+* *SecureSign RootCA11*: SECURESIGN_ROOTCA11
+* *SecureTrust CA*: SECURETRUST_CA
+* *Security Communication Root CA*: SECURITY_COMMUNICATION_ROOT_CA
+* *Security Communication RootCA2*: SECURITY_COMMUNICATION_ROOTCA2
+* *Sonera Class 2 Root CA*: SONERA_CLASS_2_ROOT_CA
+* *SSL.com EV Root Certification Authority ECC*: SSL.COM_EV_ROOT_CERTIFICATION_AUTHORITY_ECC
+* *SSL.com EV Root Certification Authority RSA R2*: SSL.COM_EV_ROOT_CERTIFICATION_AUTHORITY_RSA_R2
+* *SSL.com Root Certification Authority ECC*: SSL.COM_ROOT_CERTIFICATION_AUTHORITY_ECC
+* *SSL.com Root Certification Authority RSA*: SSL.COM_ROOT_CERTIFICATION_AUTHORITY_RSA
+* *Staat der Nederlanden EV Root CA*: STAAT_DER_NEDERLANDEN_EV_ROOT_CA
+* *Staat der Nederlanden Root CA - G2*: STAAT_DER_NEDERLANDEN_ROOT_CA___G2
+* *Staat der Nederlanden Root CA - G3*: STAAT_DER_NEDERLANDEN_ROOT_CA___G3
+* *Starfield Class 2 CA*: STARFIELD_CLASS_2_CA
+* *Starfield Root Certificate Authority - G2*: STARFIELD_ROOT_CERTIFICATE_AUTHORITY___G2
+* *Starfield Services Root Certificate Authority - G2*: STARFIELD_SERVICES_ROOT_CERTIFICATE_AUTHORITY___G2
+* *SwissSign Gold CA - G2*: SWISSSIGN_GOLD_CA___G2
+* *SwissSign Silver CA - G2*: SWISSSIGN_SILVER_CA___G2
+* *SZAFIR ROOT CA2*: SZAFIR_ROOT_CA2
+* *Taiwan GRCA*: TAIWAN_GRCA
+* *TeliaSonera Root CA v1*: TELIASONERA_ROOT_CA_V1
+* *thawte Primary Root CA*: THAWTE_PRIMARY_ROOT_CA
+* *thawte Primary Root CA - G2*: THAWTE_PRIMARY_ROOT_CA___G2
+* *thawte Primary Root CA - G3*: THAWTE_PRIMARY_ROOT_CA___G3
+* *TrustCor ECA-1*: TRUSTCOR_ECA_1
+* *TrustCor RootCert CA-1*: TRUSTCOR_ROOTCERT_CA_1
+* *TrustCor RootCert CA-2*: TRUSTCOR_ROOTCERT_CA_2
+* *Trustis FPS Root CA*: TRUSTIS_FPS_ROOT_CA
+* *T-TeleSec GlobalRoot Class 2*: T_TELESEC_GLOBALROOT_CLASS_2
+* *T-TeleSec GlobalRoot Class 3*: T_TELESEC_GLOBALROOT_CLASS_3
+* *TUBITAK Kamu SM SSL Kok Sertifikasi - Surum 1*: TUBITAK_KAMU_SM_SSL_KOK_SERTIFIKASI___SURUM_1
+* *TWCA Global Root CA*: TWCA_GLOBAL_ROOT_CA
+* *TWCA Root Certification Authority*: TWCA_ROOT_CERTIFICATION_AUTHORITY
+* *UCA Extended Validation Root*: UCA_EXTENDED_VALIDATION_ROOT
+* *UCA Global G2 Root*: UCA_GLOBAL_G2_ROOT
+* *USERTrust ECC Certification Authority*: USERTRUST_ECC_CERTIFICATION_AUTHORITY
+* *USERTrust RSA Certification Authority*: USERTRUST_RSA_CERTIFICATION_AUTHORITY
+* *Verisign Class 3 Public Primary Certification Authority - G3*: VERISIGN_CLASS_3_PUBLIC_PRIMARY_CERTIFICATION_AUTHORITY___G3
+* *VeriSign Class 3 Public Primary Certification Authority - G4*: VERISIGN_CLASS_3_PUBLIC_PRIMARY_CERTIFICATION_AUTHORITY___G4
+* *VeriSign Class 3 Public Primary Certification Authority - G5*: VERISIGN_CLASS_3_PUBLIC_PRIMARY_CERTIFICATION_AUTHORITY___G5
+* *VeriSign Universal Root Certification Authority*: VERISIGN_UNIVERSAL_ROOT_CERTIFICATION_AUTHORITY
+* *XRamp Global CA Root*: XRAMP_GLOBAL_CA_ROOT
 
 
 """

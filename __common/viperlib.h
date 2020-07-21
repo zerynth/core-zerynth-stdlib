@@ -44,6 +44,11 @@ void *gc_malloc(uint32_t sz);
 void *gc_realloc(void *pnt, uint32_t sz);
 void gc_free(void *pnt);
 
+void *zmalloc( size_t size );
+void *zcalloc( size_t num, size_t size );
+void *zrealloc( void *ptr, size_t size );
+void  zfree( void *ptr );
+
 
 /* ========================================================================
     TIME
@@ -66,7 +71,7 @@ void gc_free(void *pnt);
     MISC
    ======================================================================== */
 
-#if defined(ESP8266_RTOS) || defined(ESP32_RTOS) || defined(NRF52840_XXAA) || defined(NRF52)
+#if defined(ESP8266_RTOS) || defined(ESP32_RTOS) || defined(NRF52840_XXAA) || defined(NRF52) || defined(PK_S5D9) || defined(TB_S5D5)
 #define STORED
 #else
 #define STORED __attribute__ ((section (".storedata")))

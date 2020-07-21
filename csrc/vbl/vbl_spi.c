@@ -20,6 +20,8 @@
 #define _SPIDRIVER_SKIP     7
 #define _SPIDRIVER_WRITE    8
 #define _SPIDRIVER_EXCHANGE 9
+#define _SPIDRIVER_READ_INTO 10
+#define _SPIDRIVER_EXCHANGE_INTO 11
 
 err_t _spi_ctl(int nargs, PObject *self, PObject **args, PObject **res) {
     (void)self;
@@ -87,12 +89,16 @@ err_t _spi_ctl(int nargs, PObject *self, PObject **args, PObject **res) {
                     goto ret_err_type;
                 *res = psequence_new(PBYTES, len);
                 toread = PSEQUENCE_BYTES(*res);
+            } else if (code == _SPIDRIVER_READ_INTO) {
+                if (parse_py_args("s", nargs, args, &toread, &len) != 1) goto ret_err_type;
             } else if (code == _SPIDRIVER_WRITE) {
                 if (parse_py_args("s", nargs, args, &tosend, &len) != 1) goto ret_err_type;
             } else if (code == _SPIDRIVER_EXCHANGE) {
                 if (parse_py_args("s", nargs, args, &tosend, &len) != 1) goto ret_err_type;
                 *res = psequence_new(PBYTES, len);
                 toread = PSEQUENCE_BYTES(*res);
+            } else if (code == _SPIDRIVER_EXCHANGE_INTO) {
+                if (parse_py_args("ss", nargs, args, &tosend, &len, &toread, &len) != 2) goto ret_err_type;
             }
             //printf("VBL_%i >>%x  <<%x (%i)\n",code,tosend,toread,len);
             RELEASE_GIL();

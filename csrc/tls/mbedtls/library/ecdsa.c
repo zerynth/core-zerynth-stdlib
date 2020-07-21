@@ -313,13 +313,6 @@ int mbedtls_ecdsa_write_signature( mbedtls_ecdsa_context *ctx, mbedtls_md_type_t
 {
     int ret;
 
-    if (ZERYNTH_HWCRYPTO_HASSIGN()) {
-        if (zerynth_hwcrypto_ecdsa_secp256r1_sign) {
-            zerynth_hwcrypto_ecdsa_secp256r1_sign(hash, hlen, sig, slen);
-            ret = 0;
-            return (ret);
-        }
-    }
 
     mbedtls_mpi r, s;
 
@@ -428,7 +421,7 @@ int mbedtls_ecdsa_from_keypair( mbedtls_ecdsa_context *ctx, const mbedtls_ecp_ke
 {
     int ret;
 
-    if (ZERYNTH_HWCRYPTO_HASSIGN() && zerynth_hwcrypto_ecdsa_secp256r1_sign && mbedtls_mpi_bitlen(&key->d) == 0) {
+    if (ZERYNTH_HWCRYPTO_ENABLED() && ZERYNTH_HWCRYPTO_HAS_SIGN() && mbedtls_mpi_bitlen(&key->d) == 0) {
         // can be both a hw key or a context with only public key to verify, not that easy to distinguish
         // the two cases: try to copy ignoring errors...
         ret = mbedtls_ecp_group_copy( &ctx->grp, &key->grp );

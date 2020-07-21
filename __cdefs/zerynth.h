@@ -44,6 +44,8 @@
 
 #endif
 
+#include "zerynth_debug.h"
+
 
 /* VOS LAYER */
 

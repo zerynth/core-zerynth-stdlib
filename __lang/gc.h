@@ -57,7 +57,13 @@ void gc_resume(uint32_t period);
 void gc_keep(PObject **objs, uint32_t nobjs);
 uint32_t gc_info(int32_t what);
 void gc_unstage_threadlist(PObject *pth);
+void gc_memdump(void*args);
+uint8_t* gc_shrink(uint32_t size);
 
+void *zmalloc( size_t size );
+void *zcalloc( size_t num, size_t size );
+void *zrealloc( void *ptr, size_t size );
+void  zfree( void *ptr );
 
 #define gc_wait()  do { \
     vosSemWait(_memlock); \

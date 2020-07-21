@@ -363,7 +363,7 @@ C_NATIVE(jsmn_loads){
     C_NATIVE_UNWARN();
     uint8_t *jstr;
     uint32_t jlen;
-    int r,i,c,ii;
+    int r,i,c,ii,j;
     int64_t nn;
     FLOAT_TYPE ff;
 
@@ -414,6 +414,27 @@ C_NATIVE(jsmn_loads){
                 break;
             case JSMN_STRING:
                 token->obj = (void*)pstring_new(token->end-token->start,jstr+token->start);
+                {
+                    int j,sz=PSEQUENCE_ELEMENTS(token->obj);
+                    uint8_t *buf = PSEQUENCE_BYTES(token->obj);
+
+                    for(j=0;j<PSEQUENCE_ELEMENTS(token->obj);j++) {
+                        if (buf[j]=='\\') {
+                            //escape!
+                            switch(buf[j+1]){
+                                case 'n': buf[j]='\n'; break;
+                                case 't': buf[j]='\t'; break;
+                                case 'r': buf[j]='\r'; break;
+                                case 'f': buf[j]='\f'; break;
+                                case 'b': buf[j]='\b'; break;
+                                case '\"': buf[j]='"'; break;
+                            }
+                            sz--;
+                            memcpy(buf+j+1,buf+j+2,sz-j-2);
+                        }
+                    }
+                    PSEQUENCE_ELEMENTS_SET(token->obj,sz);
+                }
                 printf("STRING %i %i ch %i p %i %x\n",token->start,token->end,token->size, token->parent,(int)token->obj);
                 break;
             case JSMN_PRIMITIVE:

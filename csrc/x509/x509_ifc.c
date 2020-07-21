@@ -31,7 +31,6 @@ static int generate_csr_for_key(char *subject, PString **csr, mbedtls_pk_context
     }
 
     ret = mbedtls_x509write_csr_pem(&req, buf, CSR_BUFSIZE, f_rng, p_rng);
-
     if (ret != 0) {
         goto exit;
     }
@@ -129,9 +128,10 @@ C_NATIVE(_generate_csr_for_key) {
     }
 
     if (key_len == 0) {
-        if (zhwcrypto_info != NULL && zhwcrypto_info->key_type != ZHWCRYPTO_KEY_ECKEY)
+        if (ZERYNTH_HWCRYPTO_ENABLED() && ZERYNTH_HWCRYPTO_NFO()->key_type != ZHWCRYPTO_KEY_ECKEY){
             return ERR_UNSUPPORTED_EXC;
-        if (zhwcrypto_info == NULL)
+        }
+        if (!ZERYNTH_HWCRYPTO_ENABLED())
             return ERR_UNSUPPORTED_EXC;
     }
 

@@ -1,0 +1,15 @@
+#if defined(ZERYNTH_DEBUG)
+#define DEBUG(lvl,fmt,...) ZDEBUG(DEBUG_TAG,lvl,DEBUG_MAX_LEVEL,fmt,__VA_ARGS__)
+#define DEBUG0(fmt,...) ZDEBUG(DEBUG_TAG,0,DEBUG_MAX_LEVEL,fmt,__VA_ARGS__)
+#define DEBUG1(fmt,...) ZDEBUG(DEBUG_TAG,1,DEBUG_MAX_LEVEL,fmt,__VA_ARGS__)
+#define DEBUG2(fmt,...) ZDEBUG(DEBUG_TAG,2,DEBUG_MAX_LEVEL,fmt,__VA_ARGS__)
+#define DEBUG3(fmt,...) ZDEBUG(DEBUG_TAG,3,DEBUG_MAX_LEVEL,fmt,__VA_ARGS__)
+#define ERROR(fmt,...) ZERROR(DEBUG_TAG,fmt,__VA_ARGS__)
+#else
+#define DEBUG(lvl,fmt,...) do {} while(0)
+#define DEBUG0(fmt,...) do {} while(0)
+#define DEBUG1(fmt,...) do {} while(0)
+#define DEBUG2(fmt,...) do {} while(0)
+#define DEBUG3(fmt,...) do {} while(0)
+#define ERROR(fmt,...) do{} while(0)
+#endif

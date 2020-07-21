@@ -102,7 +102,7 @@ extern const mbedtls_md_info_t mbedtls_sha1_info;
 extern const mbedtls_md_info_t mbedtls_sha224_info;
 extern const mbedtls_md_info_t mbedtls_sha256_info;
 #endif
-#if defined(MBEDTLS_SHA256_HWCRYPTO)
+#if defined(ZERYNTH_HWCRYPTO_ENABLE_SHA256)
 extern mbedtls_md_info_t mbedtls_sha256_hwcrypto_info;
 #endif
 #if defined(MBEDTLS_SHA512_C)

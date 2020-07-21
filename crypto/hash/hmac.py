@@ -58,4 +58,4 @@ class HMAC():
     Like digest except the digest is returned as a string containing only hexadecimal digits.
         """
         return "".join([hex(x,"") for x in self.digest()])
-1
+

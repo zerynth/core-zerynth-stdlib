@@ -478,8 +478,8 @@ const mbedtls_md_info_t mbedtls_sha256_info = {
 
 #endif /* MBEDTLS_SHA256_C */
 
-#if defined(MBEDTLS_SHA256_HWCRYPTO)
-
+#if defined(ZERYNTH_HWCRYPTO_ENABLE_SHA256)
+//A sha256 struct filled with the zerynth hwcrypto api if enabled
 mbedtls_md_info_t mbedtls_sha256_hwcrypto_info = {
     MBEDTLS_MD_SHA256,
     "SHA256",

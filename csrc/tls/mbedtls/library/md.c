@@ -48,6 +48,7 @@
 #include <stdio.h>
 #endif
 
+
 /* Implementation that should never be optimized out by the compiler */
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
@@ -165,15 +166,15 @@ const mbedtls_md_info_t *mbedtls_md_info_from_type( mbedtls_md_type_t md_type )
         case MBEDTLS_MD_SHA224:
             return( &mbedtls_sha224_info );
         case MBEDTLS_MD_SHA256:
-#if defined(MBEDTLS_SHA256_HWCRYPTO)
-            if (zerynth_hwcrypto_digest_sha256) {
+#if defined(ZERYNTH_HWCRYPTO_ENABLE_SHA256)
+            if (ZERYNTH_HWCRYPTO_ENABLED() && ZERYNTH_HWCRYPTO_API()->digest_sha256) {
                 if (mbedtls_sha256_hwcrypto_info.digest_func == NULL) {
-                    mbedtls_sha256_hwcrypto_info.starts_func = zerynth_hwcrypto_digest_sha256_starts;
-                    mbedtls_sha256_hwcrypto_info.update_func = zerynth_hwcrypto_digest_sha256_update;
-                    mbedtls_sha256_hwcrypto_info.finish_func = zerynth_hwcrypto_digest_sha256_finish;
-                    mbedtls_sha256_hwcrypto_info.ctx_alloc_func = zerynth_hwcrypto_digest_sha256_ctx_alloc;
-                    mbedtls_sha256_hwcrypto_info.ctx_free_func = zerynth_hwcrypto_digest_sha256_ctx_free;
-                    mbedtls_sha256_hwcrypto_info.digest_func = zerynth_hwcrypto_digest_sha256;
+                    mbedtls_sha256_hwcrypto_info.starts_func = ZERYNTH_HWCRYPTO_API()->digest_sha256_starts;
+                    mbedtls_sha256_hwcrypto_info.update_func = ZERYNTH_HWCRYPTO_API()->digest_sha256_update;
+                    mbedtls_sha256_hwcrypto_info.finish_func = ZERYNTH_HWCRYPTO_API()->digest_sha256_finish;
+                    mbedtls_sha256_hwcrypto_info.ctx_alloc_func = ZERYNTH_HWCRYPTO_API()->digest_sha256_ctx_alloc;
+                    mbedtls_sha256_hwcrypto_info.ctx_free_func = ZERYNTH_HWCRYPTO_API()->digest_sha256_ctx_free;
+                    mbedtls_sha256_hwcrypto_info.digest_func = ZERYNTH_HWCRYPTO_API()->digest_sha256;
                 }
                 return (&mbedtls_sha256_hwcrypto_info) ;
             }

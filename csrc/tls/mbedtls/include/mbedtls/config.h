@@ -29,7 +29,13 @@
 #define MBEDTLS_CONFIG_H
 
 #include "zerynth.h"
-#include "zerynth_hwcrypto.h"
+#include "../../../../hwcrypto/zerynth_hwcrypto.h"
+#if defined(ZERYNTH_SSL)
+#include "zerynth_mbedtls_config.h"
+#endif
+
+
+
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_DEPRECATE)
 #define _CRT_SECURE_NO_DEPRECATE 1
@@ -59,7 +65,6 @@
 //#define MBEDTLS_HAVE_ASM
 #define MBEDTLS_HAVE_INT32
 #define MBEDTLS_NO_UDBL_DIVISION
-// #define ZERYNTH_DEBUG_SSL
  /**
  * \def MBEDTLS_NO_UDBL_DIVISION
  *
@@ -1801,9 +1806,6 @@
  *
  * This module provides debugging functions.
  */
-#if defined(ZERYNTH_SSL_DEBUG)
-#define MBEDTLS_DEBUG_C
-#endif
 
 /**
  * \def MBEDTLS_DES_C
@@ -2051,9 +2053,6 @@
  *
  * Enable this module to enable the buffer memory allocator.
  */
-#if defined(ZERYNTH_SSL_STATIC_MEMORY)
-#define MBEDTLS_MEMORY_BUFFER_ALLOC_C
-#endif
 
 /**
  * \def MBEDTLS_NET_C
@@ -2316,7 +2315,6 @@
  * This module is required for the SSL/TLS 1.2 PRF function.
  */
 #define MBEDTLS_SHA256_C
-#define MBEDTLS_SHA256_HWCRYPTO
 
 /**
  * \def MBEDTLS_SHA512_C
@@ -2331,7 +2329,7 @@
  *
  * This module adds support for SHA-384 and SHA-512.
  */
-//#define MBEDTLS_SHA512_C
+#define MBEDTLS_SHA512_C
 
 /**
  * \def MBEDTLS_SSL_CACHE_C
@@ -2659,11 +2657,6 @@
 //#define MBEDTLS_SSL_CACHE_DEFAULT_MAX_ENTRIES      50 /**< Maximum entries in cache */
 
 /* SSL options */
-#if defined(ZERYNTH_SSL_MAX_CONTENT_LEN)
-#define MBEDTLS_SSL_MAX_CONTENT_LEN ZERYNTH_SSL_MAX_CONTENT_LEN
-#else
-#define MBEDTLS_SSL_MAX_CONTENT_LEN             8192 /**< Maxium fragment length in bytes, determines the size of each of the two internal I/O buffers */
-#endif
 //#define MBEDTLS_SSL_DEFAULT_TICKET_LIFETIME     86400 /**< Lifetime of session tickets (if enabled) */
 //#define MBEDTLS_PSK_MAX_LEN               32 /**< Max size of TLS pre-shared keys, in bytes (default 256 bits) */
 //#define MBEDTLS_SSL_COOKIE_TIMEOUT        60 /**< Default expiration delay of DTLS cookies, in seconds if HAVE_TIME, or in number of cookies issued */
@@ -2680,6 +2673,7 @@
  *
  * The value below is only an example, not the default.
  */
+#if !defined(MBEDTLS_SSL_CIPHERSUITES)
 #define MBEDTLS_SSL_CIPHERSUITES \
 MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, \
 MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, \
@@ -2703,7 +2697,7 @@ MBEDTLS_TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,     \
 MBEDTLS_TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,     \
 MBEDTLS_TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,     \
 MBEDTLS_TLS_RSA_WITH_AES_128_CBC_SHA
-
+#endif
 /* X509 options */
 //#define MBEDTLS_X509_MAX_INTERMEDIATE_CA   8   /**< Maximum number of intermediate CAs in a verification chain. */
 //#define MBEDTLS_X509_MAX_FILE_PATH_LEN     512 /**< Maximum length of a path/filename string in bytes including the null terminator character ('\0'). */

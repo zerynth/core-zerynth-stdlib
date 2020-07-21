@@ -143,9 +143,6 @@ struct timeval {
 #define IPADDR_ANY          ((uint32_t)0x00000000UL)
 #define INADDR_ANY          IPADDR_ANY
 
-#ifndef MAX_SOCKETS
-#define MAX_SOCKETS 16
-#endif
 
 #ifndef FD_SET
   #undef  FD_SETSIZE

@@ -414,7 +414,6 @@ int mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
 
     /* This call will not block */
     return ( mbedtls_net_recv( ctx, buf, len ) );
-    return 0;
 }
 
 /*

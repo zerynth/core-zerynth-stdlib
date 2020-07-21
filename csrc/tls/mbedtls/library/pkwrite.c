@@ -156,7 +156,7 @@ static int pk_hw_write_ec_pubkey( unsigned char **p, unsigned char *start)
 
     uint8_t public_key[64];
 
-    zerynth_hwcrypto_ec_get_pubkey(public_key);
+    ZERYNTH_HWCRYPTO_API()->ec_get_pubkey(public_key);
 
     buf[0] = 0x04;
     memcpy(buf + 1, public_key, 64);
@@ -192,8 +192,7 @@ int mbedtls_pk_write_pubkey_der( mbedtls_pk_context *key, unsigned char *buf, si
     const char *oid;
 
     c = buf + size;
-
-    if (ZERYNTH_HWCRYPTO_HASPUB()) {
+    if (ZERYNTH_HWCRYPTO_ENABLED() && ZERYNTH_HWCRYPTO_HAS_PUB()) {
         MBEDTLS_ASN1_CHK_ADD( len, mbedtls_pk_hw_write_pubkey( &c, buf, key ) );
     }
     else {
@@ -223,8 +222,8 @@ int mbedtls_pk_write_pubkey_der( mbedtls_pk_context *key, unsigned char *buf, si
 #if defined(MBEDTLS_ECP_C)
     if( mbedtls_pk_get_type( key ) == MBEDTLS_PK_ECKEY )
     {
-        if (ZERYNTH_HWCRYPTO_HASSIGN()) {
-            if (zerynth_hwcrypto_ecdsa_secp256r1_sign) {
+        if (ZERYNTH_HWCRYPTO_ENABLED() && ZERYNTH_HWCRYPTO_HAS_SIGN()) {
+            if (ZERYNTH_HWCRYPTO_API()->ecdsa_secp256r1_sign) {
                 // only MBEDTLS_ECP_DP_SECP256R1 implemented at the moment
                 const char *sec_oid;
                 size_t sec_oid_len;

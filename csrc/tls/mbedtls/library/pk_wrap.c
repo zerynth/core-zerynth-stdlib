@@ -50,6 +50,7 @@
 #define mbedtls_free       free
 #endif
 
+#include "zerynth_dev_debug.h"
 #include <limits.h>
 
 #if defined(MBEDTLS_PK_RSA_ALT_SUPPORT)
@@ -223,6 +224,7 @@ static int eckey_verify_wrap( void *ctx, mbedtls_md_type_t md_alg,
     int ret;
     mbedtls_ecdsa_context ecdsa;
 
+    // DEBUG0("++","");
     mbedtls_ecdsa_init( &ecdsa );
 
     if( ( ret = mbedtls_ecdsa_from_keypair( &ecdsa, ctx ) ) == 0 )
@@ -240,6 +242,7 @@ static int eckey_sign_wrap( void *ctx, mbedtls_md_type_t md_alg,
 {
     int ret;
     mbedtls_ecdsa_context ecdsa;
+    // DEBUG0("++","");
 
     mbedtls_ecdsa_init( &ecdsa );
 
@@ -355,6 +358,13 @@ static int ecdsa_sign_wrap( void *ctx, mbedtls_md_type_t md_alg,
                    unsigned char *sig, size_t *sig_len,
                    int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
+    // DEBUG0("++ %i",ZERYNTH_HWCRYPTO_ENABLED() ? 1:0);
+    if (ZERYNTH_HWCRYPTO_ENABLED() && ZERYNTH_HWCRYPTO_HAS_SIGN()) {
+            int ret = 0;
+            ret = ZERYNTH_HWCRYPTO_API()->ecdsa_secp256r1_sign(hash, hash_len, sig, sig_len);
+
+            return (ret);
+    }
     return( mbedtls_ecdsa_write_signature( (mbedtls_ecdsa_context *) ctx,
                 md_alg, hash, hash_len, sig, sig_len, f_rng, p_rng ) );
 }
