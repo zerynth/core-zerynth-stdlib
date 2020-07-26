@@ -141,7 +141,7 @@ SpiFlash class
         pkt = bytearray()
         pkt.append(SERIAL_FLASH_CMD_WRITE)
         pkt.extend(_parse_addr(addr,3))
-        if type(data) == PBYTEARRAY:
+        if type(data) in (PBYTES, PBYTEARRAY):
             pkt.extend(data)
         elif type(data) == PLIST:
             for el in data:
