@@ -4,12 +4,12 @@
 #if ZERYNTH_DEBUG>=0
 #define ZDEBUG(tag,lvl,maxlvl,fmt,...) do { \
     if ((lvl)<=(maxlvl) &&(lvl)>=0) { \
-        vbl_printf_stdout("[DBG]:%i:" tag " @%s:%i | " fmt "\n",lvl,__func__,__LINE__,__VA_ARGS__); \
+        vbl_printf_stdout("[DBG]:%i:" tag " @%s:%i | " fmt "\n",lvl,__func__,__LINE__ __VA_OPT__(,) __VA_ARGS__); \
     } else { \
     }} while(0)
 
 #define ZERROR(tag,fmt,...) do { \
-        vbl_printf_stdout("[ERR]::" tag " @%s:%i | " fmt "\n",__func__,__LINE__,__VA_ARGS__); \
+        vbl_printf_stdout("[ERR]::" tag " @%s:%i | " fmt "\n",__func__,__LINE__ __VA_OPT__(,) __VA_ARGS__); \
     } while(0)
 
 #else
