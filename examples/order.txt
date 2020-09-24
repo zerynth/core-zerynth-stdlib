@@ -54,6 +54,12 @@
 		Timers_Basics
 		Timers_Advanced
 
+    ##Datetime
+        Datetime
+
+    ##Suntime
+        Suntime
+
 	##Threads
 		Multi_Thread_Basic
 		Multi_Blink

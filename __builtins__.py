@@ -749,6 +749,24 @@ def sum(x,start=0):
     return start
 
 @builtin
+def divmod(a,b):
+    """
+
+.. function:: divmod(a, b)
+    
+    Take two (non complex) numbers as arguments and return a pair of numbers
+    consisting of their quotient and remainder when using integer division.
+    When *a* and *b* are integers, the result is the same as `(a // b, a % b)`.
+    For floating point numbers the result is `(q, a % b)`, where *q* is
+    `float(int(a / b))`.
+    
+    """
+    if type(a) == PFLOAT or type(b) == PFLOAT:
+        return float(int(a/b)), a % b
+    return a // b, a % b
+
+
+@builtin
 def max(*args):
     """
 .. function:: max(*args)
@@ -783,6 +801,54 @@ def min(*args):
         if element<tmp:
             tmp = element
     return tmp
+
+@builtin
+def round(number, ndigits=None):
+    """
+
+.. function:: round(number[, ndigits])
+
+   Return *number* rounded to *ndigits* precision after the decimal point. If
+   *ndigits* is omitted or is ``None``, it returns the nearest integer to its
+   input.
+
+   For the built-in types supporting :func:`round`, values are rounded to the
+   closest multiple of 10 to the power minus *ndigits*; if two multiples are
+   equally close, rounding is done toward the even choice (so, for example, both
+   ``round(-1.5)`` and ``round(-0.5)`` are ``0``, and ``round(1.5)`` is ``2``).
+   Any integer value is valid for *ndigits* (positive, zero, or negative). The
+   return value is an integer if *ndigits* is omitted or ``None``. Otherwise
+   the return value has the same type as number.
+
+   The behavior of :func:`round` for floats can be surprising: for example,
+   `round(1.125, 2)` gives `1.1200000000000001` instead of the expected `1.12`.
+   This is not a bug: it’s a result of the fact that most decimal fractions
+   can’t be represented exactly as a float (e.g., `print(2.675)` gives
+   `2.6749999999999998` in Zerynth).
+
+   For a general Python object *number*, :func:`round` is not implemented.
+
+    """
+    N = abs(number)
+    if ndigits == None:
+        s = 1 if number >= 0 else -1
+        n = int(N)
+        r = N - n
+        if r > 0.5 or (r == 0.5 and n % 2 == 1):
+            n += 1
+        return s*n
+    elif type(ndigits) in (PSMALLINT, PINTEGER):
+        if ndigits == 0:
+            ret = round(N)
+        elif ndigits > 0:
+            shift10 = 10 ** ndigits
+            ret = round(N*shift10)/shift10
+        else:
+            shift10 = 10 ** -ndigits
+            ret = round(N/shift10)*shift10
+        return float(ret) if type(N) == PFLOAT else int(ret)
+    else:
+        raise TypeError
 
 @builtin
 def len(x):

@@ -429,8 +429,8 @@ C_NATIVE(jsmn_loads){
                                 case 'b': buf[j]='\b'; break;
                                 case '\"': buf[j]='"'; break;
                             }
-                            sz--;
                             memcpy(buf+j+1,buf+j+2,sz-j-2);
+                            sz--;
                         }
                     }
                     PSEQUENCE_ELEMENTS_SET(token->obj,sz);
@@ -490,7 +490,6 @@ C_NATIVE(jsmn_loads){
 
     return ERR_OK;
 }
-
 
 
 

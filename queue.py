@@ -100,9 +100,11 @@ Queue class
     
     def get(self,timeout=-1):
         """
-.. method:: get()
+.. method:: get(timeout=-1)
 
-    Remove and return an object out of the queue. If the queue is empty, block until an item is available.
+    :param timeout: set this argument different from -1 to make the Queue.get() unblocking (default timeout=-1 means get blocking)
+
+    Remove and return an object out of the queue. If the queue is empty, block until an item is available or timeout occurred.
 
         """
         self.not_empty.acquire()

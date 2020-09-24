@@ -127,6 +127,15 @@ def unlink():
     """ 
     __default_net["wifi"].unlink()
 
+def rssi():
+    """
+.. function:: get_rssi()        
+
+        Return RSSI of the current wireless connection.
+
+    """ 
+    return __default_net["wifi"].get_rssi()
+
 def is_linked():
     """
 .. function:: is_linked()        

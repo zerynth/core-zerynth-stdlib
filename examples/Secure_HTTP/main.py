@@ -43,7 +43,7 @@ except Exception as e:
 # on the SSL/TLS connection
 
 # retrieve the CA certificate used to sign the howsmyssl.com certificate
-cacert = __lookup(SSL_CACERT_DST_ROOT_CA_X3)
+cacert = __lookup(DST_ROOT_CA_X3)
 
 # create a SSL context to require server certificate verification
 ctx = ssl.create_ssl_context(cacert=cacert,options=ssl.CERT_REQUIRED|ssl.SERVER_AUTH)
