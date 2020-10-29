@@ -31,7 +31,7 @@ When imported, automatically sets the system rtc driver to the default one.
         * :attr:`Timeinfo.tv_microseconds`: number of microseconds to complete the timestamp with sub-second precision;
 
         * :attr:`Timeinfo.tm_year`: current year
-        * :attr:`Timeinfo.tm_month`: months since January (0-11)
+        * :attr:`Timeinfo.tm_month`: months since January (1-12)
         * :attr:`Timeinfo.tm_mday`: day of the month (1-31)
         * :attr:`Timeinfo.tm_hour`: hours since midnight (0-23)
         * :attr:`Timeinfo.tm_min`: minutes after the hour (0-59)
@@ -119,7 +119,7 @@ def get_utc(verbosity=2):
         time_info.tm_min = utc_result[3]
         time_info.tm_hour = utc_result[4]
         time_info.tm_mday = utc_result[5]
-        time_info.tm_month = utc_result[6]
+        time_info.tm_month = utc_result[6]+1    # +1 because months are from (1-12)
         time_info.tm_year = utc_result[7]
         time_info.tm_wday = utc_result[8]
         time_info.tm_yday = utc_result[9]
@@ -131,7 +131,7 @@ def get_utc(verbosity=2):
         return (utc_result[0], utc_result[1])
 
     elif verbosity == 0:
-        return utc_result[0]
+        return utc_result
 
     else:
         return None

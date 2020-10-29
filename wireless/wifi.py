@@ -129,7 +129,7 @@ def unlink():
 
 def rssi():
     """
-.. function:: get_rssi()        
+.. function:: rssi()        
 
         Return RSSI of the current wireless connection.
 
