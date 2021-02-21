@@ -292,6 +292,14 @@ Builtin Functions
         PFROZENSET, PSET, PDICT, PFUNCTION, PMETHOD, PCLASS, PINSTANCE, PMODULE, PITERATOR,
         PNONE, PEXCEPTION, PNATIVE, PSYSOBJ, PDRIVER, PTHREAD
 
+.. function:: id(ojbect)
+
+    Return the “identity” of an object. This is an integer which is guaranteed
+    to be unique and constant for this object during its lifetime. Two objects
+    with non-overlapping lifetimes may have the same `id()` value.
+
+    *Zerynth implementation detail:* This is the address of the object in memory.
+
 .. function:: thread(fun,*args,prio=PRIO_NORMAL,size=-1)
 
     Function *fun* is launched in a new thread using args as its parameters.
@@ -637,7 +645,10 @@ def thread(fn,*args,prio = PRIO_NORMAL, size=-1):
     pth.start()
     return pth
 
-
+@builtin
+@native_c("__builtin_id",["csrc/mcu/mcu.c"])
+def id(obj):
+    pass
 
 @builtin
 def print(*objects,sep=" ",end="\n", stream=None):
