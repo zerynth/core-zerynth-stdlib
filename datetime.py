@@ -844,19 +844,7 @@ class datetime:
             days -= 1
             time = time.add(timedelta(days=-days))
         year, month, day, hour, minute, second, tz\
-                = self._tuple(self._ord, time, self._tz)[:7]
-        day += days
-        if day > _days_in_month(year, month):
-          day = 1
-          month += 1
-          if month > 12:
-            month = 1
-            year +=1
-        elif day < 1:
-          month -= 1
-          if month < 1:
-            year -= 1
-          day = _days_in_month(year, month)
+                = self._tuple(self._ord + days, time, self._tz)[:7]
         return datetime(year, month, day, hour, minute, second, tz)
 
     def sub(self, other):
