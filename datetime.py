@@ -30,9 +30,16 @@ information about the offset from UTC time and the time zone name.
 
 The following classes are provided:
 
-* :class:`~timedelta`
-* :class:`~timezone`
-* :class:`~datetime`
+* :class:`timedelta`
+* :class:`timezone`
+* :class:`datetime`
+
+
+Python's classes `date()
+<https://docs.python.org/3/library/datetime.html#date-objects>`_ and `time()
+<https://docs.python.org/3/library/datetime.html#time-objects>`_
+are mimicked with a class :class:`datetime` set to midnight, and a class
+:class:`timedelta` in the range [0-24h).
 
 
 timedelta Objects
@@ -103,7 +110,13 @@ exact (no information is lost).
 
 .. method:: add(other)
 
-   Return the difference between two durations.
+   Return a :class:`timedelta` which represents the sum of two durations.
+
+
+.. method:: sub(other)
+
+   Return a :class:`timedelta` which represents the difference between
+   two durations.
 
 
 .. method:: mul(other)
@@ -180,6 +193,20 @@ exact (no information is lost).
    Return a positive delta.
 
 
+.. method:: isoformat()
+
+   This method mimics Python's `isoformat()
+   <https://docs.python.org/3/library/datetime.html#datetime.time.isoformat>`_
+   for *time* objects by returning a string in the format ``HH:MM:SS``, where
+   ``HH``, ``MM``, and ``SS`` are two digits of the time delta's hours,
+   minutes and seconds, respectively, since midnight.  This is only if value
+   is within the range [0-24h).
+
+   For other values, it returns the format ``±Dd HH:MM:SS``, where ``±`` is
+   the sign of the delta and ``D`` its number of days. This is *not* ISO
+   compliant, but provides a complete representation.
+
+
 .. method:: tuple(sign_pos='')
 
    Return the tuple ``(sign, days, hours, minutes, seconds)``, where ``sign`` is
@@ -211,6 +238,7 @@ Examples of timedelta arithmetic::
     print(nine_years)                   # 3285d 00:00:00
     three_years = nine_years.floordiv(3)
     print(three_years)                  # 1095d 00:00:00
+
 
 timezone Objects
 ================
@@ -396,6 +424,7 @@ to last Sunday of October). ::
     print(tz.isoformat(datetime(2011, 8, 1))) # UTC+02:00
     print(tz.tzname   (datetime(2011, 8, 1))) # CEST
 
+
 datetime Objects
 ================
 
@@ -440,12 +469,23 @@ Constructors
 
    where ``*`` can match any single character.
 
+
 .. function:: fromordinal(n)
 
    Return the :class:`datetime` corresponding to the proleptic Gregorian
    ordinal, where January 1 of year 1 has ordinal 1. :exc:`ValueError` is
    raised unless ``1 <= ordinal <= datetime.max.toordinal()``. The hour,
    minute and second of the result are all 0, and *tzinfo* is ``None``.
+
+
+.. function:: combine(date, time, tzinfo)
+
+   Return a new :class:`datetime` object whose date components are equal to
+   the given *date* object’s (see :meth:`datetime.date`), and whose time
+   components are equal to the given *time* object’s (see
+   :meth:`datetime.time`). If the *tzinfo* argument is provided, its value
+   is used to set the *tzinfo* attribute of the result, otherwise the
+   *tzinfo* attribute of the *date* argument is used.
 
 
 Class attributes
@@ -561,6 +601,18 @@ Class methods
    ``YYYY-MM-DDTHH:MM:SS+HH:MM``.
 
 
+.. method:: date()
+
+   Return a :class:`datetime` instance whose date and time zone components
+   are equal to the input object and time is set to midnight.
+
+
+.. method:: time()
+
+   Return a :class:`timedelta` instance whose time components are equal to
+   the input object.
+
+
 .. method:: toordinal()
 
    Return the proleptic Gregorian ordinal of the date.
@@ -594,6 +646,10 @@ Examples of working with :class:`datetime` objects::
     print(dt.astimezone(timezone.utc))              # 1900-11-20 23:00:00+00:00
 
 """
+
+#-if 0
+import builtins as __builtins__
+#-endif
 
 # The following functions were (stolen and) adapted from Python's datetime.
 def _is_leap(year):
@@ -702,7 +758,14 @@ class timedelta:
         return timedelta(seconds=__builtins__.abs(self._s))
 
     def __str__(self):
-        return "%s%dd %02d:%02d:%02d" % self.tuple()
+        return self.isoformat()
+
+    def isoformat(self):
+        t = self.tuple()
+        if 0 <= self._s < 86400:
+            return "%02d:%02d:%02d" % t[2:]
+        else:
+            return "%s%dd %02d:%02d:%02d" % t
 
     def tuple(self, sign_pos=''):
         s = self._s
@@ -760,16 +823,19 @@ class datetime:
     MAXYEAR = 9999
 
     def __init__(self, year, month, day, hour=0, minute=0, second=0, tzinfo=None):
-        if not (self.MINYEAR <= year <= self.MAXYEAR and\
-                1 <= month  <= 12 and\
-                1 <= day    <= _days_in_month(year, month) and\
-                0 <= hour   <  24 and\
-                0 <= minute <  60 and\
-                0 <= second <  60):
+        if year == 0 and month == 0 and day > 0:
+            self._ord = day
+        elif self.MINYEAR <= year <= self.MAXYEAR\
+        and  1 <= month  <= 12\
+        and  1 <= day    <= _days_in_month(year, month)\
+        and  0 <= hour   <  24\
+        and  0 <= minute <  60\
+        and  0 <= second <  60:
+            self._ord = _ymd2ord(year, month, day)
+        else:
             raise ValueError
-        self._tz = tzinfo
-        self._ord = _ymd2ord(year, month, day)
         self._time = timedelta(hour, minute, second)
+        self._tz = tzinfo
 
     def add(self, other):
         time = self._time.add(other)
@@ -778,19 +844,7 @@ class datetime:
             days -= 1
             time = time.add(timedelta(days=-days))
         year, month, day, hour, minute, second, tz\
-                = self._tuple(self._ord, time, self._tz)[:7]
-        day += days
-        if day > _days_in_month(year, month):
-          day = 1
-          month += 1
-          if month > 12:
-            month = 1
-            year +=1
-        elif day < 1:
-          month -= 1
-          if month < 1:
-            year -= 1
-          day = _days_in_month(year, month)
+                = self._tuple(self._ord + days, time, self._tz)[:7]
         return datetime(year, month, day, hour, minute, second, tz)
 
     def sub(self, other):
@@ -825,6 +879,12 @@ class datetime:
 
     def dst(self):
         return None if self._tz is None else self._tz.dst(self)
+
+    def date(self):
+        return datetime(0, 0, self.toordinal(), tzinfo=self._tz)
+
+    def time(self):
+        return timedelta(seconds=self._time.total_seconds())
 
     def tzname(self):
         return None if self._tz is None else self._tz.tzname(self)
@@ -983,4 +1043,11 @@ def fromisoformat(s):
 def fromordinal(n):
     if not 1 <= n <= 3652059:
         raise ValueError
-    return datetime(*_ord2ymd(n))
+    return datetime(0, 0, n)
+
+def combine(date, time, tzinfo=True):
+    if tzinfo is True:
+        dt = date
+    else:
+        dt = date.replace(tzinfo=tzinfo)
+    return dt.add(time)
