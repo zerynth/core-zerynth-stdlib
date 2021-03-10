@@ -630,7 +630,7 @@ C_NATIVE(__struct_unpack) {
     *res = MAKE_NONE();
 
     PackEntry *pes = pack_calc_size(fmt,fmtl,&mode,&items,&entries,&gsize);
-    if(!pes || gsize!=bufsize){
+    if(!pes || gsize>bufsize){
         err=1;
         goto clean_up;
     } 
